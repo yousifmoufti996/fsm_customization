@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_contact_amendment" model="ir.sequence">
+            <field name="name">Contact Amendment</field>
+            <field name="code">contact.amendment</field>
+            <field name="prefix">CA</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

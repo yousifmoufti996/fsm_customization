@@ -1,0 +1,114 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* fsm_customization
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_audited
+msgid "Audited"
+msgstr "تم التدقيق"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_emergency_stop
+msgid "Emergency Stop"
+msgstr "توقف طارئ"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_marketing_followup
+msgid "Marketing Follow-up"
+msgstr "متابعة التسويق"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_on_the_way
+msgid "On The Way"
+msgstr "في الطريق"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_postponed
+msgid "Postponed"
+msgstr "مؤجل"
+
+#. module: fsm_customization
+#: model:fsm.order,stage_reason:0
+msgid "Stage Reason"
+msgstr "سبب المرحلة"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_sales_followup
+msgid "Sales Follow-up"
+msgstr "متابعة المبيعات"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_waiting
+msgid "Waiting"
+msgstr "في الانتظار"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_work_completed
+msgid "Work Completed"
+msgstr "تم العمل"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_completion_request
+msgid "Work Completion Request"
+msgstr "طلب اتمام العمل"
+
+#. module: fsm_customization
+#: model:fsm.stage,name:fsm_customization.fsm_stage_work_in_progress
+msgid "Work in Progress"
+msgstr "جاري العمل"
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "Reason is required when selecting stage: %s"
+msgstr "السبب مطلوب عند اختيار المرحلة: %s"
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "Stage changed from \"%s\" to \"%s\""
+msgstr "تم تغيير المرحلة من \"%s\" إلى \"%s\""
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "\nReason: %s"
+msgstr "\nالسبب: %s"
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "Assigned person changed from \"%s\" to \"%s\""
+msgstr "تم تغيير الشخص المعين من \"%s\" إلى \"%s\""
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "Location changed from \"%s\" to \"%s\""
+msgstr "تم تغيير الموقع من \"%s\" إلى \"%s\""
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+#, python-format
+msgid "Priority changed from \"%s\" to \"%s\""
+msgstr "تم تغيير الأولوية من \"%s\" إلى \"%s\""
+
+#. module: fsm_customization
+#: code:addons/fsm_customization/models/fsm_order.py:0
+msgid "None"
+msgstr "لا شيء"

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Contract Details Tab for FSM Order -->
+    <record id="view_fsm_order_form_contract_details" model="ir.ui.view">
+        <field name="name">fsm.order.form.contract.details</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Contract Details tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="تفاصيل العقد" name="contract_details" 
+                      invisible="customer_id == False">
+                    
+                    <group>
+                        <group string="">
+                            <label for="temp_full_name_and_surname" string="الاسم رباعي واللقب"/>
+                            <field name="temp_full_name_and_surname" nolabel="1"/>
+                            
+                            <label for="temp_mother_name_and_surname" string="اسم الام الثلاثي واللقب"/>
+                            <field name="temp_mother_name_and_surname" nolabel="1"/>
+                            
+                            <label for="temp_first_phone_number" string="رقم الهاتف الأول"/>
+                            <field name="temp_first_phone_number" nolabel="1"/>
+                            
+                            <label for="temp_second_phone_number" string="رقم الهاتف الثاني"/>
+                            <field name="temp_second_phone_number" nolabel="1"/>
+                            
+                            <label for="temp_email1" string="البريد الالكتروني"/>
+                            <field name="temp_email1" nolabel="1"/>
+                            
+                            <label for="temp_subscription_type" string="نوع الاشتراك"/>
+                            <field name="temp_subscription_type" nolabel="1"/>
+                            
+                            <label for="temp_contract_number" string="رقم العقد"/>
+                            <field name="temp_contract_number" nolabel="1"/>
+                            
+                            <label for="temp_voucher_number" string="رقم الوصل"/>
+                            <field name="temp_voucher_number" nolabel="1"/>
+                            
+                            <label for="temp_residence_card" string="بطاقة السكن"/>
+                            <field name="temp_residence_card" nolabel="1"/>
+                            
+                            <label for="temp_id_card" string="بطاقة الهوية"/>
+                            <field name="temp_id_card" nolabel="1"/>
+                            
+                            <label for="temp_area_name" string="اسم المنطقة"/>
+                            <field name="temp_area_name" nolabel="1"/>
+                        </group>
+                        
+                        <group string="">
+                            <label for="temp_area_number" string="رقم المنطقة"/>
+                            <field name="temp_area_number" nolabel="1"/>
+                            
+                            <label for="temp_home_number" string="رقم المنزل"/>
+                            <field name="temp_home_number" nolabel="1"/>
+                            
+                            <label for="temp_nearest_point" string="أقرب نقطة دالة"/>
+                            <field name="temp_nearest_point" nolabel="1"/>
+                            
+                            <label for="temp_longitude_coordinates" string="احداثيات الطول"/>
+                            <field name="temp_longitude_coordinates" nolabel="1"/>
+                            
+                            <label for="temp_latitude_coordinates" string="احداثيات العرض"/>
+                            <field name="temp_latitude_coordinates" nolabel="1"/>
+                            
+                            <label for="temp_local_number" string="رقم المحلة"/>
+                            <field name="temp_local_number" nolabel="1"/>
+                            
+                            <label for="temp_alley_number" string="رقم الزقاق"/>
+                            <field name="temp_alley_number" nolabel="1"/>
+                            
+                            <label for="temp_house_number" string="رقم الدار"/>
+                            <field name="temp_house_number" nolabel="1"/>
+                            
+                            <label for="temp_vat_number" string="رقم الفات"/>
+                            <field name="temp_vat_number" nolabel="1"/>
+                            
+                            <label for="temp_port_number" string="رقم البورت"/>
+                            <field name="temp_port_number" nolabel="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Approval buttons -->
+                    <div class="oe_button_box" style="margin-top: 20px;">
+                        <button name="action_approve_contract_changes" 
+                                type="object" 
+                                class="oe_stat_button btn-success"
+                                string="اعتماد التغييرات"
+                                confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."/>
+                        
+                        <!-- <button name="action_reset_contract_fields" 
+                                type="object" 
+                                class="oe_stat_button btn-warning"
+                                string="إعادة تعيين"
+                                confirm="هل أنت متأكد من إعادة تعيين جميع التغييرات؟"/> -->
+                    </div>
+
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

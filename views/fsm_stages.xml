@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- FSM Order Stages -->
+        
+        <!-- Stage 1: On The Way / في الطريق -->
+        <record id="fsm_stage_on_the_way" model="fsm.stage">
+            <field name="name">في الطريق</field>
+            <field name="sequence">10</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 2: Work in Progress / جاري العمل -->
+        <record id="fsm_stage_work_in_progress" model="fsm.stage">
+            <field name="name">جاري العمل</field>
+            <field name="sequence">20</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 3: Postponed / مؤجل -->
+        <record id="fsm_stage_postponed" model="fsm.stage">
+            <field name="name">مؤجل</field>
+            <field name="sequence">30</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 4: Marketing Follow-up / متابعة التسويق -->
+        <record id="fsm_stage_marketing_followup" model="fsm.stage">
+            <field name="name">متابعة التسويق</field>
+            <field name="sequence">40</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 5: Sales Follow-up / متابعة المبيعات -->
+        <record id="fsm_stage_sales_followup" model="fsm.stage">
+            <field name="name">متابعة المبيعات</field>
+            <field name="sequence">50</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 6: Waiting / في الانتظار -->
+        <record id="fsm_stage_waiting" model="fsm.stage">
+            <field name="name">في الانتظار</field>
+            <field name="sequence">60</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 7: Cancelled / ملغي -->
+        <record id="fsm_stage_cancelled" model="fsm.stage">
+            <field name="name">ملغي</field>
+            <field name="sequence">70</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 8: Work Completion Request / طلب اتمام العمل -->
+        <record id="fsm_stage_completion_request" model="fsm.stage">
+            <field name="name">طلب اتمام العمل</field>
+            <field name="sequence">80</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 9: Work Completed / تم العمل -->
+        <record id="fsm_stage_work_completed" model="fsm.stage">
+            <field name="name">تم العمل</field>
+            <field name="sequence">90</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 10: Audited / تم التدقيق -->
+        <record id="fsm_stage_audited" model="fsm.stage">
+            <field name="name">تم التدقيق</field>
+            <field name="sequence">100</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 11: Emergency Stop / توقف طارئ -->
+        <record id="fsm_stage_emergency_stop" model="fsm.stage">
+            <field name="name">توقف طارئ</field>
+            <field name="sequence">110</field>
+            <field name="stage_type">order</field>
+        </record>
+
+    </data>
+</odoo>

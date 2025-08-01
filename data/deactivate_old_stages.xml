@@ -1,0 +1,33 @@
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- Deactivate specific default stages -->
+        
+        <!-- Try to deactivate common default stages -->
+        <record id="fieldservice.fsm_stage_new" model="fsm.stage">
+            <field name="active">False</field>
+        </record>
+        
+        <!-- <record id="fieldservice.fsm_stage_assigned" model="fsm.stage">
+            <field name="active">False</field>
+        </record> -->
+        
+        <!-- <record id="fieldservice.fsm_stage_enroute" model="fsm.stage">
+            <field name="active">False</field>
+        </record> -->
+        
+        <record id="fieldservice.fsm_stage_started" model="fsm.stage">
+            <field name="active">False</field>
+        </record>
+        
+        <record id="fieldservice.fsm_stage_completed" model="fsm.stage">
+            <field name="active">False</field>
+        </record>
+        
+        <record id="fieldservice.fsm_stage_cancelled" model="fsm.stage">
+            <field name="active">False</field>
+        </record>
+        
+    </data>
+</odoo> -->

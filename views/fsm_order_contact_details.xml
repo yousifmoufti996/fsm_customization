@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Contact Details Section for FSM Order -->
+    <record id="view_fsm_order_form_contact_details" model="ir.ui.view">
+        <field name="name">fsm.order.form.contact.details</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Contact Details Section after solution details -->
+            <xpath expr="//group[@name='solution_details']" position="after">
+                
+                <!-- Contact Details Section -->
+                <group string="Contact Details" name="contact_details" 
+                       invisible="customer_id == False">
+                    <group>
+                        <field name="customer_name"/>
+                        <field name="customer_email"/>
+                        <field name="customer_phone"/>
+                        <field name="customer_mobile"/>
+                        <field name="customer_website"/>
+                        <field name="customer_company_type"/>
+                        <field name="customer_is_company"/>
+                        <field name="customer_function"/>
+                        <field name="customer_title"/>
+                        <field name="customer_parent_id"/>
+                    </group>
+                    <group>
+                        <field name="customer_street"/>
+                        <field name="customer_street2"/>
+                        <field name="customer_city"/>
+                        <field name="customer_state_id"/>
+                        <field name="customer_zip"/>
+                        <field name="customer_country_id"/>
+                        <field name="customer_vat"/>
+                        <field name="customer_industry_id"/>
+                        <field name="customer_lang"/>
+                        <field name="customer_tz"/>
+                    </group>
+                </group>
+
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

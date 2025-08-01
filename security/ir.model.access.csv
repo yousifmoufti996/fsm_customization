@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_problem_type_user,problem.type.user,model_problem_type,base.group_user,1,1,1,1
+access_problem_solution_user,problem.solution.user,model_problem_solution,base.group_user,1,1,1,1
+access_problem_type_manager,problem.type.manager,model_problem_type,fieldservice.group_fsm_manager,1,1,1,1
+access_problem_solution_manager,problem.solution.manager,model_problem_solution,fieldservice.group_fsm_manager,1,1,1,1
+access_contact_amendment_all,contact.amendment.all,model_contact_amendment,base.group_user,1,1,1,1

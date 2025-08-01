@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Inherit FSM Order form view to add problem fields -->
+    <record id="view_fsm_order_form_inherit_problem" model="ir.ui.view">
+        <field name="name">fsm.order.form.inherit.problem</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add problem fields in the main sheet -->
+            <xpath expr="//field[@name='description']" position="after">
+                <group string="Problem Details" name="problem_details">
+                <field name="customer_id" invisible="1"/>
+                    <field name="problem_type_id"/>
+                    <field name="estimated_problem_duration" readonly="1"/>
+                    <field name="problem_solution_id" 
+                           domain="[('problem_type_id', '=', problem_type_id)]"/>
+                </group>
+                 
+                <!-- Show solution description if solution is selected -->
+                <group string="Solution Details" name="solution_details" 
+                       invisible="problem_solution_id == False">
+                    <field name="solution_description" readonly="1" nolabel="1"/>
+                </group>
+
+                <!-- Contact Details Section -->
+<!-- 
+                <group string="Contact Details" name="contact_details" 
+                       invisible="customer_id  == False">
+                    <group>
+                        <field name="customer_name"/>
+                        <field name="customer_email"/>
+                        <field name="customer_phone"/>
+                        <field name="customer_mobile"/>
+                        <field name="customer_website"/>
+                        <field name="customer_company_type"/>
+                        <field name="customer_is_company"/>
+                        <field name="customer_function"/>
+                        <field name="customer_title"/>
+                        <field name="customer_parent_id"/>
+                    </group>
+                    <group>
+                        <field name="customer_street"/>
+                        <field name="customer_street2"/>
+                        <field name="customer_city"/>
+                        <field name="customer_state_id"/>
+                        <field name="customer_zip"/>
+                        <field name="customer_country_id"/>
+                        <field name="customer_vat"/>
+                        <field name="customer_industry_id"/>
+                        <field name="customer_lang"/>
+                        <field name="customer_tz"/>
+                    </group>
+                </group> -->
+
+                <!-- Additional Contact Info -->
+                <!-- <group string="Additional Contact Information" name="additional_contact" 
+                       invisible="customer_id  == False">
+                    <field name="customer_category_id" widget="many2many_tags"/>
+                    <field name="customer_ref"/>
+                </group> -->
+
+            </xpath>
+
+
+            <!-- Add Contract Details tab -->
+            <!-- <xpath expr="//notebook" position="inside">
+                <page string="تفاصيل العقد" name="contract_details" 
+                      invisible="customer_id == False">
+                    
+                    <group>
+                        <group string="">
+                            <label for="customer_name" string="الاسم رباعي واللقب"/>
+                            <field name="customer_name" nolabel="1" readonly="1"/>
+                            
+                            <label for="temp_full_name_and_surname" string="اسم الأب الثاني واللقب"/>
+                            <field name="temp_full_name_and_surname" nolabel="1"/>
+                            
+                            <label for="temp_first_phone" string="رقم الهاتف الأول"/>
+                            <field name="temp_first_phone" nolabel="1"/>
+                            
+                            <label for="temp_second_phone" string="رقم الهاتف الثاني"/>
+                            <field name="temp_second_phone" nolabel="1"/>
+                            
+                            <label for="customer_email" string="البريد الالكتروني"/>
+                            <field name="customer_email" nolabel="1" readonly="1"/>
+                            
+                            <label for="temp_subscription_type" string="نوع الاشتراك"/>
+                            <field name="temp_subscription_type" nolabel="1"/>
+                            
+                            <label for="temp_contract_number" string="رقم العقد"/>
+                            <field name="temp_contract_number" nolabel="1"/>
+                            
+                            <label for="temp_connection_number" string="رقم الوصل"/>
+                            <field name="temp_connection_number" nolabel="1"/>
+                            
+                            <label for="temp_residence_card" string="بطاقة السكن"/>
+                            <field name="temp_residence_card" nolabel="1"/>
+                            
+                            <label for="temp_identity_card" string="بطاقة الهوية"/>
+                            <field name="temp_identity_card" nolabel="1"/>
+                        </group>
+                        
+                        <group string="">
+                            <label for="temp_area_number" string="رقم المنطقة"/>
+                            <field name="temp_area_number" nolabel="1"/>
+                            
+                            <label for="temp_house_number" string="رقم المنزل"/>
+                            <field name="temp_house_number" nolabel="1"/>
+                            
+                            <label for="temp_nearest_point" string="أقرب نقطة دالة"/>
+                            <field name="temp_nearest_point" nolabel="1"/>
+                            
+                            <label for="temp_longitude" string="احداثيات الطول"/>
+                            <field name="temp_longitude" nolabel="1"/>
+                            
+                            <label for="temp_latitude" string="احداثيات العرض"/>
+                            <field name="temp_latitude" nolabel="1"/>
+                            
+                            <label for="temp_district_number" string="رقم المحلة"/>
+                            <field name="temp_district_number" nolabel="1"/>
+                            
+                            <label for="temp_sector_number" string="رقم القطاع"/>
+                            <field name="temp_sector_number" nolabel="1"/>
+                            
+                            <label for="temp_house_number_2" string="رقم الدار"/>
+                            <field name="temp_house_number_2" nolabel="1"/>
+                            
+                            <label for="temp_machine_number" string="رقم الآلة"/>
+                            <field name="temp_machine_number" nolabel="1"/>
+                            
+                            <label for="temp_total_due" string="Total Due"/>
+                            <field name="temp_total_due" nolabel="1"/>
+                        </group>
+                    </group> -->
+
+                    <!-- Approval buttons -->
+                    <!-- <div class="oe_button_box" style="margin-top: 20px;">
+                        <button name="action_approve_contract_changes" 
+                                type="object" 
+                                class="oe_stat_button btn-success"
+                                string="اعتماد التغييرات"
+                                confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."/>
+                        
+                        <button name="action_reset_contract_fields" 
+                                type="object" 
+                                class="oe_stat_button btn-warning"
+                                string="إعادة تعيين"
+                                confirm="هل أنت متأكد من إعادة تعيين جميع التغييرات؟"/>
+                    </div> -->
+
+                <!-- </page>
+            </xpath> -->
+            
+        </field>
+    </record>
+
+    <!-- Inherit FSM Order tree view to add problem fields -->
+    <record id="view_fsm_order_tree_inherit_problem" model="ir.ui.view">
+        <field name="name">fsm.order.tree.inherit.problem</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="problem_type_id" optional="show"/>
+                <field name="estimated_problem_duration" readonly="1"/>
+                <field name="problem_solution_id" optional="show"/>
+
+             
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

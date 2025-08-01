@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Problem Types -->
+        <record id="problem_type_connection" model="problem.type">
+            <field name="name">مشكلة في الاتصال</field>
+            <field name="description">مشاكل متعلقة بالاتصال والشبكة</field>
+        </record>
+
+        <record id="problem_type_speed" model="problem.type">
+            <field name="name">مشكلة في السرعة</field>
+            <field name="description">مشاكل متعلقة بسرعة الإنترنت</field>
+        </record>
+
+        <record id="problem_type_device" model="problem.type">
+            <field name="name">مشكلة في الجهاز</field>
+            <field name="description">مشاكل متعلقة بالأجهزة</field>
+        </record>
+
+        <!-- Solutions for Connection Problems -->
+        <record id="solution_restart_router" model="problem.solution">
+            <field name="name">إعادة تشغيل الراوتر</field>
+            <field name="description">قم بإيقاف تشغيل الراوتر لمدة 30 ثانية ثم أعد تشغيله</field>
+            <field name="problem_type_id" ref="problem_type_connection"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="solution_check_cables" model="problem.solution">
+            <field name="name">فحص الكابلات</field>
+            <field name="description">تأكد من سلامة جميع الكابلات والتوصيلات</field>
+            <field name="problem_type_id" ref="problem_type_connection"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Solutions for Speed Problems -->
+        <record id="solution_optimize_settings" model="problem.solution">
+            <field name="name">تحسين الإعدادات</field>
+            <field name="description">تحسين إعدادات الراوتر لزيادة السرعة</field>
+            <field name="problem_type_id" ref="problem_type_speed"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Solutions for Device Problems -->
+        <record id="solution_replace_device" model="problem.solution">
+            <field name="name">استبدال الجهاز</field>
+            <field name="description">استبدال الجهاز المعطل بجهاز جديد</field>
+            <field name="problem_type_id" ref="problem_type_device"/>
+            <field name="sequence">10</field>
+        </record>
+
+    </data>
+</odoo>

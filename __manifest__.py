@@ -74,6 +74,7 @@ Technical Features:
         'views/problem_management_views.xml',  
         'views/fsm_order_contract_details_view.xml',  
         'views/fsm_order_contact_details.xml',  
+        'views/fsm_order_assignment.xml',  
      
         # # Reports
         # 'reports/fsm_reports.xml',

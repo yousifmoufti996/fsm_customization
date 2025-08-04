@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Assignment Section for FSM Order -->
+    <record id="view_fsm_order_form_assignment" model="ir.ui.view">
+        <field name="name">fsm.order.form.assignment</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Assignment Section after person_id field -->
+            <xpath expr="//group[@name='description_grp']" position="before">
+                
+                <!-- Assignment Section -->
+                <group string="Assignment Details" name="assignment_details">
+                    <group>
+                        <field name="skill_worker_ids" invisible="1"/>
+                        <!-- <field name="person_id"/> -->
+                        <field name="person_id" 
+                            string="Assigned To"
+                            domain="[('id', 'in', skill_worker_ids)]"
+                            context="{}"
+                            options="{'no_create': True, 'no_edit': True, 'can_create': False, 'can_write': False}"
+                            />
+                       
+                    </group>
+                    <group>
+                        <field name="team_leader_id" 
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               domain="[('share', '=', False)]"/>
+                       
+                    </group>
+                    <group>
+                        <field name="manager_id" 
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               domain="[('share', '=', False)]"/>
+                     
+                    </group>
+                    <group>
+                        <field name="worker_id" 
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               domain="[('share', '=', False)]"/>
+                    
+                    </group>
+                </group>
+                
+              
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Add assignment fields to tree view -->
+    <record id="view_fsm_order_tree_assignment" model="ir.ui.view">
+        <field name="name">fsm.order.tree.assignment</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='person_id']" position="after">
+                <field name="team_leader_id" optional="show"/>
+                <field name="manager_id" optional="show"/>
+                <field name="worker_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default Reply Actions -->
+        <record id="fsm_reply_action_from_helpdesk" model="fsm.reply.action">
+            <field name="name">From Helpdesk</field>
+            <field name="code">HELPDESK</field>
+            <field name="description">Reply originated from helpdesk system</field>
+            <field name="sequence">10</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="fsm_reply_action_customer_feedback" model="fsm.reply.action">
+            <field name="name">Customer Feedback</field>
+            <field name="code">CUSTOMER</field>
+            <field name="description">Feedback received from customer</field>
+            <field name="sequence">20</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="fsm_reply_action_technical_note" model="fsm.reply.action">
+            <field name="name">Technical Note</field>
+            <field name="code">TECH</field>
+            <field name="description">Technical notes and observations</field>
+            <field name="sequence">30</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="fsm_reply_action_followup" model="fsm.reply.action">
+            <field name="name">Follow-up</field>
+            <field name="code">FOLLOWUP</field>
+            <field name="description">Follow-up communication</field>
+            <field name="sequence">40</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="fsm_reply_action_other" model="fsm.reply.action">
+            <field name="name">Other</field>
+            <field name="code">OTHER</field>
+            <field name="description">Other types of replies</field>
+            <field name="sequence">50</field>
+            <field name="color">0</field>
+        </record>
+    </data>
+</odoo>

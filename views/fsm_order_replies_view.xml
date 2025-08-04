@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view for replies -->
+    <record id="fsm_order_reply_tree_view" model="ir.ui.view">
+        <field name="name">fsm.order.reply.tree</field>
+        <field name="model">fsm.order.reply</field>
+        <field name="arch" type="xml">
+            <tree string="Order Replies" create="false" edit="false">
+                <field name="agent_id" string="Agent"/>
+                <field name="create_date" string="Added On"/>
+                <field name="action_id" string="Actions"/>
+                <field name="text" string="Text"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view for replies -->
+    <record id="fsm_order_reply_form_view" model="ir.ui.view">
+        <field name="name">fsm.order.reply.form</field>
+        <field name="model">fsm.order.reply</field>
+        <field name="arch" type="xml">
+            <form string="Order Reply">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="agent_id"/>
+                            <field name="action_id"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="fsm_order_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="text" placeholder="Enter your reply here..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Inherit FSM Order form view to add replies page -->
+    <record id="fsm_order_form_view_inherit_replies" model="ir.ui.view">
+        <field name="name">fsm.order.form.inherit.replies</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Replies" name="replies">
+                    <field name="reply_ids" context="{'default_fsm_order_id': active_id}">
+                        <tree string="Replies" editable="bottom">
+                            <field name="agent_id" string="Agent" readonly="1"/>
+                            <field name="create_date" string="Added On" readonly="1"/>
+                            <field name="action_id" string="Actions"/>
+                            <field name="text" string="Text" widget="text"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="agent_id" readonly="1"/>
+                                    <field name="action_id"/>
+                                </group>
+                                <group>
+                                    <field name="create_date" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="text" placeholder="Enter your reply here..." widget="text"/>
+                            </group>
+                        </form>
+                    </field>
+                    
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action for replies -->
+    <record id="fsm_order_reply_action" model="ir.actions.act_window">
+        <field name="name">Order Replies</field>
+        <field name="res_model">fsm.order.reply</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_fsm_order_id': active_id}</field>
+        <field name="domain">[('fsm_order_id', '=', active_id)]</field>
+    </record>
+</odoo>

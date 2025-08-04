@@ -86,10 +86,21 @@
 
 
 
+<!-- 
+         <record id="view_fsm_order_tree_inherit_problemn" model="ir.ui.view">
+            <field name="name">fsm.order.tree.inherit.problemn</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='stage_id']" position="after">
+                    <field name="can_start_work" invisible="1"/>
+                    <field name="can_complete_work" invisible="1"/>
+                    <field name="can_cancel" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
 
-
-
-
+         -->
 
         <!-- Inherit FSM Order Form View to Add Stage Buttons -->
         <record id="fsm_order_form_stage_buttons" model="ir.ui.view">
@@ -111,8 +122,8 @@
                             string="جاري العمل" 
                             type="object" 
                             class="btn-warning"
-                            invisible="not can_start_work or stage_id.name == 'جاري العمل'"/>
-                    
+                            invisible=" stage_id.name == 'جاري العمل'"/>
+                    <!-- not can_start_work or -->
                     <!-- Postponed Button -->
                     <button name="action_set_postponed" 
                             string="مؤجل" 
@@ -146,7 +157,7 @@
                             string="ملغي" 
                             type="object" 
                             class="btn-danger"
-                            invisible="not can_cancel"
+                            invisible="stage_id.name == 'Cancelled' or 'ملغي'"
                             confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
                     
                     <!-- Completion Request Button -->
@@ -161,7 +172,7 @@
                             string="تم العمل" 
                             type="object" 
                             class="btn-success"
-                            invisible="not can_complete_work or stage_id.name == 'تم العمل'"
+                            invisible=" stage_id.name == 'تم العمل'"
                             confirm="هل تم إنجاز العمل بالفعل؟"/>
                     
                     <!-- Audited Button -->

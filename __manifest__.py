@@ -66,6 +66,7 @@ Technical Features:
         # Data
         'data/problem_data.xml',
         'data/ir_sequence.xml',
+        'data/fsm_reply_action_data.xml',
         # 'data/deactivate_old_stages.xml',
         
         #views
@@ -75,6 +76,9 @@ Technical Features:
         'views/fsm_order_contract_details_view.xml',  
         'views/fsm_order_contact_details.xml',  
         'views/fsm_order_assignment.xml',  
+        'views/fsm_order_replies_view.xml',
+     
+        'views/fsm_reply_action_view.xml',
      
         # # Reports
         # 'reports/fsm_reports.xml',

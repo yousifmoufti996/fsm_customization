@@ -4,3 +4,12 @@ access_problem_solution_user,problem.solution.user,model_problem_solution,base.g
 access_problem_type_manager,problem.type.manager,model_problem_type,fieldservice.group_fsm_manager,1,1,1,1
 access_problem_solution_manager,problem.solution.manager,model_problem_solution,fieldservice.group_fsm_manager,1,1,1,1
 access_contact_amendment_all,contact.amendment.all,model_contact_amendment,base.group_user,1,1,1,1
+
+
+
+access_fsm_order_reply_user,fsm.order.reply.user,model_fsm_order_reply,fieldservice.group_fsm_user,1,1,1,1
+access_fsm_order_reply_manager,fsm.order.reply.manager,model_fsm_order_reply,fieldservice.group_fsm_manager,1,1,1,1
+access_fsm_order_reply_dispatcher,fsm.order.reply.dispatcher,model_fsm_order_reply,fieldservice.group_fsm_dispatcher,1,1,1,1
+access_fsm_reply_action_user,fsm.reply.action.user,model_fsm_reply_action,fieldservice.group_fsm_user,1,0,0,0
+access_fsm_reply_action_manager,fsm.reply.action.manager,model_fsm_reply_action,fieldservice.group_fsm_manager,1,1,1,1
+access_fsm_reply_action_dispatcher,fsm.reply.action.dispatcher,model_fsm_reply_action,fieldservice.group_fsm_dispatcher,1,1,1,1

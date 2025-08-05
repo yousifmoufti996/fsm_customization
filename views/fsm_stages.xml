@@ -109,7 +109,8 @@
             <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
-                    
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '0'}"/>
+
                     <!-- On The Way Button -->
                     <button name="action_set_on_the_way" 
                             string="في الطريق" 
@@ -183,13 +184,7 @@
                             invisible="stage_id.name == 'تم التدقيق'"
                             confirm="هل تم التدقيق على العمل؟"/>
                     
-                    <!-- Emergency Stop Button -->
-                    <button name="action_set_emergency_stop" 
-                            string="توقف طارئ" 
-                            type="object" 
-                            class="btn-danger"
-                            invisible="stage_id.name == 'توقف طارئ'"
-                            confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
+                
                     
                 </xpath>
             </field>

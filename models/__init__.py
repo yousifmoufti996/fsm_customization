@@ -1,12 +1,17 @@
-# -*- coding: utf-8 -*-
-
-# from . import models
-from . import fsm_order
-from . import problem_solution
-from . import problem_type
-from . import contact_amendment
-from . import fsm_order_assignment
-from . import fsm_order_replies
-from . import replies
-from . import fsm_reply_action
-
+from . import (
+    fsm_order,
+    problem_solution,
+    problem_type,
+    # contact_amendment,
+    res_partner,
+    fsm_order_assignment,
+    fsm_operation_type,
+    fsm_order_type_inherit , 
+    fsm_stage_duration,
+    fsm_order_stage_tracking,
+    fsm_dashboard,
+    fsm_order_dashboard,
+    fsm_order_replies,
+    replies,
+    fsm_reply_action,
+)

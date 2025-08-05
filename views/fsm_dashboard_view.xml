@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- FSM Dashboard Form View -->
+    <record id="fsm_dashboard_form_view" model="ir.ui.view">
+        <field name="name">fsm.dashboard.form</field>
+        <field name="model">fsm.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="FSM Dashboard">
+                <header>
+                    <button name="refresh_dashboard" string="تحديث الداشبورد" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Dashboard Name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    
+                    <!-- إحصائيات الحالات -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3>إحصائيات حالات العمليات</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="completed_orders_count" readonly="1"/></h2>
+                                    <p>العمليات المكتملة</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="in_progress_orders_count" readonly="1"/></h2>
+                                    <p>جاري العمل</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="postponed_orders_count" readonly="1"/></h2>
+                                    <p>العمليات المؤجلة</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="cancelled_orders_count" readonly="1"/></h2>
+                                    <p>العمليات الملغية</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إحصائيات التكرار -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3>إحصائيات التكرار</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-secondary text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="duplicate_customer_orders_count" readonly="1"/></h2>
+                                    <p>المكررة لنفس العميل</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-dark text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="duplicate_vat_orders_count" readonly="1"/></h2>
+                                    <p>المكررة لنفس الفات</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="total_orders_count" readonly="1"/></h2>
+                                    <p>إجمالي العمليات</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إحصائيات SLA -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3>إحصائيات SLA والأداء</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="sla_orders_count" readonly="1"/></h2>
+                                    <p>عمليات SLA</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="unsolved_12h_orders_count" readonly="1"/></h2>
+                                    <p>غير محلولة +12 ساعة</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="average_completion_time" readonly="1"/></h2>
+                                    <p>متوسط وقت الإنجاز</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white mb-3">
+                                <div class="card-body text-center">
+                                    <h2><field name="customer_satisfaction_rate" readonly="1"/>%</h2>
+                                    <p>معدل رضا العملاء</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إحصائيات الموظفين -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3>إحصائيات الموظفين</h3>
+                            <field name="employee_statistics_ids">
+                                <tree string="Employee Statistics" editable="false">
+                                    <field name="employee_name"/>
+                                    <field name="total_orders"/>
+                                    <field name="completed_orders"/>
+                                    <field name="pending_orders"/>
+                                    <field name="completion_rate" widget="percentage"/>
+                                </tree>
+                            </field>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- FSM Dashboard Tree View -->
+    <record id="fsm_dashboard_tree_view" model="ir.ui.view">
+        <field name="name">fsm.dashboard.tree</field>
+        <field name="model">fsm.dashboard</field>
+        <field name="arch" type="xml">
+            <tree string="FSM Dashboards">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_orders_count"/>
+                <field name="completed_orders_count"/>
+                <field name="cancelled_orders_count"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FSM Dashboard Kanban View -->
+    <record id="fsm_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">fsm.dashboard.kanban</field>
+        <field name="model">fsm.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="total_orders_count"/>
+                <field name="completed_orders_count"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <span class="badge badge-primary">
+                                            <field name="total_orders_count"/> عملية
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt8">
+                                    <div class="col-12">
+                                        <i class="fa fa-calendar"/> 
+                                        <field name="date_from"/> - <field name="date_to"/>
+                                    </div>
+                                </div>
+                                <div class="row mt8">
+                                    <div class="col-6">
+                                        <span class="badge badge-success">
+                                            مكتمل: <field name="completed_orders_count"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Employee Statistics Form View -->
+    <record id="fsm_dashboard_employee_form_view" model="ir.ui.view">
+        <field name="name">fsm.dashboard.employee.form</field>
+        <field name="model">fsm.dashboard.employee</field>
+        <field name="arch" type="xml">
+            <form string="Employee Statistics">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="employee_name"/>
+                            <field name="total_orders"/>
+                            <field name="completed_orders"/>
+                        </group>
+                        <group>
+                            <field name="pending_orders"/>
+                            <field name="completion_rate" widget="percentage"/>
+                            <field name="avg_completion_time"/>
+                            <field name="customer_rating"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_fsm_dashboard" model="ir.actions.act_window">
+        <field name="name">FSM Dashboard</field>
+        <field name="res_model">fsm.dashboard</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                إنشاء داشبورد جديد لإدارة الخدمات الميدانية
+            </p>
+            <p>
+                يمكنك من خلال الداشبورد متابعة جميع إحصائيات العمليات والموظفين والأداء
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_fsm_dashboard_root"
+              name="FSM Dashboard"
+              parent="fieldservice.root"
+              sequence="3"/>
+              
+    <menuitem id="menu_fsm_dashboard"
+              name="Dashboard"
+              parent="menu_fsm_dashboard_root"
+              action="action_fsm_dashboard"
+              sequence="10"/>
+
+</odoo>

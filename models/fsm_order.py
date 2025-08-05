@@ -10,7 +10,17 @@ class FSMOrder(models.Model):
     stage_reason = fields.Text(string='Stage Reason', tracking=True)
     estimated_problem_duration = fields.Float(string='Estimated Duration (Hours)', help='Duration estimated based on problem type')
     
+    stage_id = fields.Many2one(
+        'fsm.stage',
+        string='Stage',
+        tracking=True,
+        group_expand='_group_expand_stages',
+    )
+    reason = fields.Text(string="السبب", tracking=True)
     
+    @api.model
+    def _group_expand_stages(self, stages, domain, order):
+        return stages.search([], order=order)
     # Contact Details - Related fields from customer
     customer_name2 = fields.Char(related='customer_id.name', string='Customer Name', readonly=True)
     
@@ -42,7 +52,7 @@ class FSMOrder(models.Model):
   
 
     # Override existing fields to add tracking
-    stage_id = fields.Many2one(tracking=True)
+    # stage_id = fields.Many2one(tracking=True)
     person_id = fields.Many2one(tracking=True)
     customer_id = fields.Many2one(tracking=True)
     scheduled_date_start = fields.Datetime(tracking=True)
@@ -139,9 +149,17 @@ class FSMOrder(models.Model):
         return self.write({'stage_id': stage.id})
 
     def action_set_cancelled(self):
-        """Set order stage to 'Cancelled'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
-        return self.write({'stage_id': stage.id})
+        for rec in self:
+            if not rec.reason:
+                raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
+            cancelled_stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
+            rec.stage_id = cancelled_stage
+        return self.write({'stage_id': cancelled_stage.id})
+    
+    # def action_set_cancelled(self):
+    #     """Set order stage to 'Cancelled'"""
+    #     stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
+    #     return self.write({'stage_id': stage.id})
 
     def action_set_completion_request(self):
         """Set order stage to 'Work Completion Request'"""

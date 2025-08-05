@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- FSM Order Dashboard Form View -->
+    <record id="fsm_order_dashboard_form_view" model="ir.ui.view">
+        <field name="name">fsm.order.dashboard.form</field>
+        <field name="model">fsm.order.dashboard</field>
+        <!-- <field name="view_mode">form</field>
+        <field name="target">fullscreen</field> -->
+        <field name="arch" type="xml">
+            <form string="FSM Order Dashboard" create="false" edit="true">
+                <header>
+                    <button name="action_refresh_dashboard" 
+                            string="تحديث الداشبورد" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button name="action_set_today_filter" 
+                            string="اليوم" 
+                            type="object" 
+                            class="btn-secondary"/>
+                    <button name="action_set_week_filter" 
+                            string="هذا الأسبوع" 
+                            type="object" 
+                            class="btn-secondary"/>
+                    <button name="action_set_month_filter" 
+                            string="هذا الشهر" 
+                            type="object" 
+                            class="btn-secondary"/>
+                </header>
+                
+                <sheet>
+                 <div class="container-fluid" style="max-width: 100%; margin: 0 auto;">
+                    <div class="col-12 px-5">
+                    <!-- عنوان الداشبورد -->
+                    <div class="oe_title">
+                        <h1 style="text-align: center; color: #875A7B; margin-bottom: 20px;">
+                            داشبورد إدارة الخدمات الميدانية
+                        </h1>
+                    </div>
+                    
+                    <!-- فلاتر البحث -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
+                                فلاتر البحث
+                            </h3>
+                        </div>
+                    </div>
+                    <group style="direction: rtl; text-align: right;">
+                        <group >
+                            <!-- <field name="date_from"/>
+                            <field name="date_to"/> -->
+                            <field name="date_from" required="1" widget="date" readonly="0" edit="true"/>
+                            <field name="date_to" required="1" widget="date" readonly="0" edit="true"/>
+                        </group>
+                        <!-- <group>
+                            <field name="team_id"/>
+                            <field name="person_id"/>
+                        </group> -->
+                        <group>
+                            <field name="team_id" options="{'no_create': True , 'edit': True}" edit="true"/>
+                            <field name="person_id" options="{'no_create': True}" edit="true" domain="[('team_id', '=', team_id)]" context="{'default_team_id': team_id}"/>
+                        </group>
+                    </group>
+                    
+                    <separator/>
+                    
+                    <!-- إحصائيات العمليات الرئيسية -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
+                                إحصائيات العمليات
+                            </h3>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- العمليات المكتملة -->
+                        <div class="col-md-3">
+                            <div class="alert alert-success text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="completed_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    العمليات المكتملة
+                                </p>
+                                <button name="action_view_completed_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-success"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- العمليات جاري العمل -->
+                        <div class="col-md-3">
+                            <div class="alert alert-warning text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="in_progress_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    العمليات جاري العمل
+                                </p>
+                                <button name="action_view_in_progress_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-warning"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- العمليات المؤجلة -->
+                        <div class="col-md-3">
+                            <div class="alert alert-info text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="postponed_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    العمليات المؤجلة
+                                </p>
+                                <button name="action_view_postponed_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-info"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- العمليات الملغية -->
+                        <div class="col-md-3">
+                            <div class="alert alert-danger text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="cancelled_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    العمليات الملغية
+                                </p>
+                                <button name="action_view_cancelled_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-danger"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إحصائيات التكرار والمشاكل -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px;  text-align: right;">
+                                إحصائيات التكرار والمشاكل
+                            </h3>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- العمليات المكررة لنفس العميل -->
+                        <div class="col-md-3">
+                            <div class="alert alert-secondary text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="duplicate_customer_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    المكررة لنفس العميل
+                                </p>
+                                <button name="action_view_duplicate_customer_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-secondary"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- العمليات المكررة لنفس الفات -->
+                        <div class="col-md-3">
+                            <div class="alert alert-dark text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px; color: white;">
+                                    <field name="duplicate_vat_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; color: white; margin-bottom: 15px;">
+                                    المكررة لنفس الفات
+                                </p>
+                                <button name="action_view_duplicate_vat_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-light"
+                                        style="font-weight: bold; color: #333;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- غير محلولة بعد 12 ساعة -->
+                        <div class="col-md-3">
+                            <div class="alert text-center" style="background-color: #ff6b6b; color: white;">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="unsolved_12h_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    غير محلولة بعد 12 ساعة
+                                </p>
+                                <button name="action_view_unsolved_12h_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-light"
+                                        style="font-weight: bold; color: #333;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        <!-- إجمالي العمليات -->
+                        <div class="col-md-3">
+                            <div class="alert alert-primary text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="total_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    إجمالي العمليات
+                                </p>
+                                <button name="action_view_all_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-primary"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إحصائيات الموظفين -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
+                                عدد العمليات لكل موظف
+                            </h3>
+                            <div class="alert alert-light" style="direction: rtl; text-align: right;">
+                                <pre style="background: white; padding: 15px; border-radius: 5px; font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                                    <field name="employee_order_countss" readonly="1"/>
+
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- معلومات إضافية -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <div class="alert alert-info" style="direction: rtl; text-align: right;">
+                                <strong>ملاحظة:</strong> 
+                                يمكنك الضغط على زر "عرض التفاصيل" في أي من البطاقات أعلاه لعرض العمليات المرتبطة بها بالتفصيل
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                     </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+<!-- 
+    <record id="fsm_order_dashboard_tree_view" model="ir.ui.view">
+        <field name="name">fsm.order.dashboard.tree</field>
+        <field name="model">fsm.order.dashboard</field>
+        <field name="arch" type="xml">
+            <tree string="FSM Dashboards">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="team_id"/>
+                <field name="person_id"/>
+                <field name="total_orders_count"/>
+                <field name="completed_orders_count"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_fsm_dashboard_management" model="ir.actions.act_window">
+        <field name="name">Manage Dashboards</field>
+        <field name="res_model">fsm.order.dashboard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                إنشاء داشبورد جديد
+            </p>
+            <p>
+                يمكنك إنشاء عدة داشبوردات بفلاتر مختلفة
+            </p>
+        </field>
+    </record>
+ -->
+    <!-- Action for FSM Order Dashboard -->
+    <!-- <record id="action_fsm_order_dashboard" model="ir.actions.act_window">
+        <field name="name">FSM Orders Dashboard</field>
+        <field name="res_model">fsm.order.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{}</field>
+    </record> -->
+    <record id="action_fsm_order_dashboard" model="ir.actions.act_window">
+        <field name="name">FSM Orders Dashboard</field>
+        <field name="res_model">fsm.order.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{
+            'default_name': 'داشبورد العمليات',
+            'default_date_from': context_today().strftime('%Y-%m-%d'),
+            'default_date_to': context_today().strftime('%Y-%m-%d'),
+        }</field>
+        <field name="view_id" ref="fsm_order_dashboard_form_view"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_fsm_order_dashboard"
+              name="FSM Dashboard - داشبورد العمليات"
+              parent="fieldservice.root"
+              action="action_fsm_order_dashboard"
+              sequence="1"/>
+
+
+
+</odoo>

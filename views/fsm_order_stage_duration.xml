@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Add Stage Duration page to FSM Order form -->
+    <record id="view_fsm_order_form_stage_duration" model="ir.ui.view">
+        <field name="name">fsm.order.form.stage.duration</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="stage_duration" string="Stage Duration">
+                    <group>
+                        <group>
+                            <field name="creation_to_work_done_display"/>
+                            <field name="in_way_to_work_progress_display"/>
+                            <field name="work_progress_to_done_display"/>
+                        </group>
+                        <group>
+                            <field name="combined_way_work_display"/>
+                            <field name="full_duration_display"/>
+                            <field name="total_duration_display"/>
+                        </group>
+                    </group>
+                    <field name="stage_duration_ids" readonly="1">
+                        <tree string="Stage Duration History">
+                            <field name="stage_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_display" />
+                            <field name="is_current" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stage Duration Tree View -->
+    <record id="view_fsm_stage_duration_tree" model="ir.ui.view">
+        <field name="name">fsm.stage.duration.tree</field>
+        <field name="model">fsm.stage.duration</field>
+        <field name="arch" type="xml">
+            <tree string="Stage Durations">
+                <field name="order_id"/>
+                <field name="stage_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="duration_display"/>
+                <field name="is_current"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Stage Duration Form View -->
+    <record id="view_fsm_stage_duration_form" model="ir.ui.view">
+        <field name="name">fsm.stage.duration.form</field>
+        <field name="model">fsm.stage.duration</field>
+        <field name="arch" type="xml">
+            <form string="Stage Duration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="order_id"/>
+                            <field name="stage_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_display"/>
+                            <field name="is_current"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

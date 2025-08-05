@@ -3,7 +3,7 @@ access_problem_type_user,problem.type.user,model_problem_type,base.group_user,1,
 access_problem_solution_user,problem.solution.user,model_problem_solution,base.group_user,1,1,1,1
 access_problem_type_manager,problem.type.manager,model_problem_type,fieldservice.group_fsm_manager,1,1,1,1
 access_problem_solution_manager,problem.solution.manager,model_problem_solution,fieldservice.group_fsm_manager,1,1,1,1
-access_contact_amendment_all,contact.amendment.all,model_contact_amendment,base.group_user,1,1,1,1
+
 
 
 
@@ -13,3 +13,15 @@ access_fsm_order_reply_dispatcher,fsm.order.reply.dispatcher,model_fsm_order_rep
 access_fsm_reply_action_user,fsm.reply.action.user,model_fsm_reply_action,fieldservice.group_fsm_user,1,0,0,0
 access_fsm_reply_action_manager,fsm.reply.action.manager,model_fsm_reply_action,fieldservice.group_fsm_manager,1,1,1,1
 access_fsm_reply_action_dispatcher,fsm.reply.action.dispatcher,model_fsm_reply_action,fieldservice.group_fsm_dispatcher,1,1,1,1
+access_fsm_operation_type_user,fsm.operation.type.user,model_fsm_operation_type,fieldservice.group_fsm_user,1,1,1,1
+access_fsm_operation_type_manager,fsm.operation.type.manager,model_fsm_operation_type,fieldservice.group_fsm_manager,1,1,1,1
+access_fsm_stage_duration_user,fsm.stage.duration.user,model_fsm_stage_duration,fieldservice.group_fsm_user,1,1,1,0
+access_fsm_stage_duration_manager,fsm.stage.duration.manager,model_fsm_stage_duration,fieldservice.group_fsm_manager,1,1,1,1
+
+access_fsm_dashboard_user,fsm.dashboard.user,model_fsm_dashboard,fieldservice.group_fsm_user,1,1,1,0
+access_fsm_dashboard_manager,fsm.dashboard.manager,model_fsm_dashboard,fieldservice.group_fsm_manager,1,1,1,1
+access_fsm_dashboard_employee_user,fsm.dashboard.employee.user,model_fsm_dashboard_employee,fieldservice.group_fsm_user,1,0,0,0
+access_fsm_dashboard_employee_manager,fsm.dashboard.employee.manager,model_fsm_dashboard_employee,fieldservice.group_fsm_manager,1,1,1,1
+
+access_fsm_order_dashboard_user,fsm.order.dashboard.user,model_fsm_order_dashboard,fieldservice.group_fsm_user,1,1,1,1
+access_fsm_order_dashboard_manager,fsm.order.dashboard.manager,model_fsm_order_dashboard,fieldservice.group_fsm_manager,1,1,1,1

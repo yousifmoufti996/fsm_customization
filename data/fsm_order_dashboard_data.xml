@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Create a default dashboard record -->
+        <record id="default_fsm_dashboard" model="fsm.order.dashboard">
+            <field name="date_from" eval="(DateTime.today() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="date_to" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+        </record>
+
+        <!-- Update the menu action to open the default dashboard -->
+        <record id="action_fsm_order_dashboard" model="ir.actions.act_window">
+            <field name="name">FSM Orders Dashboard</field>
+            <field name="res_model">fsm.order.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="res_id" ref="default_fsm_dashboard"/>
+            <field name="context">{}</field>
+        </record>
+
+    </data>
+</odoo>

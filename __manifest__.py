@@ -67,6 +67,8 @@ Technical Features:
         'data/problem_data.xml',
         'data/ir_sequence.xml',
         'data/fsm_reply_action_data.xml',
+        'data/fsm_order_dashboard_data.xml',
+        
         # 'data/deactivate_old_stages.xml',
         
         #views
@@ -79,6 +81,11 @@ Technical Features:
         'views/fsm_order_replies_view.xml',
      
         'views/fsm_reply_action_view.xml',
+        'views/res_partner_view.xml',  
+        'views/fsm_operation_type_view.xml',  
+        'views/fsm_order_stage_duration.xml',  
+        # 'views/fsm_dashboard_view.xml',
+        'views/fsm_order_dashboard_view.xml',
      
         # # Reports
         # 'reports/fsm_reports.xml',

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="default_fsm_dashboard" model="fsm.order.dashboard">
+        <field name="name">Default FSM Dashboard</field>
+        <field name="date_from">2025-01-01</field>
+        <field name="date_to">2025-12-31</field>
+    </record>
     <!-- FSM Order Dashboard Form View -->
     <record id="fsm_order_dashboard_form_view" model="ir.ui.view">
         <field name="name">fsm.order.dashboard.form</field>
@@ -7,7 +12,7 @@
         <!-- <field name="view_mode">form</field>
         <field name="target">fullscreen</field> -->
         <field name="arch" type="xml">
-            <form string="FSM Order Dashboard" create="false" edit="true">
+            <form string="FSM Order Dashboard" edit="true">
                 <header>
                     <button name="action_refresh_dashboard" 
                             string="تحديث الداشبورد" 
@@ -289,6 +294,7 @@
         <field name="res_model">fsm.order.dashboard</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>
+        <field name="res_id" ref="default_fsm_dashboard"/>
         <field name="context">{
             'default_name': 'داشبورد العمليات',
             'default_date_from': context_today().strftime('%Y-%m-%d'),

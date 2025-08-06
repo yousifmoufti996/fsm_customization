@@ -115,74 +115,7 @@ class FSMOrder(models.Model):
     #         }
     #     )
     
-    def action_set_on_the_way(self):
-        """Set order stage to 'On The Way'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_on_the_way')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_work_in_progress(self):
-        """Set order stage to 'Work in Progress'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_work_in_progress')
-        vals = {'stage_id': stage.id}
-        if not self.date_start:
-            vals['date_start'] = fields.Datetime.now()
-        return self.write(vals)
-
-    def action_set_postponed(self):
-        """Set order stage to 'Postponed'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_postponed')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_marketing_followup(self):
-        """Set order stage to 'Marketing Follow-up'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_marketing_followup')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_sales_followup(self):
-        """Set order stage to 'Sales Follow-up'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_sales_followup')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_waiting(self):
-        """Set order stage to 'Waiting'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_waiting')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_cancelled(self):
-        for rec in self:
-            if not rec.reason:
-                raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
-            cancelled_stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
-            rec.stage_id = cancelled_stage
-        return self.write({'stage_id': cancelled_stage.id})
     
-    # def action_set_cancelled(self):
-    #     """Set order stage to 'Cancelled'"""
-    #     stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
-    #     return self.write({'stage_id': stage.id})
-
-    def action_set_completion_request(self):
-        """Set order stage to 'Work Completion Request'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_completion_request')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_work_completed(self):
-        """Set order stage to 'Work Completed'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
-        vals = {'stage_id': stage.id}
-        if not self.date_end:
-            vals['date_end'] = fields.Datetime.now()
-        return self.write(vals)
-
-    def action_set_audited(self):
-        """Set order stage to 'Audited'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_audited')
-        return self.write({'stage_id': stage.id})
-
-    def action_set_emergency_stop(self):
-        """Set order stage to 'Emergency Stop'"""
-        stage = self.env.ref('fsm_customization.fsm_stage_emergency_stop')
-        return self.write({'stage_id': stage.id})
     
     @api.constrains('stage_id', 'stage_reason')
     def _check_stage_reason_required(self):

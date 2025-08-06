@@ -86,13 +86,14 @@ Technical Features:
         'views/fsm_order_stage_duration.xml',  
         # 'views/fsm_dashboard_view.xml',
         'views/fsm_order_dashboard_view.xml',
+        'views/fsm_order_products_view.xml',
      
         # # Reports
         # 'reports/fsm_reports.xml',
         # 'reports/fsm_report_templates.xml',
         
-        # # Wizards
-        # 'wizards/fsm_wizard_views.xml',
+        # Wizards
+        'wizards/AddProductWizard_view.xml',
     ],
     
    

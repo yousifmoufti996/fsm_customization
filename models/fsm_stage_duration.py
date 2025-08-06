@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError 
 
 
 class FSMStageDuration(models.Model):
@@ -70,3 +71,14 @@ class FSMStageDuration(models.Model):
                 record.duration_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
             else:
                 record.duration_display = "00:00:00"
+                
+    def write(self, vals):
+        if ('start_date' in vals and len(vals['start_date']) !=0) or  ('end_date' in vals and len(vals['end_date']) !=0) or  ('duration' in vals and len(vals['duration']) !=0):
+            raise ValidationError(_(
+                "لا يمكن التعديل على المدة او وقت البداية او وقت النهاية"
+            ))
+        for record in self:
+            if ('start_date' in vals and len(vals['start_date']) !=0) or  ('end_date' in vals and len(vals['end_date']) !=0) or  ('duration' in vals and len(vals['duration']) !=0):
+                raise ValidationError(_(
+                        "لا يمكن التعديل على المدة او وقت البداية او وقت النهاية"
+                    ))

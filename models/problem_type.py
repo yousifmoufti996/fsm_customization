@@ -11,6 +11,7 @@ class ProblemType(models.Model):
     
     
     estimated_duration = fields.Float(string='Estimated Duration (Hours)', default=1.0)
+    
     @api.onchange('problem_type_id')
     def _onchange_problem_type_id(self):
         """تحديد المدة تلقائياً عند اختيار نوع المشكلة"""

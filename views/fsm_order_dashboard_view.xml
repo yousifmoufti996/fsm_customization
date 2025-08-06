@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="default_fsm_dashboard" model="fsm.order.dashboard">
-        <field name="name">Default FSM Dashboard</field>
-        <field name="date_from">2025-01-01</field>
-        <field name="date_to">2025-12-31</field>
-    </record>
+   
     <!-- FSM Order Dashboard Form View -->
     <record id="fsm_order_dashboard_form_view" model="ir.ui.view">
         <field name="name">fsm.order.dashboard.form</field>
@@ -201,7 +197,25 @@
                                         style="font-weight: bold; color: #333;">عرض التفاصيل</button>
                             </div>
                         </div>
-                        
+
+
+                        <!-- SLA Violated Orders -->
+                        <div class="col-md-3">
+                            <div class="alert alert-danger text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="sla_violated_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    عدد عمليات SLA
+                                </p>
+                                <button name="action_view_sla_violated_orders"
+                                        type="object"
+                                        class="btn btn-sm btn-danger"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+
+                                                
                         <!-- إجمالي العمليات -->
                         <div class="col-md-3">
                             <div class="alert alert-primary text-center">

@@ -14,4 +14,9 @@ from . import (
     fsm_order_replies,
     replies,
     fsm_reply_action,
+    fsm_stage_rules,
+    product,
+    fsm_order_products,
+    AddProductWizard,
+    
 )

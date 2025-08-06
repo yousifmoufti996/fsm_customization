@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="add_product_wizard_form" model="ir.ui.view">
+        <field name="name">add.product.wizard.form</field>
+        <field name="model">add.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Product">
+                <group>
+                    <field name="product_id" readonly="1"/>
+                    <field name="qty_available" readonly="1"/>
+                    <field name="quantity"/>
+                </group>
+                <footer>
+                    <button name="action_add_product" type="object" string="Add Product" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

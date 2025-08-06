@@ -32,7 +32,8 @@ class FSMOrder(models.Model):
     creation_to_work_done_display = fields.Char(
         string="مدة من انشاء التكت لغاية تم العمل",
         compute="_compute_creation_to_work_done_display",
-        help="Duration from ticket creation to تم العمل stage in HH:MM:SS format"
+        help="Duration from ticket creation to تم العمل stage in HH:MM:SS format",
+        store=True,
     )
     
     in_way_to_work_progress_duration = fields.Float(

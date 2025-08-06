@@ -71,6 +71,11 @@ class FSMOrderDashboard(models.TransientModel):
         compute="_compute_employee_statisticss"
     )
     
+    sla_violated_orders_count = fields.Integer(
+        string="عدد عمليات SLA",
+        compute="_compute_order_statistics"
+    )
+    
     @api.depends('date_from', 'date_to', 'team_id')
     def _compute_employee_statisticss(self):
         for record in self:
@@ -154,27 +159,59 @@ class FSMOrderDashboard(models.TransientModel):
             record.total_orders_count = len(all_orders)
             
             # العمليات المكتملة - البحث عن stage مكتملة
-            completed_orders = all_orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
+            # completed_orders = all_orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower())
+            # completed_orders = all_orders.filtered(lambda o:'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
+            # completed_orders = all_orders.filtered(lambda o: 'work completed' in o.stage_id.name or 'تم العمل' in o.stage_id.name)
+            completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower()))
+
             record.completed_orders_count = len(completed_orders)
             
             # العمليات الملغية - البحث عن stage ملغية
-            cancelled_orders = all_orders.filtered(lambda o: 'cancel' in o.stage_id.name.lower() or 'ملغي' in o.stage_id.name or 'Cancelled' in o.stage_id.name)
+            cancelled_orders = all_orders.filtered(lambda o:o.stage_id.name and ('cancel' in o.stage_id.name.lower() or 'ملغي' in o.stage_id.name or 'Cancelled' in o.stage_id.name))
             record.cancelled_orders_count = len(cancelled_orders)
             
             
             
             # جاري العمل -
-            Progress_orders = all_orders.filtered(lambda o: 'Work in Progress' in o.stage_id.name.lower() or 'work in progress' in o.stage_id.name.lower() or  'جاري العمل' in o.stage_id.name)
+            Progress_orders = all_orders.filtered(lambda o:o.stage_id.name and ( 'Work in Progress' in o.stage_id.name.lower() or 'work in progress' in o.stage_id.name.lower() or  'جاري العمل' in o.stage_id.name))
             record.in_progress_orders_count = len(Progress_orders)
             
             
             # العمليات المؤجلة
-            Postponed_orders = all_orders.filtered(lambda o: 'Postponed' in o.stage_id.name.lower() or 'postponed' in o.stage_id.name.lower() or 'المؤجلة' in o.stage_id.name or 'مؤجل' in o.stage_id.name)
+            Postponed_orders = all_orders.filtered(lambda o:o.stage_id.name and ( 'Postponed' in o.stage_id.name.lower() or 'postponed' in o.stage_id.name.lower() or 'المؤجلة' in o.stage_id.name or 'مؤجل' in o.stage_id.name))
             record.postponed_orders_count = len(Postponed_orders)
-            print('len(Postponed_orders)')
-            print(len(Postponed_orders))
-           
+        
+            
+            for order in all_orders:
+                print("Order:", order.name)
+                print("Duration:", order.creation_to_work_done_duration)
+                print("Estimated:", order.estimated_problem_duration)
+                print('sla_violated_orders')
+                
+            sla_violated_orders = all_orders.filtered(
+                #     lambda o: o.creation_to_work_done_duration > o.estimated_problem_duration
+                
+                # lambda o: (
+                #     (o.creation_to_work_done_duration and o.creation_to_work_done_duration > o.estimated_problem_duration) or
+                #     (o.work_progress_to_done_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
+                # )
+                # lambda o: (
+                #     (o.creation_to_work_done_duration and o.estimated_problem_duration and o.creation_to_work_done_duration > o.estimated_problem_duration) or
+                #     (o.work_progress_to_done_duration and o.estimated_problem_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
+                # )
+                lambda o : (
+                    (o.work_progress_to_done_duration and o.estimated_problem_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
+                )
+                
+            )
+       
+            
+            record.sla_violated_orders_count = len(sla_violated_orders)
+            
+            print('record.sla_violated_orders_count')
+            print(record.sla_violated_orders_count)
 
+          
            
             
 
@@ -379,6 +416,23 @@ class FSMOrderDashboard(models.TransientModel):
             ('stage_id.is_closed', '=', False)
         ]
         return self._open_orders_view(domain, 'العمليات غير المحلولة بعد 12 ساعة')
+    
+    
+    
+    def action_view_sla_violated_orders(self):
+        self.ensure_one()
+        domain = self._get_base_domain()
+        domain += [('work_progress_to_done_duration', '>', 0),
+                   ('estimated_problem_duration', '>', 0),
+                ('work_progress_to_done_duration', '>', 'estimated_problem_duration')]
+        return {
+            'name': 'SLA Violated Orders',
+            'type': 'ir.actions.act_window',
+            'res_model': 'fsm.order',
+            'view_mode': 'tree,form',
+            'domain': domain,
+            'target': 'current',
+        }
 
     def action_view_duplicate_customer_orders(self):
         """عرض العمليات المكررة لنفس العميل"""

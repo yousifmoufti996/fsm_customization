@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enhanced product form for FSM context -->
+    <record id="product_form_fsm_context" model="ir.ui.view">
+        <field name="name">product.product.form.fsm.context</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button name="toggle_fsm_selection"
+                        type="object"
+                        string="Add to FSM Order"
+                        class="btn-primary"
+                        context="{'fsm_order_id': context.get('fsm_order_id')}"
+                        invisible="context.get('fsm_order_id') == False or is_selected_in_fsm"/>
+                <button name="toggle_fsm_selection"
+                        type="object"
+                        string="Remove from FSM Order"
+                        class="btn-secondary"
+                        context="{'fsm_order_id': context.get('fsm_order_id')}"
+                        invisible="context.get('fsm_order_id') == False or not is_selected_in_fsm"/>
+            </xpath>
+            <xpath expr="//field[@name='active']" position="after">
+                <field name="is_selected_in_fsm" 
+                       invisible="context.get('fsm_order_id') == False"
+                       readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

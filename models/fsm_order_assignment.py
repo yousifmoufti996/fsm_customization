@@ -24,7 +24,91 @@ class FSMOrder(models.Model):
         tracking=True,
         help='Worker assigned to execute this order'
     )
+    
+    # Customer availability time for postponed orders (requirement 3)
+    customer_availability_time = fields.Datetime(
+        string='وقت تواجد العميل',
+        help='Required when order is postponed'
+    )
+    fields_locked = fields.Boolean("الحقول مقفلة", default=False, readonly=True)
+    
+    # Add reason field for specific stages
+    stage_reason = fields.Text(string='السبب', tracking=True)
 
+
+    @api.constrains('stage_id')
+    def _check_stage_transition_rules(self):
+        """Validate stage transitions based on business rules"""
+        for record in self:
+            if record.id:
+                # Get original stage from database to compare
+                original_record = self.browse(record.id)
+                old_stage = original_record._origin.stage_id if hasattr(original_record, '_origin') and original_record._origin else None
+                new_stage = record.stage_id
+                current_user = self.env.user
+                
+                if old_stage and old_stage != new_stage:
+                    # Rule 1: From "في الطريق" only allow "جاري العمل" or "توقف طارئ"
+                    if old_stage.name == 'في الطريق':
+                        allowed_stages = ['جاري العمل', 'توقف طارئ']
+                        if new_stage.name not in allowed_stages:
+                            raise ValidationError(_(
+                                "من مرحلة 'في الطريق' يمكن الانتقال فقط إلى 'جاري العمل' أو 'توقف طارئ'"
+                            ))
+                    
+                    # Rule 2: From "جاري العمل" only allow "تم العمل" or "توقف طارئ"
+                    if old_stage.name == 'جاري العمل':
+                        allowed_stages = ['تم العمل', 'توقف طارئ']
+                        if new_stage.name not in allowed_stages:
+                            raise ValidationError(_(
+                                "من مرحلة 'جاري العمل' يمكن الانتقال فقط إلى 'تم العمل' أو 'توقف طارئ'"
+                            ))
+                    
+                    # Rule 3: When selecting "مؤجل", customer availability time is required
+                    if new_stage.name == 'مؤجل' and not record.customer_availability_time:
+                        raise ValidationError(_(
+                            "يجب تحديد وقت تواجد العميل عند اختيار مرحلة 'مؤجل'"
+                        ))
+                    
+                    # Rule 6: Only maintenance supervisor can set "تم العمل"
+                    if new_stage.name == 'تم العمل':
+                        if not record.manager_id or record.manager_id != current_user:
+                            raise ValidationError(_(
+                                "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
+                            ))
+                    
+                    # Team Leader Rules
+                    if record.team_leader_id == current_user:
+                        # Team leader can only select "جاري العمل" after "في الطريق" by supervisor
+                        if new_stage.name == 'جاري العمل' and old_stage.name != 'في الطريق':
+                            raise ValidationError(_(
+                                "التيم ليدر يمكنه اختيار 'جاري العمل' فقط بعد أن تكون في مرحلة 'في الطريق' من قبل المشرف"
+                            ))
+                        
+                        # Team leader can select "طلب اتمام العمل" only after "جاري العمل"
+                        if new_stage.name == 'طلب اتمام العمل' and old_stage.name != 'جاري العمل':
+                            raise ValidationError(_(
+                                "التيم ليدر يمكنه اختيار 'طلب اتمام العمل' فقط بعد مرحلة 'جاري العمل'"
+                            ))
+
+    # @api.constrains('stage_id')
+    # def _check_stage_transition_from_in_the_way(self):
+    #     for record in self:
+    #         if hasattr(record, '_origin') and record._origin.stage_id:
+    #             old_stage = record._origin.stage_id
+    #             new_stage = record.stage_id
+                
+    #             if old_stage and old_stage != new_stage:
+    #                 # Check if old stage was "في الطريق"
+    #                 if old_stage.name == 'في الطريق' or old_stage.name == 'On The Way':
+    #                     # Define allowed next stages for FSM orders
+    #                     allowed_stage_names = ['جاري العمل', 'توقف طارئ','Emergency Stop','Work in Progress']
+                        
+    #                     if new_stage.name not in allowed_stage_names:
+    #                         raise ValidationError(_(
+    #                             "إذا كان الطلب في الطريق، يمكنك فقط اختيار 'جاري العمل' أو 'توقف طارئ' كمرحلة تالية.\n"
+    #                             "If the order is 'In the Way', you can only select 'Work in Progress' or 'Emergency Stop' as the next stage."
+    #                         ))
 
 
     @api.onchange('team_id')
@@ -100,52 +184,89 @@ class FSMOrder(models.Model):
             )
 
     # Override write method to add assignment tracking
-    def write(self, vals):
-        """Override write to add assignment tracking"""
-        # Store old values for assignment tracking
-        old_assignments = {}
-        for record in self:
-            old_assignments[record.id] = {
-                'team_leader_id': record.team_leader_id,
-                'manager_id': record.manager_id,
-                'worker_id': record.worker_id,
-            }
+    # def write(self, vals):
+    #     """Override write to add assignment tracking"""
+    #     # Store old values for assignment tracking
+    #     old_assignments = {}
+    #     for record in self:
+    #         old_assignments[record.id] = {
+    #             'team_leader_id': record.team_leader_id,
+    #             'manager_id': record.manager_id,
+    #             'worker_id': record.worker_id,
+    #         }
         
-        # Call parent write method
+    #     # Call parent write method
+    #     result = super().write(vals)
+        
+    #     # Track assignment changes and send notifications
+    #     for record in self:
+    #         old_vals = old_assignments.get(record.id, {})
+            
+    #         # Track team leader changes
+    #         if 'team_leader_id' in vals and old_vals.get('team_leader_id') != record.team_leader_id:
+    #             if record.team_leader_id:
+    #                 record._send_assignment_notification(record.team_leader_id, 'Team Leader')
+    #                 record.message_post(
+    #                     body=f'Team Leader assigned: {record.team_leader_id.name}',
+    #                     message_type='notification',
+    #                     subtype_xmlid='mail.mt_note'
+    #                 )
+            
+    #         # Track manager changes  
+    #         if 'manager_id' in vals and old_vals.get('manager_id') != record.manager_id:
+    #             if record.manager_id:
+    #                 record._send_assignment_notification(record.manager_id, 'Manager')
+    #                 record.message_post(
+    #                     body=f'Manager assigned: {record.manager_id.name}',
+    #                     message_type='notification',
+    #                     subtype_xmlid='mail.mt_note'
+    #                 )
+            
+    #         # Track worker changes
+    #         if 'worker_id' in vals and old_vals.get('worker_id') != record.worker_id:
+    #             if record.worker_id:
+    #                 record._send_assignment_notification(record.worker_id, 'Worker')
+    #                 record.message_post(
+    #                     body=f'Worker assigned: {record.worker_id.name}',
+    #                     message_type='notification',
+    #                     subtype_xmlid='mail.mt_note'
+    #                 )
+        
+    #     return result
+    @api.model
+    def is_fsm_manager(self):
+        return self.env.user.has_group('fieldservice.group_fsm_manager')
+    def write(self, vals):
+     
+        """Override write to implement business rules and field locking"""
+        for record in self:
+            # Rule 4: Lock all fields when work is completed (except for manager)
+            if record.stage_id.name == 'تم العمل':
+                raise ValidationError(_(
+                                "لا يمكن التعديل على الحقول بعد إتمام العمل."
+                            ))
+                
+            if record.stage_id.name == 'تم العمل': #and ((record.manager_id == self.env.user and self.env.user != record.person_id and not self.is_fsm_manager) or (record.manager_id != self.env.user and self.env.user != record.person_id and not self.is_fsm_manager)):
+                # Allow only stage changes by authorized users
+                restricted_fields = set(vals.keys()) - {'stage_id', 'fields_locked'}
+                if restricted_fields:
+                    raise ValidationError(_(
+                        "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
+                    ) % ', '.join(restricted_fields))
+            
+            # Rule 5: Manager cannot edit manager assignment for himself
+            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
+                if vals['manager_id'] != record.manager_id.id:
+                    raise ValidationError(_(
+                        "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
+                    ))
         result = super().write(vals)
         
-        # Track assignment changes and send notifications
-        for record in self:
-            old_vals = old_assignments.get(record.id, {})
-            
-            # Track team leader changes
-            if 'team_leader_id' in vals and old_vals.get('team_leader_id') != record.team_leader_id:
-                if record.team_leader_id:
-                    record._send_assignment_notification(record.team_leader_id, 'Team Leader')
-                    record.message_post(
-                        body=f'Team Leader assigned: {record.team_leader_id.name}',
-                        message_type='notification',
-                        subtype_xmlid='mail.mt_note'
-                    )
-            
-            # Track manager changes  
-            if 'manager_id' in vals and old_vals.get('manager_id') != record.manager_id:
-                if record.manager_id:
-                    record._send_assignment_notification(record.manager_id, 'Manager')
-                    record.message_post(
-                        body=f'Manager assigned: {record.manager_id.name}',
-                        message_type='notification',
-                        subtype_xmlid='mail.mt_note'
-                    )
-            
-            # Track worker changes
-            if 'worker_id' in vals and old_vals.get('worker_id') != record.worker_id:
-                if record.worker_id:
-                    record._send_assignment_notification(record.worker_id, 'Worker')
-                    record.message_post(
-                        body=f'Worker assigned: {record.worker_id.name}',
-                        message_type='notification',
-                        subtype_xmlid='mail.mt_note'
-                    )
+        # Lock fields when work is completed
+        if 'stage_id' in vals:
+            new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
+            for record in self:
+                if new_stage.name == 'تم العمل':
+                    record.sudo().write({'fields_locked': True})
         
         return result

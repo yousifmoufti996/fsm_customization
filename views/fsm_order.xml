@@ -13,7 +13,8 @@
                 <group string="Problem Details" name="problem_details">
                 <field name="customer_id" invisible="1"/>
                     <field name="problem_type_id"/>
-                    <field name="estimated_problem_duration" readonly="1"/>
+                    <field name="estimated_problem_duration" />
+                    <field name="estimated_problem_duration_display" />
                     <field name="problem_solution_id" 
                            domain="[('problem_type_id', '=', problem_type_id)]"/>
                 </group>
@@ -40,7 +41,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='stage_id']" position="after">
                 <field name="problem_type_id" optional="show"/>
-                <field name="estimated_problem_duration" readonly="1"/>
+                <!-- <field name="estimated_problem_duration" readonly="1"/> -->
+                <field name="estimated_problem_duration_display" />
                 <field name="problem_solution_id" optional="show"/>
 
              

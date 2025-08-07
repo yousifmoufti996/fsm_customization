@@ -69,6 +69,7 @@ class FSMDashboard(models.Model):
     )
     customer_satisfaction_rate = fields.Float(
         string="معدل رضا العملاء %",
+        digits=(16, 4),
         compute="_compute_performance_metrics"
     )
 
@@ -161,11 +162,11 @@ class FSMDashboard(models.Model):
                 domain.append(('create_date', '<=', record.date_to))
             
             # عمليات SLA - العمليات التي تجاوزت الوقت المحدد
-            sla_violated_orders = self.env['fsm.order'].search(domain + [
-                ('request_late', '<', fields.Datetime.now()),
-                ('stage_id.is_closed', '=', False)
-            ])
-            record.sla_orders_count = len(sla_violated_orders)
+            # sla_violated_orders = self.env['fsm.order'].search(domain + [
+            #     ('request_late', '<', fields.Datetime.now()),
+            #     ('stage_id.is_closed', '=', False)
+            # ])
+            # record.sla_orders_count = len(sla_violated_orders)
             
             # العمليات غير المحلولة بعد 12 ساعة
             twelve_hours_ago = datetime.now() - timedelta(hours=12)
@@ -262,8 +263,8 @@ class FSMDashboardEmployee(models.Model):
     total_orders = fields.Integer(string="إجمالي العمليات")
     completed_orders = fields.Integer(string="العمليات المكتملة")
     pending_orders = fields.Integer(string="العمليات المعلقة")
-    completion_rate = fields.Float(string="معدل الإنجاز %")
+    completion_rate = fields.Float(string="معدل الإنجاز %", digits=(16, 4))
     
     # إحصائيات إضافية للموظف
-    avg_completion_time = fields.Float(string="متوسط وقت الإنجاز (ساعات)")
-    customer_rating = fields.Float(string="تقييم العملاء")
+    avg_completion_time = fields.Float(string="متوسط وقت الإنجاز (ساعات)", digits=(16, 4))
+    customer_rating = fields.Float(string="تقييم العملاء", digits=(16, 4))

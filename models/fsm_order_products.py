@@ -54,43 +54,57 @@ class FSMOrder(models.Model):
             order.sale_order_count = 1 if order.sale_order_id else 0
 
     def action_create_sale_order(self):
-        """Create sale order from FSM order products"""
-        if not self.product_ids:
+        """View the related sale order"""
+        if not self.sale_order_id:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
-                    'title': _('Warning'),
-                    'message': _('Please add products first before creating sale order.'),
-                    'type': 'warning',
+                    'title': _('Info'),
+                    'message': _('No sale order found. Please add products first.'),
+                    'type': 'info',
                 }
             }
         
-        if self.sale_order_id:
-            # If sale order already exists, just open it
-            return self.action_view_sale_order()
-        
-        # Create new sale order
-        sale_order_vals = {
-            'partner_id': self.location_id.partner_id.id,
-            'origin': self.name,
-            'order_line': [],
-        }
-        
-        # Add order lines for each product
-        for product in self.product_ids:
-            line_vals = {
-                'product_id': product.id,
-                'product_uom_qty': 1.0,  # Default quantity, will be enhanced later
-                'price_unit': product.list_price,
-            }
-            sale_order_vals['order_line'].append((0, 0, line_vals))
-        
-        # Create the sale order
-        sale_order = self.env['sale.order'].create(sale_order_vals)
-        self.sale_order_id = sale_order.id
-        
         return self.action_view_sale_order()
+
+        # """Create sale order from FSM order products"""
+        # if not self.product_ids:
+        #     return {
+        #         'type': 'ir.actions.client',
+        #         'tag': 'display_notification',
+        #         'params': {
+        #             'title': _('Warning'),
+        #             'message': _('Please add products first before creating sale order.'),
+        #             'type': 'warning',
+        #         }
+        #     }
+        
+        # if self.sale_order_id:
+        #     # If sale order already exists, just open it
+        #     return self.action_view_sale_order()
+        
+        # # Create new sale order
+        # sale_order_vals = {
+        #     'partner_id': self.location_id.partner_id.id,
+        #     'origin': self.name,
+        #     'order_line': [],
+        # }
+        
+        # # Add order lines for each product
+        # for product in self.product_ids:
+        #     line_vals = {
+        #         'product_id': product.id,
+        #         'product_uom_qty': 1.0,  # Default quantity, will be enhanced later
+        #         'price_unit': product.list_price,
+        #     }
+        #     sale_order_vals['order_line'].append((0, 0, line_vals))
+        
+        # # Create the sale order
+        # sale_order = self.env['sale.order'].create(sale_order_vals)
+        # self.sale_order_id = sale_order.id
+        
+        # return self.action_view_sale_order()
 
     def action_view_sale_order(self):
         """Open the related sale order"""

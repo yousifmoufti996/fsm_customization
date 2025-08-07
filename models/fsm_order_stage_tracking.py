@@ -14,6 +14,7 @@ class FSMOrder(models.Model):
         string="Total Duration (Hours)",
         compute="_compute_total_stage_duration",
         help="Total time spent across all stages"
+        , digits=(16, 4)
     )
     
     total_duration_display = fields.Char(
@@ -26,7 +27,7 @@ class FSMOrder(models.Model):
     creation_to_work_done_duration = fields.Float(
         string="Creation to Work Done (Hours)",
         compute="_compute_creation_to_work_done_duration",
-        help="Duration from order creation to تم العمل stage"
+        help="Duration from order creation to تم العمل stage", digits=(16, 4)
     )
     
     creation_to_work_done_display = fields.Char(
@@ -39,7 +40,7 @@ class FSMOrder(models.Model):
     in_way_to_work_progress_duration = fields.Float(
         string="In Way to Work Progress (Hours)",
         compute="_compute_in_way_to_work_progress_duration",
-        help="Duration from in the way to work in progress"
+        help="Duration from in the way to work in progress", digits=(16, 4)
     )
     
     in_way_to_work_progress_display = fields.Char(
@@ -50,7 +51,7 @@ class FSMOrder(models.Model):
     work_progress_to_done_duration = fields.Float(
         string="Work Progress to Done (Hours)",
         compute="_compute_work_progress_to_done_duration",
-        help="Duration from work in progress to work done"
+        help="Duration from work in progress to work done", digits=(16, 4)
     )
     work_progress_to_done_display = fields.Char(
         string="مدة من جاري العمل الى تم العمل",
@@ -61,7 +62,7 @@ class FSMOrder(models.Model):
     combined_way_work_duration = fields.Float(
         string="Combined Way and Work (Hours)",
         compute="_compute_combined_way_work_duration",
-        help="Combined duration of في الطريق + جاري العمل"
+        help="Combined duration of في الطريق + جاري العمل", digits=(16, 4)
     )
     
     combined_way_work_display = fields.Char(
@@ -73,7 +74,7 @@ class FSMOrder(models.Model):
     full_duration = fields.Float(
         string="Full Duration (Hours)",
         compute="_compute_full_duration",
-        help="Duration from creation to any closed stage"
+        help="Duration from creation to any closed stage", digits=(16, 4)
     )
     
     full_duration_display = fields.Char(
@@ -210,12 +211,6 @@ class FSMOrder(models.Model):
 
     
     
-    def write(self, vals):
-        # Track stage changes
-        if 'stage_id' in vals:
-            for order in self:
-                self._track_stage_change(order, vals['stage_id'])
-        return super().write(vals)
 
     def _track_stage_change(self, order, new_stage_id):
         """Track when stage changes to record duration"""

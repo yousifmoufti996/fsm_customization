@@ -187,34 +187,16 @@ class FSMOrderDashboard(models.TransientModel):
                 print("Duration:", order.creation_to_work_done_duration)
                 print("Estimated:", order.estimated_problem_duration)
                 print('sla_violated_orders')
-                
-            sla_violated_orders = all_orders.filtered(
-                #     lambda o: o.creation_to_work_done_duration > o.estimated_problem_duration
-                
-                # lambda o: (
-                #     (o.creation_to_work_done_duration and o.creation_to_work_done_duration > o.estimated_problem_duration) or
-                #     (o.work_progress_to_done_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
-                # )
-                # lambda o: (
-                #     (o.creation_to_work_done_duration and o.estimated_problem_duration and o.creation_to_work_done_duration > o.estimated_problem_duration) or
-                #     (o.work_progress_to_done_duration and o.estimated_problem_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
-                # )
-                lambda o : (
-                    (o.work_progress_to_done_duration and o.estimated_problem_duration and o.work_progress_to_done_duration > o.estimated_problem_duration)
-                )
-                
-            )
-       
             
-            record.sla_violated_orders_count = len(sla_violated_orders)
-            
-            print('record.sla_violated_orders_count')
-            print(record.sla_violated_orders_count)
-
-          
+            print('record.work_progress_to_done_duration slaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
            
             
-
+            record.sla_violated_orders_count = self.env['fsm.order'].search_count(domain + [
+                ('work_progress_to_done_duration', '>', 0),
+                ('estimated_problem_duration', '>', 0),
+                ('work_progress_to_done_duration', '>', 'estimated_problem_duration')
+            ])
+            
     @api.depends('date_from', 'date_to', 'team_id', 'person_id')
     def _compute_duplicate_statistics(self):
         for record in self:
@@ -360,7 +342,7 @@ class FSMOrderDashboard(models.TransientModel):
         self._compute_order_statistics()
         self._compute_duplicate_statistics() 
         self._compute_time_statistics()
-        self._compute_employee_statistics()
+        self._compute_employee_statisticss()
         
         # return {
         #     'type': 'ir.actions.client',

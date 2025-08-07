@@ -22,7 +22,7 @@
                 </button>
             </div>
             
-            <!-- Add products field in a notebook page (optional) -->
+            <!-- Add products field in a notebook page (optional)
             <notebook position="inside">
                 <page string="Products" name="products">
                     <field name="product_ids" widget="many2many_tags"/>
@@ -55,7 +55,7 @@
                         </kanban>
                     </field>
                 </page>
-            </notebook>
+            </notebook> -->
         </field>
     </record>
 

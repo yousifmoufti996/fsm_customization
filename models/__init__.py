@@ -18,5 +18,6 @@ from . import (
     product,
     fsm_order_products,
     AddProductWizard,
+    fsm_order_line,
     
 )

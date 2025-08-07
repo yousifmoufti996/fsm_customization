@@ -183,90 +183,54 @@ class FSMOrder(models.Model):
                 subtype_xmlid='mail.mt_comment'
             )
 
-    # Override write method to add assignment tracking
+    # @api.model
+    # def is_fsm_manager(self):
+    #     return self.env.user.has_group('fieldservice.group_fsm_manager')
+    
     # def write(self, vals):
-    #     """Override write to add assignment tracking"""
-    #     # Store old values for assignment tracking
-    #     old_assignments = {}
-    #     for record in self:
-    #         old_assignments[record.id] = {
-    #             'team_leader_id': record.team_leader_id,
-    #             'manager_id': record.manager_id,
-    #             'worker_id': record.worker_id,
-    #         }
+    #     """Override write to implement business rules and field locking"""
         
-    #     # Call parent write method
+    #     # Check if we're transitioning TO 'تم العمل' stage
+    #     transitioning_to_completed = False
+    #     if 'stage_id' in vals:
+    #         new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
+    #         if new_stage.name == 'تم العمل':
+    #             transitioning_to_completed = True
+            
+    #         # Track stage changes
+    #         for order in self:
+    #             self._track_stage_change(order, vals['stage_id'])
+        
+    #     # Apply business rules for each record
+    #     for record in self:
+    #         # Rule 4: Lock all fields when work is already completed 
+    #         # (except when transitioning TO completed stage)
+    #         if record.stage_id.name == 'تم العمل' and not transitioning_to_completed:
+    #             # Allow only stage changes by authorized users (if needed)
+    #             restricted_fields = set(vals.keys()) - {'stage_id', 'fields_locked'}
+    #             print('restricted_fields')
+    #             print(restricted_fields)
+    #             if restricted_fields:
+    #                 raise ValidationError(_(
+    #                     "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
+    #                 ) % ', '.join(restricted_fields))
+            
+    #         # Rule 5: Manager cannot edit manager assignment for himself
+    #         if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
+    #             if vals['manager_id'] != record.manager_id.id:
+    #                 raise ValidationError(_(
+    #                     "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
+    #                 ))
+        
+    #     # Perform the actual write operation
     #     result = super().write(vals)
         
-    #     # Track assignment changes and send notifications
-    #     for record in self:
-    #         old_vals = old_assignments.get(record.id, {})
-            
-    #         # Track team leader changes
-    #         if 'team_leader_id' in vals and old_vals.get('team_leader_id') != record.team_leader_id:
-    #             if record.team_leader_id:
-    #                 record._send_assignment_notification(record.team_leader_id, 'Team Leader')
-    #                 record.message_post(
-    #                     body=f'Team Leader assigned: {record.team_leader_id.name}',
-    #                     message_type='notification',
-    #                     subtype_xmlid='mail.mt_note'
-    #                 )
-            
-    #         # Track manager changes  
-    #         if 'manager_id' in vals and old_vals.get('manager_id') != record.manager_id:
-    #             if record.manager_id:
-    #                 record._send_assignment_notification(record.manager_id, 'Manager')
-    #                 record.message_post(
-    #                     body=f'Manager assigned: {record.manager_id.name}',
-    #                     message_type='notification',
-    #                     subtype_xmlid='mail.mt_note'
-    #                 )
-            
-    #         # Track worker changes
-    #         if 'worker_id' in vals and old_vals.get('worker_id') != record.worker_id:
-    #             if record.worker_id:
-    #                 record._send_assignment_notification(record.worker_id, 'Worker')
-    #                 record.message_post(
-    #                     body=f'Worker assigned: {record.worker_id.name}',
-    #                     message_type='notification',
-    #                     subtype_xmlid='mail.mt_note'
-    #                 )
+    #     # Lock fields when work is completed
+    #     if 'stage_id' in vals:
+    #         new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
+    #         for record in self:
+    #             if new_stage.name == 'تم العمل':
+    #                 record.sudo().write({'fields_locked': True})
         
     #     return result
-    @api.model
-    def is_fsm_manager(self):
-        return self.env.user.has_group('fieldservice.group_fsm_manager')
-    def write(self, vals):
-     
-        """Override write to implement business rules and field locking"""
-        for record in self:
-            # Rule 4: Lock all fields when work is completed (except for manager)
-            if record.stage_id.name == 'تم العمل':
-                raise ValidationError(_(
-                                "لا يمكن التعديل على الحقول بعد إتمام العمل."
-                            ))
-                
-            if record.stage_id.name == 'تم العمل': #and ((record.manager_id == self.env.user and self.env.user != record.person_id and not self.is_fsm_manager) or (record.manager_id != self.env.user and self.env.user != record.person_id and not self.is_fsm_manager)):
-                # Allow only stage changes by authorized users
-                restricted_fields = set(vals.keys()) - {'stage_id', 'fields_locked'}
-                if restricted_fields:
-                    raise ValidationError(_(
-                        "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
-                    ) % ', '.join(restricted_fields))
-            
-            # Rule 5: Manager cannot edit manager assignment for himself
-            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
-                if vals['manager_id'] != record.manager_id.id:
-                    raise ValidationError(_(
-                        "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
-                    ))
-        result = super().write(vals)
-        
-        # Lock fields when work is completed
-        if 'stage_id' in vals:
-            new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
-            for record in self:
-                if new_stage.name == 'تم العمل':
-                    record.sudo().write({'fields_locked': True})
-        
-        return result
+  

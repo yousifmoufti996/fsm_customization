@@ -30,20 +30,62 @@ class AddProductWizard(models.TransientModel):
     def action_add_product(self):
         """Add product to FSM order and create/update sale order"""
         if self.fsm_order_id and self.product_id:
-            # Add product to FSM order
-            self.fsm_order_id.write({
-                'product_ids': [(4, self.product_id.id)]
+            
+            # Create order line instead of just adding to many2many
+            self.env['fsm.order.line'].create({
+                'fsm_order_id': self.fsm_order_id.id,
+                'product_id': self.product_id.id,
+                'quantity': self.quantity,
             })
             
-            # Show success message
+            
+            # Create or update sale order
+            self._create_or_update_sale_order()
+            
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Success'),
-                    'message': _('Product "%s" added with quantity %s') % (self.product_id.name, self.quantity),
+                    'message': _('Product "%s" added and sale order updated') % self.product_id.name,
                     'type': 'success',
                     'sticky': False,
                     'next': {'type': 'ir.actions.act_window_close'},
                 }
             }
+            # Add product to FSM order
+            # self.fsm_order_id.write({
+            #     'product_ids': [(4, self.product_id.id)]
+            # })
+            
+            # # Show success message
+            # return {
+            #     'type': 'ir.actions.client',
+            #     'tag': 'display_notification',
+            #     'params': {
+            #         'title': _('Success'),
+            #         'message': _('Product "%s" added with quantity %s') % (self.product_id.name, self.quantity),
+            #         'type': 'success',
+            #         'sticky': False,
+            #         'next': {'type': 'ir.actions.act_window_close'},
+            #     }
+            # }
+            
+    def _create_or_update_sale_order(self):
+        """Create or update the sale order"""
+        if not self.fsm_order_id.sale_order_id:
+            # Create new sale order
+            sale_order_vals = {
+                'partner_id': self.fsm_order_id.location_id.partner_id.id,
+                'origin': self.fsm_order_id.name,
+            }
+            sale_order = self.env['sale.order'].create(sale_order_vals)
+            self.fsm_order_id.sale_order_id = sale_order.id
+        
+        # Add product line to existing sale order
+        self.env['sale.order.line'].create({
+            'order_id': self.fsm_order_id.sale_order_id.id,
+            'product_id': self.product_id.id,
+            'product_uom_qty': self.quantity,
+            'price_unit': self.product_id.list_price,
+        })

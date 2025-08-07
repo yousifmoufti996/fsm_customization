@@ -5,19 +5,89 @@ from odoo.exceptions import ValidationError, UserError
 
 class FSMOrder(models.Model):
     _inherit = 'fsm.order'
+    
+    reason = fields.Text(string="السبب", tracking=True)
 
     # Add reason field that becomes mandatory for specific stages
     stage_reason = fields.Text(string='Stage Reason', tracking=True)
-    estimated_problem_duration = fields.Float(string='Estimated Duration (Hours)', help='Duration estimated based on problem type')
-    
-    stage_id = fields.Many2one(
-        'fsm.stage',
-        string='Stage',
-        tracking=True,
-        group_expand='_group_expand_stages',
+    estimated_problem_duration = fields.Float(
+        string='Estimated Duration (Hours)', 
+        help='Duration estimated based on problem type',
+        digits=(16, 4)
     )
-    reason = fields.Text(string="السبب", tracking=True)
-    
+
+    estimated_problem_duration_display = fields.Char(
+        string='Duration (HH:MM:SS)', 
+        default="00:00:00",
+        help='Duration estimated based on problem type'
+    )
+
+    @api.onchange('estimated_problem_duration_display')
+    def _onchange_estimated_problem_duration_display(self):
+        """Update hours when user edits the HH:MM:SS field"""
+        if self.estimated_problem_duration_display:
+            try:
+                time_parts = self.estimated_problem_duration_display.split(':')
+                if len(time_parts) == 3:
+                    hours = int(time_parts[0])
+                    minutes = int(time_parts[1])
+                    seconds = int(time_parts[2])
+                    self.estimated_problem_duration = hours + (minutes / 60.0) + (seconds / 3600.0)
+                elif len(time_parts) == 2:
+                    hours = int(time_parts[0])
+                    minutes = int(time_parts[1])
+                    self.estimated_problem_duration = hours + (minutes / 60.0)
+            except (ValueError, IndexError):
+                self.estimated_problem_duration = 0.0
+
+    @api.onchange('problem_type_id')
+    def _onchange_problem_type_id(self):
+        """Update duration, clear solution, and set domain when problem type changes"""
+        if self.problem_type_id:
+            if self.problem_type_id.estimated_duration:
+                print(f"Problem type estimated_duration: {self.problem_type_id.estimated_duration}")
+                
+                # Set the hours field directly
+                self.estimated_problem_duration = self.problem_type_id.estimated_duration
+                
+                # Convert to HH:MM:SS format for display
+                total_seconds = int(self.problem_type_id.estimated_duration * 3600)
+                hours = total_seconds // 3600
+                minutes = (total_seconds % 3600) // 60
+                seconds = total_seconds % 60
+                self.estimated_problem_duration_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                
+                print(f"Set estimated_problem_duration to: {self.estimated_problem_duration}")
+                print(f"Set estimated_problem_duration_display to: {self.estimated_problem_duration_display}")
+            else:
+                self.estimated_problem_duration = 0.0
+                self.estimated_problem_duration_display = "00:00:00"
+                print("No estimated duration in problem type, set to 0.0")
+
+            # Clear the solution field
+            self.problem_solution_id = False
+
+            return {
+                'domain': {
+                    'problem_solution_id': [('problem_type_id', '=', self.problem_type_id.id)]
+                }
+            }
+        else:
+            self.estimated_problem_duration = 0.0
+            self.estimated_problem_duration_display = "00:00:00"
+            print("No problem type selected, set duration to 0.0")
+            
+            self.problem_solution_id = False
+            
+            return {
+                'domain': {
+                    'problem_solution_id': []
+                }
+            }
+
+
+                
+        
     @api.model
     def _group_expand_stages(self, stages, domain, order):
         return stages.search([], order=order)
@@ -81,16 +151,7 @@ class FSMOrder(models.Model):
         related="problem_solution_id.description"
     )
     
-    @api.onchange('problem_type_id')
-    def _onchange_problem_type_id(self):
-        """Clear solution when problem type changes"""
-        if self.problem_type_id:
-            self.problem_solution_id = False
-        return {
-            'domain': {
-                'problem_solution_id': [('problem_type_id', '=', self.problem_type_id.id)]
-            }
-        }
+   
 
     @api.constrains('problem_type_id', 'problem_solution_id')
     def _check_solution_problem_type(self):
@@ -371,10 +432,53 @@ class FSMOrder(models.Model):
                 'type': 'info',
             }
         }
+    def _convert_display_to_hours(self, display_val):
+        """Convert HH:MM:SS display to hours"""
+        if display_val:
+            try:
+                time_parts = display_val.split(':')
+                if len(time_parts) == 3:
+                    hours = int(time_parts[0])
+                    minutes = int(time_parts[1])
+                    seconds = int(time_parts[2])
+                    return hours + (minutes / 60.0) + (seconds / 3600.0)
+                elif len(time_parts) == 2:
+                    hours = int(time_parts[0])
+                    minutes = int(time_parts[1])
+                    return hours + (minutes / 60.0)
+            except (ValueError, IndexError):
+                pass
+        return 0.0
+    
+    @api.model
+    def create(self, vals):
+        """Override create to handle duration fields"""
+        # Handle duration display field during create
+        if 'estimated_problem_duration_display' in vals and not vals.get('estimated_problem_duration'):
+            display_val = vals.get('estimated_problem_duration_display', '00:00:00')
+            vals['estimated_problem_duration'] = self._convert_display_to_hours(display_val)
+        
+        return super().create(vals)
+    
     
     def write(self, vals):
-        """Override write to add custom tracking messages"""
-        # Store old values for comparison
+        """Override write to implement business rules, field locking, and custom tracking"""
+        if 'estimated_problem_duration_display' in vals:
+            display_val = vals.get('estimated_problem_duration_display', '00:00:00')
+            vals['estimated_problem_duration'] = self._convert_display_to_hours(display_val)
+        
+        # Check if we're transitioning TO 'تم العمل' stage
+        transitioning_to_completed = False
+        if 'stage_id' in vals:
+            new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
+            if new_stage.name == 'تم العمل':
+                transitioning_to_completed = True
+            
+            # Track stage changes (if you still need this method)
+            for order in self:
+                self._track_stage_change(order, vals['stage_id'])
+        
+        # Store old values for comparison (for tracking messages)
         old_values = {}
         for record in self:
             old_values[record.id] = {
@@ -384,8 +488,55 @@ class FSMOrder(models.Model):
                 'priority': record.priority,
             }
         
-        # Call super to save changes
+        # Apply business rules for each record
+        for record in self:
+            # Rule 4: Lock all fields when work is already completed 
+            # (except when transitioning TO completed stage)
+            if record.stage_id.name == 'تم العمل' and not transitioning_to_completed:
+                allowed_fields = {
+                    'stage_id', 
+                    'fields_locked', 
+                    'move_ids',           # Allow move operations
+                    'stock_move_ids',     # Allow stock moves
+                    'picking_ids',        # Allow picking operations
+                    'message_ids',        # Allow message updates
+                    'activity_ids',       # Allow activity updates
+                    '__last_update',      # System field
+                    'write_date',         # System field
+                    'write_uid',    # System field
+                    'estimated_problem_duration',        
+                    'estimated_problem_duration_display'
+                }
+                
+                print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+                print('vals.keys():', set(vals.keys()))
+                print('allowed_fields:', allowed_fields)
+                print('move_ids in allowed_fields:', 'move_ids' in allowed_fields)
+                
+                # Allow only stage changes by authorized users (if needed)
+                restricted_fields = set(vals.keys()) - allowed_fields
+                print('restricted_fields:', restricted_fields)
+                if restricted_fields:
+                    raise ValidationError(_(
+                        "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
+                    ) % ', '.join(restricted_fields))
+            
+            # Rule 5: Manager cannot edit manager assignment for himself
+            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
+                if vals['manager_id'] != record.manager_id.id:
+                    raise ValidationError(_(
+                        "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
+                    ))
+        
+        # Perform the actual write operation
         result = super().write(vals)
+        
+        # Lock fields when work is completed
+        if 'stage_id' in vals:
+            new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
+            for record in self:
+                if new_stage.name == 'تم العمل':
+                    record.sudo().write({'fields_locked': True})
         
         # Add custom tracking messages
         for record in self:

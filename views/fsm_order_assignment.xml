@@ -7,9 +7,13 @@
         <field name="model">fsm.order</field>
         <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
             
+                <field name="customer_availability_time" string="وقت تواجد العميل"/>
+            </xpath>
             <!-- Add Assignment Section after person_id field -->
             <xpath expr="//group[@name='description_grp']" position="before">
+
                 
                 <!-- Assignment Section -->
                 <group string="Assignment Details" name="assignment_details">

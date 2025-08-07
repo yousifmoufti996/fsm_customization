@@ -10,17 +10,51 @@ class ProblemType(models.Model):
     description = fields.Text(string="الوصف")
     
     
-    estimated_duration = fields.Float(string='Estimated Duration (Hours)', default=1.0)
+    estimated_duration = fields.Float(
+        string='Estimated Duration (Hours)', 
+        default=1.0,
+        tracking=True, digits=(16, 4)
+    )
     
-    @api.onchange('problem_type_id')
-    def _onchange_problem_type_id(self):
-        """تحديد المدة تلقائياً عند اختيار نوع المشكلة"""
-        if self.problem_type_id:
-            self.estimated_problem_duration = self.problem_type_id.estimated_duration
-            # مسح الحل المختار عند تغيير نوع المشكلة
-            self.problem_solution_id = False
-        else:
-            self.estimated_problem_duration = 0.0
+    estimated_duration_display = fields.Char(
+        string='Duration (HH:MM:SS)', 
+        compute='_compute_duration_display',
+        inverse='_inverse_duration_display',
+        store=False  # Don't store in database, calculate on-the-fly
+    )
+
+    @api.depends('estimated_duration')
+    def _compute_duration_display(self):
+        for record in self:
+            if record.estimated_duration:
+                total_seconds = int(record.estimated_duration * 3600)  # Convert hours to seconds
+                hours = total_seconds // 3600
+                minutes = (total_seconds % 3600) // 60
+                seconds = total_seconds % 60
+                record.estimated_duration_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            else:
+                record.estimated_duration_display = "00:00:00"
+                
+    def _inverse_duration_display(self):
+        for record in self:
+            if record.estimated_duration_display:
+                try:
+                    # Parse HH:MM:SS format
+                    time_parts = record.estimated_duration_display.split(':')
+                    if len(time_parts) == 3:
+                        hours = int(time_parts[0])
+                        minutes = int(time_parts[1])
+                        seconds = int(time_parts[2])
+                        # Convert to hours (float)
+                        record.estimated_duration = hours + (minutes / 60.0) + (seconds / 3600.0)
+                    elif len(time_parts) == 2:  # HH:MM format
+                        hours = int(time_parts[0])
+                        minutes = int(time_parts[1])
+                        record.estimated_duration = hours + (minutes / 60.0)
+                    else:
+                        record.estimated_duration = 0.0
+                except (ValueError, IndexError):
+                    record.estimated_duration = 0.0
     
     solution_ids = fields.One2many(
         'problem.solution', 
@@ -34,5 +68,6 @@ class ProblemType(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            result.append((record.id, record.name))
+            name = f"{record.name} (Duration: {record.estimated_duration}h)"
+            result.append((record.id, name))
         return result

@@ -74,126 +74,7 @@ class FSMOrder(models.Model):
                             raise ValidationError(_(
                                 "التيم ليدر يمكنه اختيار 'طلب اتمام العمل' فقط بعد مرحلة 'جاري العمل'"
                             ))
-    # def write(self, vals):
-    #     """Override write to implement business rules and field locking"""
-    #     original_stages = {}
-    #     for record in self:
-    #         # Rule 4: Lock all fields when work is completed (except for manager)
-    #         if record.stage_id.name == 'تم العمل' and record.manager_id != self.env.user:
-    #             # Allow only stage changes by authorized users
-    #             restricted_fields = set(vals.keys()) - {'stage_id', 'fields_locked'}
-    #             if restricted_fields:
-    #                 raise ValidationError(_(
-    #                     "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
-    #                 ) % ', '.join(restricted_fields))
-            
-    #         # Rule 5: Manager cannot edit manager assignment for himself
-    #         if 'manager_id' in vals and record.manager_id == self.env.user:
-    #             if vals['manager_id'] != record.manager_id.id:
-    #                 raise ValidationError(_(
-    #                     "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
-    #                 ))
-            
-    #         # Prevent team leader from editing start times
-    #         if record.team_leader_id == self.env.user:
-    #             time_fields = [
-    #                 'on_the_way_start_time', 'work_in_progress_start_time',
-    #                 'postponed_start_time', 'marketing_followup_start_time',
-    #                 'sales_followup_start_time', 'waiting_start_time',
-    #                 'completion_request_start_time', 'work_completed_start_time',
-    #                 'audited_start_time', 'emergency_stop_start_time'
-    #             ]
-    #             restricted_time_fields = set(vals.keys()) & set(time_fields)
-    #             if restricted_time_fields:
-    #                 raise ValidationError(_(
-    #                     "التيم ليدر لا يمكنه التعديل على أوقات البدء"
-    #                 ))
-                    
-    #     # Validate stage transitions before writing
-    #     if 'stage_id' in vals:
-    #         new_stage_id = vals['stage_id']
-    #         new_stage = self.env['fsm.stage'].browse(new_stage_id)
-    #         current_user = self.env.user
-            
-    #         for record in self:
-    #             old_stage = original_stages.get(record.id)
-                
-    #             if old_stage and old_stage != new_stage:
-    #                 # Rule 1: From "في الطريق" only allow "جاري العمل" or "توقف طارئ"
-    #                 if old_stage.name == 'في الطريق':
-    #                     allowed_stages = ['جاري العمل', 'توقف طارئ']
-    #                     if new_stage.name not in allowed_stages:
-    #                         raise ValidationError(_(
-    #                             "من مرحلة 'في الطريق' يمكن الانتقال فقط إلى 'جاري العمل' أو 'توقف طارئ'"
-    #                         ))
-                    
-    #                 # Rule 2: From "جاري العمل" only allow "طلب اتمام العمل" or "توقف طارئ"
-    #                 if old_stage.name == 'جاري العمل':
-    #                     allowed_stages = ['طلب اتمام العمل', 'توقف طارئ']
-    #                     if new_stage.name not in allowed_stages:
-    #                         raise ValidationError(_(
-    #                             "من مرحلة 'جاري العمل' يمكن الانتقال فقط إلى 'طلب اتمام العمل' أو 'توقف طارئ'"
-    #                         ))
-                    
-    #                 # Rule 3: When selecting "مؤجل", customer availability time is required
-    #                 if new_stage.name == 'مؤجل' and not record.customer_availability_time and 'customer_availability_time' not in vals:
-    #                     raise ValidationError(_(
-    #                         "يجب تحديد وقت تواجد العميل عند اختيار مرحلة 'مؤجل'"
-    #                     ))
-                    
-    #                 # Rule 6: Only maintenance supervisor can set "تم العمل"
-    #                 if new_stage.name == 'تم العمل':
-    #                     if not record.manager_id or record.manager_id != current_user:
-    #                         raise ValidationError(_(
-    #                             "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
-    #                         ))
-                    
-    #                 # Team Leader Rules
-    #                 if record.team_leader_id == current_user:
-    #                     # Team leader can only select "جاري العمل" after "في الطريق" by supervisor
-    #                     if new_stage.name == 'جاري العمل' and old_stage.name != 'في الطريق':
-    #                         raise ValidationError(_(
-    #                             "التيم ليدر يمكنه اختيار 'جاري العمل' فقط بعد أن تكون في مرحلة 'في الطريق' من قبل المشرف"
-    #                         ))
-                        
-    #                     # Team leader can select "طلب اتمام العمل" only after "جاري العمل"
-    #                     if new_stage.name == 'طلب اتمام العمل' and old_stage.name != 'جاري العمل':
-    #                         raise ValidationError(_(
-    #                             "التيم ليدر يمكنه اختيار 'طلب اتمام العمل' فقط بعد مرحلة 'جاري العمل'"
-    #                         ))
-        
-    #     result = super().write(vals)
-    #     # Update start times when stage changes
-    #     if 'stage_id' in vals:
-    #         new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
-    #         current_time = fields.Datetime.now()
-            
-    #         for record in self:
-    #             # Set start time for each stage
-    #             stage_time_mapping = {
-    #                 'في الطريق': 'on_the_way_start_time',
-    #                 'جاري العمل': 'work_in_progress_start_time',
-    #                 'مؤجل': 'postponed_start_time',
-    #                 'متابعة التسويق': 'marketing_followup_start_time',
-    #                 'متابعة المبيعات': 'sales_followup_start_time',
-    #                 'في الانتظار': 'waiting_start_time',
-    #                 'طلب اتمام العمل': 'completion_request_start_time',
-    #                 'تم العمل': 'work_completed_start_time',
-    #                 'تم التدقيق': 'audited_start_time',
-    #                 'توقف طارئ': 'emergency_stop_start_time'
-    #             }
-                
-    #             if new_stage.name in stage_time_mapping:
-    #                 time_field = stage_time_mapping[new_stage.name]
-    #                 if not getattr(record, time_field):
-    #                     # Use sudo to bypass readonly constraints when setting timestamps
-    #                     record.sudo().write({time_field: current_time})
-                
-    #             # Lock fields when work is completed
-    #             if new_stage.name == 'تم العمل':
-    #                 record.sudo().write({'fields_locked': True})
-        
-    #     return result
+  
     def _compute_stage_flags(self):
         stage_refs = {
             'is_on_the_way': 'fsm_customization.fsm_stage_on_the_way',
@@ -306,24 +187,47 @@ class FSMOrder(models.Model):
         stage = self.env.ref('fsm_customization.fsm_stage_completion_request')
         return self.write({'stage_id': stage.id})
 
+    
+    # def action_set_work_completed(self):
+    #     """Set order stage to 'Work Completed'"""
+    #     if self.manager_id != self.env.user:
+    #         raise AccessError(_("فقط مشرف الصيانة يمكنه تحديد مرحلة 'تم العمل'"))
+    #     for rec in self:
+    #         if rec.stage_id.name != 'طلب اتمام العمل':
+    #             raise ValidationError("لا يمكن الانتقال إلى 'تم العمل' قبل المرور بمرحلة 'طلب اتمام العمل'.")
+    #         if   not rec.type or not rec.operation_type_id:
+    #             raise ValidationError("يرجى إدخال العملية ونوع العملية قبل إتمام العمل.")
+    #         if   not rec.problem_type_id or not rec.problem_solution_id:
+    #             raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
+    #         # check also for solution and operation_type (see next section)
+    #         # completed_stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
+    #         # rec.stage_id = completed_stage
+    #     stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
+    #     vals = {'stage_id': stage.id}
+    #     if not self.date_end:
+    #         vals['date_end'] = fields.Datetime.now()
+    #     return self.write(vals)
     def action_set_work_completed(self):
         """Set order stage to 'Work Completed'"""
         if self.manager_id != self.env.user:
             raise AccessError(_("فقط مشرف الصيانة يمكنه تحديد مرحلة 'تم العمل'"))
+        
+        # Validate all records before making any changes
         for rec in self:
             if rec.stage_id.name != 'طلب اتمام العمل':
                 raise ValidationError("لا يمكن الانتقال إلى 'تم العمل' قبل المرور بمرحلة 'طلب اتمام العمل'.")
-            if   not rec.type or not rec.operation_type_id:
+            if not rec.type or not rec.operation_type_id:
                 raise ValidationError("يرجى إدخال العملية ونوع العملية قبل إتمام العمل.")
-            if   not rec.problem_type_id or not rec.problem_solution_id:
+            if not rec.problem_type_id or not rec.problem_solution_id:
                 raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
-            # check also for solution and operation_type (see next section)
-            completed_stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
-            rec.stage_id = completed_stage
+        
+        # Prepare values for update
         stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
         vals = {'stage_id': stage.id}
         if not self.date_end:
             vals['date_end'] = fields.Datetime.now()
+        
+        # Perform the write operation
         return self.write(vals)
     
 

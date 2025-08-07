@@ -33,7 +33,7 @@ class FSMStageDuration(models.Model):
         string="Duration (Hours)",
         compute="_compute_duration",
         store=True,
-        help="Duration in hours"
+        help="Duration in hours", digits=(16, 4)
     )
     duration_display = fields.Char(
         string="Duration",
@@ -46,10 +46,10 @@ class FSMStageDuration(models.Model):
         default=10
     )
     
-    is_current = fields.Boolean(
-        string="Current Stage",
-        default=False
-    )
+    # is_current = fields.Boolean(
+    #     string="Current Stage",
+    #     default=False
+    # )
 
     @api.depends('start_date', 'end_date')
     def _compute_duration(self):
@@ -72,13 +72,3 @@ class FSMStageDuration(models.Model):
             else:
                 record.duration_display = "00:00:00"
                 
-    def write(self, vals):
-        if ('start_date' in vals and len(vals['start_date']) !=0) or  ('end_date' in vals and len(vals['end_date']) !=0) or  ('duration' in vals and len(vals['duration']) !=0):
-            raise ValidationError(_(
-                "لا يمكن التعديل على المدة او وقت البداية او وقت النهاية"
-            ))
-        for record in self:
-            if ('start_date' in vals and len(vals['start_date']) !=0) or  ('end_date' in vals and len(vals['end_date']) !=0) or  ('duration' in vals and len(vals['duration']) !=0):
-                raise ValidationError(_(
-                        "لا يمكن التعديل على المدة او وقت البداية او وقت النهاية"
-                    ))

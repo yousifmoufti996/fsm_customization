@@ -46,7 +46,7 @@
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="duration_display"/>
-                <field name="is_current"/>
+                <!-- <field name="is_current"/> -->
             </tree>
         </field>
     </record>
@@ -68,7 +68,7 @@
                             <field name="start_date"/>
                             <field name="end_date"/>
                             <field name="duration_display"/>
-                            <field name="is_current"/>
+                            <!-- <field name="is_current"/> -->
                         </group>
                     </group>
                 </sheet>

@@ -217,12 +217,12 @@ class FSMOrder(models.Model):
         now = fields.Datetime.now()
         
         # End current stage if exists
-        current_stage_duration = order.stage_duration_ids.filtered('is_current')
-        if current_stage_duration:
-            current_stage_duration.write({
-                'end_date': now,
-                'is_current': False
-            })
+        # current_stage_duration = order.stage_duration_ids.filtered('is_current')
+        # if current_stage_duration:
+        #     current_stage_duration.write({
+        #         'end_date': now,
+        #         # 'is_current': False
+        #     })
         
         # Start new stage
         new_stage = self.env['fsm.stage'].browse(new_stage_id)
@@ -230,7 +230,7 @@ class FSMOrder(models.Model):
             'order_id': order.id,
             'stage_id': new_stage_id,
             'start_date': now,
-            'is_current': True,
+            # 'is_current': True,
             'sequence': len(order.stage_duration_ids) + 1
         })
 
@@ -244,7 +244,7 @@ class FSMOrder(models.Model):
                     'order_id': order.id,
                     'stage_id': order.stage_id.id,
                     'start_date': fields.Datetime.now(),
-                    'is_current': True,
+                    # 'is_current': True,
                     'sequence': 1
                 })
         return orders

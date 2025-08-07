@@ -46,10 +46,10 @@ class FSMStageDuration(models.Model):
         default=10
     )
     
-    # is_current = fields.Boolean(
-    #     string="Current Stage",
-    #     default=False
-    # )
+    is_current = fields.Boolean(
+        string="Current Stage",
+        default=False
+    )
 
     @api.depends('start_date', 'end_date')
     def _compute_duration(self):

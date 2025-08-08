@@ -26,3 +26,10 @@ access_fsm_dashboard_employee_manager,fsm.dashboard.employee.manager,model_fsm_d
 access_fsm_order_dashboard_user,fsm.order.dashboard.user,model_fsm_order_dashboard,fieldservice.group_fsm_user,1,1,1,1
 access_fsm_order_dashboard_manager,fsm.order.dashboard.manager,model_fsm_order_dashboard,fieldservice.group_fsm_manager,1,1,1,1
 access_fsm_order_line,fsm.order.line,model_fsm_order_line,fieldservice.group_fsm_user,1,1,1,1
+
+access_area_name_user,area.name.user,model_area_name,base.group_user,1,1,1,0
+access_area_name_manager,area.name.manager,model_area_name,base.group_system,1,1,1,1
+access_area_number_user,area.number.user,model_area_number,base.group_user,1,1,1,0
+access_area_number_manager,area.number.manager,model_area_number,base.group_system,1,1,1,1
+
+access_current_location_wizard_user,current.location.wizard.user,model_current_location_wizard,base.group_user,1,1,1,1

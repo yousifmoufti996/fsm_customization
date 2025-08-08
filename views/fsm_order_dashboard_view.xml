@@ -303,25 +303,34 @@
         <field name="target">current</field>
         <field name="context">{}</field>
     </record> -->
-    <record id="action_fsm_order_dashboard" model="ir.actions.act_window">
+    <!-- <record id="action_fsm_order_dashboard" model="ir.actions.act_window">
         <field name="name">FSM Orders Dashboard</field>
         <field name="res_model">fsm.order.dashboard</field>
-        <field name="view_mode">form</field>
-        <field name="target">current</field>
-        <field name="res_id" ref="default_fsm_dashboard"/>
-        <field name="context">{
+        <field name="view_mode">form</field> -->
+        <!-- <field name="target">current</field> -->
+        <!-- <field name="target">new</field> -->
+        <!-- <field name="res_id" ref="default_fsm_dashboard"/> -->
+        <!-- <field name="context">{
             'default_name': 'داشبورد العمليات',
             'default_date_from': context_today().strftime('%Y-%m-%d'),
             'default_date_to': context_today().strftime('%Y-%m-%d'),
         }</field>
         <field name="view_id" ref="fsm_order_dashboard_form_view"/>
+    </record> -->
+
+    <record id="action_open_fsm_order_dashboard" model="ir.actions.server">
+        <field name="name">Open FSM Dashboard</field>
+        <field name="model_id" ref="model_fsm_order_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">action = env['fsm.order.dashboard'].action_open_dashboard()</field>
+        
     </record>
 
     <!-- Menu Item -->
     <menuitem id="menu_fsm_order_dashboard"
               name="FSM Dashboard - داشبورد العمليات"
               parent="fieldservice.root"
-              action="action_fsm_order_dashboard"
+              action="action_open_fsm_order_dashboard"
               sequence="1"/>
 
 

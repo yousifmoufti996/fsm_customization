@@ -1,0 +1,30 @@
+<!-- views/current_location_wizard_views.xml -->
+<odoo>
+  <record id="view_current_location_wizard_form" model="ir.ui.view">
+    <field name="name">current.location.wizard.form</field>
+    <field name="model">current.location.wizard</field>
+    <field name="arch" type="xml">
+      <form string="الحصول على الموقع الحالي">
+        <sheet>
+          <group>
+            <field name="partner_id" invisible="1"/>
+            <div class="text-center mb-3">
+              <button name="action_get_browser_location"
+                      type="object"
+                      string="🎯 الحصول على موقعي الحالي"
+                      class="btn btn-primary"/>
+             
+            </div>
+            <separator string="الإحداثيات"/>
+            <field name="latitude" string="خط العرض"/>
+            <field name="longitude" string="خط الطول"/>
+          </group>
+        </sheet>
+        <footer>
+          <button name="action_save_location" type="object" string="حفظ الموقع" class="btn-primary"/>
+          <button string="إلغاء" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

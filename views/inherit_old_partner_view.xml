@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit the old module's view and replace area_number with dropdown -->
+    <record id="view_partner_form_upgrade_area_number" model="ir.ui.view">
+        <field name="name">res.partner.form.upgrade.area.number</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_partner_form"/>  <!-- Replace with actual module name -->
+        <field name="arch" type="xml">
+            
+            <!-- Replace the area_number field with dropdown -->
+            <xpath expr="//field[@name='area_number']" position="replace">
+                <field name="area_name" optional="hide" string="اسم المنطقة (نص)" invisible="1"/>
+            
+                <field name="area_number_id" string="رقم المنطقة"
+                       domain="[('area_name_id', '=', area_name_id)]"
+                       options="{'no_create': True, 'no_create_edit': True}"/>
+            </xpath>
+            
+            <!-- Optionally, also upgrade area_name to dropdown -->
+            <!-- <xpath expr="//field[@name='area_name']" position="replace">
+                <field name="area_name_id" string="اسم المنطقة"
+                       options="{'no_create': True, 'no_create_edit': True}"/>
+            </xpath> -->
+            
+        </field>
+    </record>
+</odoo>

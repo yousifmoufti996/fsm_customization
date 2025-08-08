@@ -3,7 +3,6 @@ from . import (
     problem_solution,
     problem_type,
     # contact_amendment,
-    res_partner,
     fsm_order_assignment,
     fsm_operation_type,
     fsm_order_type_inherit , 
@@ -19,5 +18,10 @@ from . import (
     fsm_order_products,
     AddProductWizard,
     fsm_order_line,
+    res_partner_fsm_order,
+    area_name,
+    area_number,
+    current_location_wizard,
+    res_partner_contacts,
     
 )

@@ -474,3 +474,21 @@ class FSMOrderDashboard(models.TransientModel):
             'context': self.env.context,
             'target': 'current',
         }
+        
+    @api.model
+    def action_open_dashboard(self):
+        rec = self.create({
+            # put any defaults you want here
+            'date_from': fields.Date.today() - timedelta(days=30),
+            'date_to': fields.Date.today(),
+            'name': 'داشبورد العمليات',
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'FSM Orders Dashboard',
+            'res_model': 'fsm.order.dashboard',
+            'view_mode': 'form',
+            'res_id': rec.id,
+            'target': 'current',  # or 'new' if you prefer a dialog
+            'view_id': self.env.ref('fsm_customization.fsm_order_dashboard_form_view').id,
+        }

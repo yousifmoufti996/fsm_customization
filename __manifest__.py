@@ -47,6 +47,7 @@ Technical Features:
         'fieldservice',
         'fieldservice_account_analytic',
         'helpdesk_mgmt',
+        'product_expiration',
         # Field Service Management base module
     ],
     
@@ -87,6 +88,11 @@ Technical Features:
         # 'views/fsm_dashboard_view.xml',
         'views/fsm_order_dashboard_view.xml',
         'views/fsm_order_products_view.xml',
+        'views/area_views.xml',
+        'views/res_partner_contacts.xml',
+        'views/inherit_old_partner_view.xml',
+        'views/current_location_wizard_view.xml',
+        
      
         # # Reports
         # 'reports/fsm_reports.xml',
@@ -98,16 +104,17 @@ Technical Features:
     
    
     
-    # # Static files and assets
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'fsm_customization/static/src/css/fsm_style.css',
-    #         'fsm_customization/static/src/js/fsm_widget.js',
-    #     ],
-    #     'web.assets_frontend': [
-    #         'fsm_customization/static/src/css/fsm_frontend.css',
-    #     ],
-    # },
+    # Static files and assets
+    'assets': {
+        'web.assets_backend': [
+            # 'fsm_customization/static/src/css/fsm_style.css',
+            # 'fsm_customization/static/src/js/get_current_location_action.js',
+            'fsm_customization/static/src/js/get_current_location_action_second.js',
+        ],
+        # 'web.assets_frontend': [
+        #     'fsm_customization/static/src/css/fsm_frontend.css',
+        # ],
+    },
     
     # Module installation and configuration
     'installable': True,

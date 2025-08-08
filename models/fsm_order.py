@@ -6,6 +6,31 @@ from odoo.exceptions import ValidationError, UserError
 class FSMOrder(models.Model):
     _inherit = 'fsm.order'
     
+    
+    currency_id = fields.Many2one(
+        'res.currency',
+        related='company_id.currency_id',
+        readonly=True
+    )
+    
+    customer_total_due = fields.Monetary(
+        string='Total Due',
+        related='customer_id.total_due',   # <-- points to the partner’s field
+        readonly=True,
+        currency_field='currency_id'
+    )
+    
+    customer_status = fields.Selection(
+        related='customer_id.status',
+        string='Status',
+        readonly=True
+    )
+    
+    customer_number_of_expired_days = fields.Integer(
+        related='customer_id.number_of_expired_days',
+        string='Number of Expired Days',
+        readonly=True
+    )
     reason = fields.Text(string="السبب", tracking=True)
 
     # Add reason field that becomes mandatory for specific stages

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Contact form view to add area fields -->
+    <record id="view_partner_form_area_fields" model="ir.ui.view">
+        <field name="name">res.partner.form.area.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Replace city field and add area fields -->
+            <!-- <xpath expr="//field[@name='city']" position="replace">
+                <field name="area_name_id" string="اسم المنطقة" 
+                       options="{'no_create': True, 'no_create_edit': True}"/>
+                <field name="area_number_id" string="رقم المنطقة"
+                       domain="[('area_name_id', '=', area_name_id)]"
+                       options="{'no_create': True, 'no_create_edit': True}"/>
+                <field name="city" invisible="1"/>
+            </xpath> -->
+
+          <xpath expr="//sheet//div[@name='button_box']" position="inside">
+    <!-- Open Google Maps (only when coords exist) -->
+    <button type="object"
+            name="action_open_google_maps"
+            class="oe_stat_button"
+            icon="fa-map-marker"
+            attrs="{'invisible': ['|', ('partner_latitude','=',False), ('partner_longitude','=',False)]}">
+        <div class="o_stat_info">
+            <span class="o_stat_text">عرض موقع الزبون</span>
+        </div>
+    </button>
+
+    <!-- Open the get-location wizard -->
+    <button type="object"
+            name="action_open_current_location_wizard"
+            class="oe_stat_button"
+            icon="fa-crosshairs">
+        <div class="o_stat_info">
+            <span class="o_stat_text">جلب موقعي الحالي</span>
+        </div>
+    </button>
+</xpath>
+
+
+            <!-- <xpath expr="//field[@name='notes']" position="before">
+                
+                <button name="action_open_current_location_wizard" 
+                    type="object" 
+                    string="🎯 الحصولggggg على موقعي الحالي"
+                    class="btn-primary"
+                    style="margin-top: 10px;"/>
+                    
+            </xpath>
+ -->
+
+            <!-- <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_get_current_location" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-crosshairs">
+                        <div class="text-center">
+                            <button type="button" 
+                                    name="get_location_btn"
+                                    onclick="getCurrentLocation()" 
+                                    class="btn btn-primary">
+                                🎯 الحصول على موقعي الحالي
+                            </button>
+                        </div>
+                </button>
+            </xpath> -->
+                                    
+            <!-- Add a new page for sync fields and debugging -->
+            <!-- <xpath expr="//notebook" position="inside">
+                <page string="تفاصيل المنطقة والمزامنة" name="area_sync" 
+                      groups="base.group_no_one">
+                    <group string="الحقول المتزامنة مع الوحدة القديمة">
+                        <group>
+                            <field name="area_name" readonly="1" 
+                                   string="اسم المنطقة (متزامن)"
+                                   help="هذا الحقل متزامن مع حقل اسم المنطقة في الوحدة القديمة"/>
+                            <field name="area_number" readonly="1" 
+                                   string="رقم المنطقة (متزامن)"
+                                   help="هذا الحقل متزامن مع حقل رقم المنطقة في الوحدة القديمة"/>
+                        </group>
+                        <group>
+                            <field name="city" string="المدينة (متزامنة مع اسم المنطقة)"
+                                   help="هذا الحقل متزامن مع اسم المنطقة المحددة"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath> -->
+            
+        </field>
+    </record>
+
+    <!-- Add area fields to tree view -->
+    <record id="view_partner_tree_area_fields" model="ir.ui.view">
+        <field name="name">res.partner.tree.area.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="after">
+                <field name="area_name_id" optional="hide" string="اسم المنطقة"/>
+                <field name="area_number_id" optional="hide" string="رقم المنطقة"/>
+                <field name="area_name" optional="hide" string="اسم المنطقة (نص)"/>
+                <field name="area_number" optional="hide" string="رقم المنطقة (نص)"/>
+                <field name="partner_latitude" invisible='1' />
+                <field name="partner_longitude" invisible='1'/>
+
+          
+
+                <field name="google_maps_url" 
+                    string="📍 خرائط"
+                    widget="url" 
+                    optional="show"
+                    invisible="not partner_latitude or not partner_longitude"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add search filters for area fields -->
+    <record id="view_partner_search_area_fields" model="ir.ui.view">
+        <field name="name">res.partner.search.area.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="area_name_id" string="اسم المنطقة"/>
+                <field name="area_number_id" string="رقم المنطقة"/>
+            </xpath>
+            <xpath expr="//filter[@name='customer']" position="after">
+                <separator/>
+                <filter string="حسب اسم المنطقة" name="group_by_area_name" 
+                        context="{'group_by': 'area_name_id'}"/>
+                <filter string="حسب رقم المنطقة" name="group_by_area_number" 
+                        context="{'group_by': 'area_number_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

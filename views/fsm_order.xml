@@ -7,25 +7,23 @@
         <field name="model">fsm.order</field>
         <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
         <field name="arch" type="xml">
-            
-            <!-- Add problem fields in the main sheet -->
-            <xpath expr="//field[@name='description']" position="after">
-                <group string="Problem Details" name="problem_details">
-                <field name="customer_id" invisible="1"/>
-                    <field name="problem_type_id"/>
-                    <field name="estimated_problem_duration" />
-                    <field name="estimated_problem_duration_display" />
-                    <field name="problem_solution_id" 
-                           domain="[('problem_type_id', '=', problem_type_id)]"/>
+            <xpath expr="//group[@name='description_grp']" position="after">
+                <group string="تفاصيل المشكلة والحل" col="2">
+                    <group string="تفاصيل المشكلة">
+                        <field name="customer_id" invisible="1"/>
+                        <field name="problem_type_id" string="نوع المشكلة"/>
+                        <field name="estimated_problem_duration_display" string="المدة المتوقعة" readonly="1"/>
+                    </group>
+                    <group string="تفاصيل الحل">
+                        <field name="problem_solution_id" string="الحل المختار"
+                            domain="[('problem_type_id', '=', problem_type_id)]"/>
+                    </group>
                 </group>
-                 
-                <!-- Show solution description if solution is selected -->
-                <group string="Solution Details" name="solution_details" 
-                       invisible="problem_solution_id == False">
-                    <field name="solution_description" readonly="1" nolabel="1"/>
+                
+                <group name="solution_details" invisible="problem_solution_id == False" col="1">
+                    <field name="solution_description" string="وصف الحل" readonly="1" 
+                        widget="text" placeholder="سيظهر وصف الحل هنا بعد اختيار الحل..."/>
                 </group>
-
-
             </xpath>
 
 
@@ -41,7 +39,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='stage_id']" position="after">
                 <field name="problem_type_id" optional="show"/>
-                <!-- <field name="estimated_problem_duration" readonly="1"/> -->
                 <field name="estimated_problem_duration_display" />
                 <field name="problem_solution_id" optional="show"/>
 

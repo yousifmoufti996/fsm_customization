@@ -1,5 +1,5 @@
 from odoo import fields, models, api
-
+from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
     
@@ -8,6 +8,12 @@ class ResPartner(models.Model):
         "area.name",
         'اسم المنطقة'
     )
+    user_name = fields.Char("User Name")
+    
+    # Add unique constraint
+    _sql_constraints = [
+        ('user_name_unique', 'UNIQUE(user_name)', 'اسم المستخدم موجود بالفعل! يرجى اختيار اسم مستخدم آخر.')
+    ]
     
     # Add area_number_id field
     area_number_id = fields.Many2one(
@@ -103,6 +109,19 @@ class ResPartner(models.Model):
 
     family_number = fields.Char("الرقم العائلي")
 
+
+    @api.constrains('user_name')
+    def _check_user_name_unique(self):
+        """Check if username is unique"""
+        for record in self:
+            if record.user_name:
+                existing = self.search([
+                    ('user_name', '=', record.user_name),
+                    ('id', '!=', record.id)
+                ])
+                if existing:
+                    raise ValidationError(f'اسم المستخدم "{record.user_name}" مستخدم بالفعل! يرجى اختيار اسم مستخدم آخر.')
+    
     
     # Add onchange to sync city with area_name_id
     @api.onchange('area_name_id')
@@ -234,3 +253,16 @@ class ResPartner(models.Model):
                         'name': record.subscription_type
                     })
                 record.category_id = [(6, 0, [category.id])]
+                
+    def write(self, vals):
+        """Override write to check username uniqueness"""
+        if 'user_name' in vals and vals['user_name']:
+            # Check if username is already taken
+            existing = self.search([
+                ('user_name', '=', vals['user_name']),
+                ('id', 'not in', self.ids)
+            ])
+            if existing:
+                raise ValidationError('اسم المستخدم "{}" مستخدم بالفعل! يرجى اختيار اسم مستخدم آخر.'.format(vals['user_name']))
+        
+        return super().write(vals)

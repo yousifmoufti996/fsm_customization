@@ -24,6 +24,13 @@ registry.category("actions").add("get_current_location", async (env, { params })
     let samples = 0;
 
     const stopWith = async (result, label) => {
+        if (!result) {
+            env.services.notification.add(
+                _t("تعذر الحصول على إحداثيات الموقع. تأكد من تفعيل GPS والمحاولة مجددًا."),
+                { type: "danger" }
+            );
+            return;
+        }
         try {
             if (!result) throw new Error("no fix");
             const lat = Number(result.coords.latitude.toFixed(6));
@@ -65,13 +72,23 @@ registry.category("actions").add("get_current_location", async (env, { params })
             }
         },
         (err) => {
+            let msg;
+            if (err.code === err.PERMISSION_DENIED) {
+                msg = _t("تم رفض إذن الموقع من قبل المتصفح. يرجى السماح بالوصول إلى الموقع والمحاولة مجددًا.");
+            } else if (err.code === err.POSITION_UNAVAILABLE) {
+                msg = _t("معلومات الموقع غير متوفرة. تأكد من تفعيل GPS أو الاتصال بالشبكة.");
+            } else if (err.code === err.TIMEOUT) {
+                msg = _t("انتهت مهلة الحصول على الموقع. حاول مرة أخرى من مكان مفتوح.");
+            } else {
+                msg = _t("خطأ في الحصول على الموقع: ") + (err.message || "");
+            }
+
+            notification.add(msg, { type: "danger" });
+
             navigator.geolocation.clearWatch(watcher);
             clearTimeout(hardTimer);
-            let msg = _t("فشل الحصول على الموقع.");
-            if (err?.message) msg += " " + err.message;
-            notification.add(msg, { type: "danger" });
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
     );
 
     const hardTimer = setTimeout(() => {

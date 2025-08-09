@@ -57,7 +57,7 @@
                     <group>
                         <field name="ref" string="رقم المحلة"/>
                         <field name="user_name" string="User Name"/>
-                        <!-- <field name="family_number" string="الرقم العائلي"/> -->
+                        <field name="family_number" string="الرقم العائلي"/>
                         <field name="pole" string="العمود"/>
                     </group>
                 </group>

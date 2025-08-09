@@ -283,7 +283,7 @@ class FSMOrder(models.Model):
             self.temp_voucher_number = getattr(self.customer_id, 'voucher_number', '') or ''
             self.temp_residence_card = getattr(self.customer_id, 'residence_card', '') or ''
             self.temp_id_card = getattr(self.customer_id, 'id_card', '') or ''
-            self.temp_family_number = getattr(self.customer_id, 'temp_family_number', '') or ''
+            self.temp_family_number = getattr(self.customer_id, 'family_number', '') or ''
             
             # Reset pending changes flag
             self.contract_changes_pending = False

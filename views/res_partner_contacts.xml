@@ -23,7 +23,9 @@
             name="action_open_google_maps"
             class="oe_stat_button"
             icon="fa-map-marker"
-            attrs="{'invisible': ['|', ('partner_latitude','=',False), ('partner_longitude','=',False)]}">
+            invisible="(not partner_latitude) or (not partner_longitude)"
+
+            >
         <div class="o_stat_info">
             <span class="o_stat_text">عرض موقع الزبون</span>
         </div>

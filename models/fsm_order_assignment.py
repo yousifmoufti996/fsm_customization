@@ -183,9 +183,9 @@ class FSMOrder(models.Model):
                 subtype_xmlid='mail.mt_comment'
             )
 
-    # @api.model
-    # def is_fsm_manager(self):
-    #     return self.env.user.has_group('fieldservice.group_fsm_manager')
+    @api.model
+    def is_fsm_manager(self):
+        return self.env.user.has_group('fieldservice.group_fsm_manager')
     
     # def write(self, vals):
     #     """Override write to implement business rules and field locking"""

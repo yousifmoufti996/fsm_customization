@@ -6,7 +6,69 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+
+            <!-- Add these to hide the old fields -->
+            <xpath expr="//field[@name='area_name']" position="replace"/>
+            <xpath expr="//field[@name='area_name_id']" position="replace"/>
+            <xpath expr="//field[@name='area_number_id']" position="replace"/>
+            <xpath expr="//field[@name='nearest_point']" position="replace"/>
+            <xpath expr="//field[@name='longitude_coordinates']" position="replace"/>
+            <xpath expr="//field[@name='latitude_coordinates']" position="replace"/>
+            <xpath expr="//field[@name='full_name_and_surname']" position="replace"/>
+            <xpath expr="//field[@name='first_phone_number']" position="replace"/>
+            <xpath expr="//field[@name='second_phone_number']" position="replace"/>
+            <xpath expr="//field[@name='email1']" position="replace"/>
+            <xpath expr="//field[@name='subscription_type']" position="replace"/>
+
+            <!-- Hide these fields from the old tab (we'll move them to new tab) -->
+            <xpath expr="//field[@name='menu_type_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             
+            <xpath expr="//field[@name='local_number']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='user_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='Cabin']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='pole']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='subscription_type_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='menu_type_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//notebook" position="before"> 
+                <group string="تفاصيل الخدمة" col="2">
+                    <group string="تفاصيل الخدمة" >
+                        <field name="menu_type_ids" string="مجموع عملاء فرعية" widget="many2many_tags" readonly="0"/>
+                        <field name="category_id" string="نوع الاشتراك" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="ref" string="رقم المحلة"/>
+                        <field name="user_name" string="User Name"/>
+                        <field name="family_number" string="الرقم العائلي"/>
+                        <field name="pole" string="العمود"/>
+                    </group>
+                </group>
+            </xpath>
+
+            
+            
+            <!-- <xpath expr="//field[@name='subscribtion_type_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+             -->
             <!-- Replace city field and add area fields -->
             <!-- <xpath expr="//field[@name='city']" position="replace">
                 <field name="area_name_id" string="اسم المنطقة" 

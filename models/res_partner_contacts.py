@@ -18,18 +18,91 @@ class ResPartner(models.Model):
     
     # Related fields to sync with old module - these will sync with your old module's char fields
     area_name = fields.Char(
-        "اسم المنطقة (للمزامنة مع الوحدة القديمة)",
+        "اسم المنطقة",
         related="area_name_id.name",
         readonly=False,
         store=True
     )
     
     area_number = fields.Char(
-        "رقم المنطقة (للمزامنة مع الوحدة القديمة)",
+        "رقم المنطقة",
         related="area_number_id.name",
         readonly=False,
         store=True
     )
+
+    nearest_point = fields.Char(
+        "اقرب نقطة دالة ",
+        related="street2",
+        readonly=False,
+        store=True
+    )
+
+    longitude_coordinates = fields.Float(
+        "احداثيات الطول ",
+        related="partner_longitude",
+        readonly=False,
+        store=True,
+        digits=(10, 6)
+    )
+
+    latitude_coordinates = fields.Float(
+        "احداثيات العرض", 
+        related="partner_latitude",
+        readonly=False,
+        store=True,
+        digits=(10, 6)
+    )
+
+    google_maps_url = fields.Char(
+        string="Google Maps URL",
+        compute="_compute_google_maps_url"
+    )
+
+    full_name_and_surname = fields.Char(
+        "الاسم رباعي واللقب ",
+        related="name",
+        readonly=False,
+        store=True
+    )
+    first_phone_number = fields.Char(
+        "رقم الهاتف الاول",
+        related="phone",
+        readonly=False,
+        store=True
+    )
+
+    second_phone_number = fields.Char(
+        "رقم الهاتف الثاني ",
+        related="mobile",
+        readonly=False,
+        store=True
+    )
+
+
+    email1 = fields.Char(
+        "البريد الالكتروني",
+        related="email",
+        readonly=False,
+        store=True
+    )
+
+    subscription_type = fields.Char(
+        "نوع الاشتراك ",
+        compute="_compute_subscription_type",
+        inverse="_inverse_subscription_type",
+        store=True
+    )
+
+    subscription_type = fields.Char(
+        "نوع الاشتراك (مرتبط بالتصنيفات)",
+        compute="_compute_subscription_type",
+        inverse="_inverse_subscription_type",
+        store=True
+    )
+
+    family_number = fields.Char("الرقم العائلي")
+
     
     # Add onchange to sync city with area_name_id
     @api.onchange('area_name_id')
@@ -48,12 +121,7 @@ class ResPartner(models.Model):
                 self.area_name_id = area.id
                 
                 
-    nearest_point = fields.Char(
-        "اقرب نقطة دالة (مرتبط بالشارع الثاني)",
-        related="street2",
-        readonly=False,
-        store=True
-    )
+    
     @api.onchange('street2') 
     def _onchange_street2(self):
         if self.street2:
@@ -61,21 +129,8 @@ class ResPartner(models.Model):
             
     
     
-    longitude_coordinates = fields.Float(
-        "احداثيات الطول (مرتبط بخط الطول)",
-        related="partner_longitude",
-        readonly=False,
-        store=True,
-        digits=(10, 6)
-    )
+    
 
-    latitude_coordinates = fields.Float(
-        "احداثيات العرض (مرتبط بخط العرض)", 
-        related="partner_latitude",
-        readonly=False,
-        store=True,
-        digits=(10, 6)
-    )
     
     @api.onchange('partner_longitude')
     def _onchange_partner_longitude(self):
@@ -87,10 +142,7 @@ class ResPartner(models.Model):
         if self.partner_latitude:
             self.latitude_coordinates = self.partner_latitude
     
-    google_maps_url = fields.Char(
-        string="Google Maps URL",
-        compute="_compute_google_maps_url"
-    )
+    
 
     @api.depends('partner_latitude', 'partner_longitude')
     def _compute_google_maps_url(self):
@@ -128,3 +180,57 @@ class ResPartner(models.Model):
             "target": "new",
             "context": {"default_partner_id": self.id},
         }
+    
+   
+    @api.onchange('ref')
+    def _onchange_ref_port(self):
+        if self.ref and self.ref.isdigit():
+            self.port_number = int(self.ref)
+
+    @api.onchange('name')
+    def _onchange_name_full(self):
+        if self.name:
+            self.full_name_and_surname = self.name
+
+
+    
+    @api.onchange('phone')
+    def _onchange_phone_first(self):
+        if self.phone:
+            self.first_phone_number = self.phone
+
+
+    
+
+    # Add onchange methods
+    @api.onchange('mobile')
+    def _onchange_mobile_second(self):
+        if self.mobile:
+            self.second_phone_number = self.mobile
+
+    @api.onchange('email')
+    def _onchange_email_first(self):
+        if self.email:
+            self.email1 = self.email
+
+    # Compute methods for subscription_type
+    @api.depends('category_id')
+    def _compute_subscription_type(self):
+        for record in self:
+            if record.category_id:
+                record.subscription_type = record.category_id[0].name
+            else:
+                record.subscription_type = ''
+
+    def _inverse_subscription_type(self):
+        for record in self:
+            if record.subscription_type:
+                # Find or create category
+                category = self.env['res.partner.category'].search([
+                    ('name', '=', record.subscription_type)
+                ], limit=1)
+                if not category:
+                    category = self.env['res.partner.category'].create({
+                        'name': record.subscription_type
+                    })
+                record.category_id = [(6, 0, [category.id])]

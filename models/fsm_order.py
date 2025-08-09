@@ -12,14 +12,14 @@ class FSMOrder(models.Model):
         related='company_id.currency_id',
         readonly=True
     )
-    
+
     customer_total_due = fields.Monetary(
         string='Total Due',
         related='customer_id.total_due',   # <-- points to the partner’s field
         readonly=True,
         currency_field='currency_id'
     )
-    
+
     customer_status = fields.Selection(
         related='customer_id.status',
         string='Status',
@@ -136,7 +136,6 @@ class FSMOrder(models.Model):
     customer_category_id = fields.Many2many(related='customer_id.category_id', string='Tags', readonly=True)
     customer_lang = fields.Selection(related='customer_id.lang', string='Language', readonly=True)
     customer_tz = fields.Selection(related='customer_id.tz', string='Timezone', readonly=True)
-    # customer_comment = fields.Text(related='customer_id.comment', string='Notes', readonly=True)
     customer_ref = fields.Char(related='customer_id.ref', string='Internal Reference', readonly=True)
     customer_function = fields.Char(related='customer_id.function', string='Job Position', readonly=True)
     customer_title = fields.Many2one(related='customer_id.title', string='Title', readonly=True)
@@ -187,19 +186,8 @@ class FSMOrder(models.Model):
                     raise ValidationError(
                         _("الحل المختار لا ينتمي لنوع المشكلة المحدد")
                     )
-    # def action_complete(self):
-    #     # Add validation before completing
-    #     if not self.problem_type_id:
-    #         raise UserError(_("لا يمكن اتمام العمل قبل اختيار نوع المشكلة"))
-    #     if not self.problem_solution_id:
-    #         raise UserError(_("لا يمكن اتمام العمل قبل اختيار الحل"))
-        
-    #     return self.write(
-    #         {
-    #             "stage_id": self.env.ref("fsm_customization.fsm_stage_work_completed").id,
-    #             "is_button": True,
-    #         }
-    #     )
+  
+
     
     
     
@@ -262,6 +250,7 @@ class FSMOrder(models.Model):
     temp_voucher_number = fields.Char(string="رقم الوصل")
     temp_residence_card = fields.Char(string="بطاقة السكن")
     temp_id_card = fields.Char(string="بطاقة الهوية")
+    temp_family_number = fields.Char(string="الرقم العائلي")
 
     # Status tracking
     contract_changes_pending = fields.Boolean(string='Contract Changes Pending', default=False)
@@ -294,6 +283,7 @@ class FSMOrder(models.Model):
             self.temp_voucher_number = getattr(self.customer_id, 'voucher_number', '') or ''
             self.temp_residence_card = getattr(self.customer_id, 'residence_card', '') or ''
             self.temp_id_card = getattr(self.customer_id, 'id_card', '') or ''
+            self.temp_family_number = getattr(self.customer_id, 'temp_family_number', '') or ''
             
             # Reset pending changes flag
             self.contract_changes_pending = False
@@ -307,7 +297,7 @@ class FSMOrder(models.Model):
                 'temp_vat_number', 'temp_port_number', 'temp_full_name_and_surname',
                 'temp_mother_name_and_surname', 'temp_first_phone_number', 'temp_second_phone_number',
                 'temp_email1', 'temp_subscription_type', 'temp_contract_number',
-                'temp_voucher_number', 'temp_residence_card', 'temp_id_card')
+                'temp_voucher_number', 'temp_residence_card', 'temp_id_card', 'temp_family_number')
     def _onchange_contract_fields(self):
         """Mark changes as pending when contract fields are modified"""
         if any([
@@ -317,12 +307,18 @@ class FSMOrder(models.Model):
             self.temp_vat_number, self.temp_port_number, self.temp_full_name_and_surname,
             self.temp_mother_name_and_surname, self.temp_first_phone_number, self.temp_second_phone_number,
             self.temp_email1, self.temp_subscription_type, self.temp_contract_number,
-            self.temp_voucher_number, self.temp_residence_card, self.temp_id_card
+            self.temp_voucher_number, self.temp_residence_card, self.temp_id_card, self.temp_family_number
         ]):
             self.contract_changes_pending = True
 
     def action_approve_contract_changes(self):
         """Approve and save contract changes to res.partner"""
+        print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
+        if self.manager_id and  (self.manager_id != self.env.user):
+            print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
+            raise UserError("فقط المشرف يمكنه اعتماد تغييرات العقد")
+        
+        
         print(self.temp_full_name_and_surname)
         if not self.customer_id:
             raise UserError("لا يوجد عميل محدد لتحديث بياناته.")
@@ -333,16 +329,23 @@ class FSMOrder(models.Model):
         # Map temporary fields to partner fields
         if self.temp_area_name:
             update_vals['area_name'] = self.temp_area_name
+        # if self.temp_area_name:
+            update_vals['area_name_id'] = self.temp_area_name
         if self.temp_area_number:
             update_vals['area_number'] = self.temp_area_number
         if self.temp_home_number:
             update_vals['home_number'] = self.temp_home_number
         if self.temp_nearest_point:
             update_vals['nearest_point'] = self.temp_nearest_point
+            update_vals['street2'] = self.temp_nearest_point
         if self.temp_longitude_coordinates:
-            update_vals['longitude_coordinates'] = self.temp_longitude_coordinates
+            update_vals['partner_longitude'] = self.temp_longitude_coordinates
         if self.temp_latitude_coordinates:
-            update_vals['latitude_coordinates'] = self.temp_latitude_coordinates
+            update_vals['partner_latitude'] = self.temp_latitude_coordinates 
+        # if self.temp_longitude_coordinates:
+        #     update_vals['longitude_coordinates'] = self.temp_longitude_coordinates
+        # if self.temp_latitude_coordinates:
+        #     update_vals['latitude_coordinates'] = self.temp_latitude_coordinates
         if self.temp_local_number:
             update_vals['local_number'] = self.temp_local_number
         if self.temp_alley_number:
@@ -353,6 +356,8 @@ class FSMOrder(models.Model):
             update_vals['vat_number'] = self.temp_vat_number
         if self.temp_port_number:
             update_vals['port_number'] = self.temp_port_number
+        if self.temp_family_number:  
+            update_vals['family_number'] = self.temp_family_number
         print("sif self.temp_full_name_and_surname:")
         if self.temp_full_name_and_surname:
             update_vals['full_name_and_surname'] = self.temp_full_name_and_surname
@@ -443,6 +448,7 @@ class FSMOrder(models.Model):
             'temp_voucher_number': '',
             'temp_residence_card': '',
             'temp_id_card': '',
+            'temp_family_number': '',
             'contract_changes_pending': False,
         }
         
@@ -547,7 +553,7 @@ class FSMOrder(models.Model):
                     ) % ', '.join(restricted_fields))
             
             # Rule 5: Manager cannot edit manager assignment for himself
-            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
+            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager and not self.env.user._is_admin():
                 if vals['manager_id'] != record.manager_id.id:
                     raise ValidationError(_(
                         "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"

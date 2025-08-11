@@ -15,38 +15,55 @@
 
           <!-- Left column -->
           <group>
+           
             <field name="customer_name"/>
+            <field name="customer_mother_name_and_surname"/>
             <field name="customer_email"/>
             <field name="customer_phone"/>
             <field name="customer_mobile"/>
-            <field name="customer_website"/>
-            <field name="customer_company_type"/>
-            <field name="customer_is_company"/>
-            <field name="customer_function"/>
-            <field name="customer_title"/>
-            <field name="customer_parent_id"/>
+            <field name="customer_street"/>
+            <field name="customer_street2"/>
+            <field name="customer_home_number"/>
+            <field name="customer_contract_number"/>
+            <field name="customer_alley_number"/>
+            <field name="customer_status" 
+                widget="badge" 
+                decoration-danger="customer_status == 'expired'" 
+                decoration-success="customer_status != 'expired'"/>
+            <field name="customer_local_number"/>
+            <field name="customer_family_number"/>
+            <field name="customer_pole"/>
+           
+          
+<!--        
+            <div class="d-flex align-items-center">
+                <i class="fa fa-exclamation-triangle text-danger me-2" 
+                  invisible="customer_status != 'expired'"/>
+                <i class="fa fa-check-circle text-success me-2" 
+                  invisible="customer_status == 'expired'"/>
+                <field name="customer_status" 
+                      decoration-danger="customer_status == 'expired'" 
+                      decoration-success="customer_status != 'expired'"
+                      nolabel="1"/>
+            </div> -->
           </group>
 
           <!-- Right column -->
           <group>
-            <field name="customer_street"/>
-            <field name="customer_street2"/>
-            <field name="customer_city"/>
-            <field name="customer_state_id"/>
+            <field name="customer_house_number"/>
+            <field name="customer_voucher_number"/>
+            <field name="customer_vat_number"/>
+            <field name="customer_residence_card"/>
+            <field name="customer_id_card"/>
+            <field name="customer_port_number"/>
             <field name="customer_zip"/>
-            <field name="customer_country_id"/>
-            <field name="customer_vat"/>
-            <field name="customer_industry_id"/>
-            <field name="customer_lang"/>
-            <field name="customer_tz"/>
-          </group>
-
-          <!-- Third column (totals/status) -->
-          <group>
-            <field name="customer_total_due"/>
-            <!-- If your field is actually customer_followup_status, use that name -->
-            <field name="customer_status"/>
+            <field name="customer_user_name"/>
+            <field name="customer_category_id" widget="many2many_tags"/>
+            <field name="customer_menu_type_ids" widget="many2many_tags"/>          
             <field name="customer_number_of_expired_days"/>
+            
+            <field name="customer_total_due"/>
+            <!-- <field name="customer_city"/> -->             
           </group>
 
         </group>

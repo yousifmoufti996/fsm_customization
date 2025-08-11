@@ -117,34 +117,32 @@ class FSMOrder(models.Model):
     def _group_expand_stages(self, stages, domain, order):
         return stages.search([], order=order)
     # Contact Details - Related fields from customer
-    customer_name2 = fields.Char(related='customer_id.name', string='Customer Name', readonly=True)
-    
-    customer_name = fields.Char(related='customer_id.name', string='Customer Name', readonly=True)
+    customer_name = fields.Char(related='customer_id.name', string='الاسم الرباعي واللقب', readonly=True)
     customer_email = fields.Char(related='customer_id.email', string='Email', readonly=True)
-    customer_phone = fields.Char(related='customer_id.phone', string='Phone', readonly=True)
-    customer_mobile = fields.Char(related='customer_id.mobile', string='Mobile', readonly=True)
-    customer_website = fields.Char(related='customer_id.website', string='Website', readonly=True)
-    customer_street = fields.Char(related='customer_id.street', string='Street', readonly=True)
-    customer_street2 = fields.Char(related='customer_id.street2', string='Street 2', readonly=True)
+    customer_phone = fields.Char(related='customer_id.phone', string='رقم التلفون الاول', readonly=True)
+    customer_mobile = fields.Char(related='customer_id.mobile', string='رقم التلفون الثاني', readonly=True)
+    customer_street = fields.Char(related='customer_id.area_name_id.name', string='اسم المنطقة', readonly=True)
+    customer_street2 = fields.Char(related='customer_id.street2', string='اقرب نقطة دالة', readonly=True)
+    customer_zip = fields.Char(related='customer_id.area_number_id.name', string='رقم المنطقة', readonly=True)
+    customer_user_name = fields.Char(related='customer_id.user_name', string='User Name', readonly=True)
+    
+    customer_category_id = fields.Many2many(related='customer_id.category_id', string='Subscription Type', readonly=True)
+    customer_menu_type_ids = fields.Many2many(related='customer_id.menu_type_ids', string='مجموع عملاء فرعية', readonly=True)
     customer_city = fields.Char(related='customer_id.city', string='City', readonly=True)
-    customer_state_id = fields.Many2one(related='customer_id.state_id', string='State', readonly=True)
-    customer_zip = fields.Char(related='customer_id.zip', string='ZIP', readonly=True)
-    customer_country_id = fields.Many2one(related='customer_id.country_id', string='Country', readonly=True)
-    customer_vat = fields.Char(related='customer_id.vat', string='Tax ID', readonly=True)
-    customer_company_type = fields.Selection(related='customer_id.company_type', string='Company Type', readonly=True)
-    customer_industry_id = fields.Many2one(related='customer_id.industry_id', string='Industry', readonly=True)
-    customer_category_id = fields.Many2many(related='customer_id.category_id', string='Tags', readonly=True)
-    customer_lang = fields.Selection(related='customer_id.lang', string='Language', readonly=True)
-    customer_tz = fields.Selection(related='customer_id.tz', string='Timezone', readonly=True)
-    customer_ref = fields.Char(related='customer_id.ref', string='Internal Reference', readonly=True)
-    customer_function = fields.Char(related='customer_id.function', string='Job Position', readonly=True)
-    customer_title = fields.Many2one(related='customer_id.title', string='Title', readonly=True)
-    customer_parent_id = fields.Many2one(related='customer_id.parent_id', string='Related Company', readonly=True)
-    customer_is_company = fields.Boolean(related='customer_id.is_company', string='Is a Company', readonly=True)
- 
-  
-  
-
+    customer_local_number = fields.Char(related='customer_id.local_number', string='رقم المحلة', readonly=True)
+    customer_family_number = fields.Char(related='customer_id.family_number', string='الرقم العائلي', readonly=True)
+    customer_pole = fields.Char(related='customer_id.pole', string='العمود', readonly=True)
+    
+    customer_mother_name_and_surname = fields.Char(related='customer_id.mother_name_and_surname', string='اسم الام الثلاثي واللقب', readonly=True)
+    customer_home_number = fields.Char(related='customer_id.home_number', string='رقم المنزل', readonly=True)
+    customer_contract_number = fields.Char(related='customer_id.contract_number', string='رقم العقد', readonly=True)
+    customer_alley_number = fields.Char(related='customer_id.alley_number', string='رقم الزقاق', readonly=True)
+    customer_house_number = fields.Char(related='customer_id.house_number', string='رقم الدار', readonly=True)
+    customer_voucher_number = fields.Char(related='customer_id.voucher_number', string='رقم الوصل', readonly=True)
+    customer_vat_number = fields.Integer(related='customer_id.vat_number', string='رقم الفات', readonly=True)
+    customer_residence_card = fields.Char(related='customer_id.residence_card', string='بطاقة السكن', readonly=True)
+    customer_id_card = fields.Char(related='customer_id.id_card', string='بطاقة الهوية', readonly=True)
+    customer_port_number = fields.Integer(related='customer_id.port_number', string='رقم البورت', readonly=True)
     # Override existing fields to add tracking
     # stage_id = fields.Many2one(tracking=True)
     person_id = fields.Many2one(tracking=True)
@@ -229,8 +227,18 @@ class FSMOrder(models.Model):
                 
   
     # Contract Details - Editable fields with Arabic names
-    temp_area_name = fields.Char(string="اسم المنطقة")
-    temp_area_number = fields.Char(string="رقم المنطقة")
+    temp_area_name = fields.Many2one(
+        'area.name',
+        string="اسم المنطقة",
+        options="{'no_create': True, 'no_create_edit': True}"
+    )
+    # temp_area_number = fields.Char(string="رقم المنطقة")
+    temp_area_number = fields.Many2one(
+        'area.number',
+        string="رقم المنطقة",
+        domain="[('area_name_id', '=', temp_area_name)]",
+        # options="{'no_create': True, 'no_create_edit': True}"
+    )
     temp_home_number = fields.Char(string="رقم المنزل")
     temp_nearest_point = fields.Char(string="اقرب نقطة دالة")
     temp_longitude_coordinates = fields.Float(string="احداثيات الطول", digits=(10, 6))
@@ -245,7 +253,31 @@ class FSMOrder(models.Model):
     temp_first_phone_number = fields.Char(string="رقم الهاتف الاول")
     temp_second_phone_number = fields.Char(string="رقم الهاتف الثاني")
     temp_email1 = fields.Char(string="البريد الالكتروني")
-    temp_subscription_type = fields.Char(string="نوع الاشتراك")
+    temp_subscription_type = fields.Many2many(
+        'res.partner.category',
+        'fsm_order_subscription_type_rel',
+        'fsm_order_id',
+        'category_id',
+        string="نوع الاشتراك"
+    )
+
+    # def _auto_init(self):
+    #     """Clear temp fields before conversion to prevent data type errors"""
+    #     # Clear existing data in temp_area_name and temp_area_number before conversion
+    #     if hasattr(self.env.cr, 'execute'):
+    #         try:
+    #             # Check if columns exist and clear them
+    #             self.env.cr.execute("""
+    #                 UPDATE fsm_order 
+    #                 SET temp_area_name = NULL, temp_area_number = NULL 
+    #                 WHERE temp_area_name IS NOT NULL OR temp_area_number IS NOT NULL
+    #             """)
+    #         except Exception:
+    #             # Ignore errors if columns don't exist yet
+    #             pass
+        
+    #     return super()._auto_init()
+        
     temp_contract_number = fields.Char(string="رقم العقد")
     temp_voucher_number = fields.Char(string="رقم الوصل")
     temp_residence_card = fields.Char(string="بطاقة السكن")
@@ -262,8 +294,10 @@ class FSMOrder(models.Model):
         """Load customer data into contract fields when customer changes"""
         if self.customer_id:
             # Load existing customer data into temporary fields for editing
-            self.temp_area_name = getattr(self.customer_id, 'area_name', '') or ''
-            self.temp_area_number = getattr(self.customer_id, 'area_number', '') or ''
+            # self.temp_area_name = getattr(self.customer_id, 'area_name', '') or ''
+            self.temp_area_name = self.customer_id.area_name_id
+            # self.temp_area_number = getattr(self.customer_id, 'area_number', '') or ''
+            self.temp_area_number = self.customer_id.area_number_id
             self.temp_home_number = getattr(self.customer_id, 'home_number', '') or ''
             self.temp_nearest_point = getattr(self.customer_id, 'nearest_point', '') or ''
             self.temp_longitude_coordinates = getattr(self.customer_id, 'longitude_coordinates', 0.0) or 0.0
@@ -278,7 +312,8 @@ class FSMOrder(models.Model):
             self.temp_first_phone_number = getattr(self.customer_id, 'first_phone_number', '') or self.customer_id.phone or ''
             self.temp_second_phone_number = getattr(self.customer_id, 'second_phone_number', '') or self.customer_id.mobile or ''
             self.temp_email1 = getattr(self.customer_id, 'email1', '') or self.customer_id.email or ''
-            self.temp_subscription_type = getattr(self.customer_id, 'subscription_type', '') or ''
+            # self.temp_subscription_type = getattr(self.customer_id, 'subscription_type', '') or ''
+            self.temp_subscription_type = self.customer_id.category_id
             self.temp_contract_number = getattr(self.customer_id, 'contract_number', '') or ''
             self.temp_voucher_number = getattr(self.customer_id, 'voucher_number', '') or ''
             self.temp_residence_card = getattr(self.customer_id, 'residence_card', '') or ''
@@ -311,6 +346,13 @@ class FSMOrder(models.Model):
         ]):
             self.contract_changes_pending = True
 
+    @api.onchange('temp_area_name')
+    def _onchange_temp_area_name(self):
+        """Clear area number when area name changes"""
+        if self.temp_area_name != self._origin.temp_area_name:
+            self.temp_area_number = False
+
+
     def action_approve_contract_changes(self):
         """Approve and save contract changes to res.partner"""
         print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
@@ -328,11 +370,11 @@ class FSMOrder(models.Model):
         
         # Map temporary fields to partner fields
         if self.temp_area_name:
-            update_vals['area_name'] = self.temp_area_name
-        # if self.temp_area_name:
-            update_vals['area_name_id'] = self.temp_area_name
+            update_vals['area_name_id'] = self.temp_area_name.id
+            update_vals['area_name'] = self.temp_area_name.name
         if self.temp_area_number:
-            update_vals['area_number'] = self.temp_area_number
+            update_vals['area_number_id'] = self.temp_area_number.id
+            update_vals['area_number'] = self.temp_area_number.name
         if self.temp_home_number:
             update_vals['home_number'] = self.temp_home_number
         if self.temp_nearest_point:
@@ -374,7 +416,8 @@ class FSMOrder(models.Model):
             update_vals['email1'] = self.temp_email1
             update_vals['email'] = self.temp_email1  # Also update standard email
         if self.temp_subscription_type:
-            update_vals['subscription_type'] = self.temp_subscription_type
+            # update_vals['subscription_type'] = self.temp_subscription_type
+            update_vals['category_id'] = [(6, 0, self.temp_subscription_type.ids)]
         if self.temp_contract_number:
             update_vals['contract_number'] = self.temp_contract_number
         if self.temp_voucher_number:
@@ -414,21 +457,41 @@ class FSMOrder(models.Model):
         # Clear temporary fields after successful approval
         # self.action_reset_contract_fields()
 
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'display_notification',
+        #     'params': {
+        #         'title': 'تم بنجاح!',
+        #         'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
+        #         'type': 'success',
+        #     }
+        # }
+        # Show success notification and refresh the view
+        self.env['bus.bus']._sendone(
+            self.env.user.partner_id,
+            'simple_notification',
+            {
                 'title': 'تم بنجاح!',
                 'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
                 'type': 'success',
             }
+        )
+
+        # Return action to refresh the current record
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'fsm.order',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': self.env.context
         }
 
     def action_reset_contract_fields(self):
         """Reset all contract fields"""
         reset_vals = {
-            'temp_area_name': '',
-            'temp_area_number': '',
+            'temp_area_name': False,
+            'temp_area_number': False,
             'temp_home_number': '',
             'temp_nearest_point': '',
             'temp_longitude_coordinates': 0.0,

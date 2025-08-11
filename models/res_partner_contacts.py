@@ -100,16 +100,28 @@ class ResPartner(models.Model):
         store=True
     )
 
-    subscription_type = fields.Char(
-        "نوع الاشتراك (مرتبط بالتصنيفات)",
-        compute="_compute_subscription_type",
-        inverse="_inverse_subscription_type",
-        store=True
-    )
+    # subscription_type = fields.Char(
+    #     "نوع الاشتراك (مرتبط بالتصنيفات)",
+    #     compute="_compute_subscription_type",
+    #     inverse="_inverse_subscription_type",
+    #     store=True
+    # )
 
     family_number = fields.Char("الرقم العائلي")
 
 
+    @api.constrains('family_number')
+    def _check_family_number_unique(self):
+        """Check if username is unique"""
+        for record in self:
+            if record.family_number:
+                existing = self.search([
+                    ('family_number', '=', record.family_number),
+                    ('id', '!=', record.id)
+                ])
+                if existing:
+                    raise ValidationError(f'اسم المستخدم "{record.user_name}" مستخدم بالفعل! يرجى اختيار اسم مستخدم آخر.')
+    
     @api.constrains('user_name')
     def _check_user_name_unique(self):
         """Check if username is unique"""

@@ -8,10 +8,6 @@
         <field name="arch" type="xml">
 
             <!-- Add these to hide the old fields -->
-            
-            <xpath expr="//field[@name='area_name']" position="replace"/>
-            <xpath expr="//field[@name='area_name_id']" position="replace"/>
-            <xpath expr="//field[@name='area_number_id']" position="replace"/>
             <xpath expr="//field[@name='nearest_point']" position="replace"/>
             <xpath expr="//field[@name='longitude_coordinates']" position="replace"/>
             <xpath expr="//field[@name='latitude_coordinates']" position="replace"/>
@@ -53,9 +49,14 @@
             </xpath>
 
             <xpath expr="//notebook" position="before"> 
+                <group invisible="1">
+                    <field name="area_name"/>
+                    <field name="area_number"/>
+                    <field name="zip"/>
+                </group>
                 <group string="تفاصيل الخدمة" col="2">
                     <group  >
-                        <field name="menu_type_ids" string="مجموع عملاء فرعية" widget="many2many_tags" readonly="0"/>
+                        <field name="menu_type_ids"  string="مجموع عملاء فرعية" widget="many2many_tags" readonly="0"/>
                         <field name="ref" string="رقم المحلة"/>
                         <field name="pole" string="العمود"/>
                     </group>
@@ -69,26 +70,34 @@
 
 
             <!-- Change labels of standard fields to match Arabic names -->
-            <xpath expr="//field[@name='street']" position="attributes">
-                <attribute name="placeholder">اسم المنطقة</attribute>
-                
-            </xpath>
-            <xpath expr="//field[@name='zip']" position="attributes">
-                <attribute name="placeholder">رقم المنطقة</attribute>
-            </xpath>
-            
 
+            <!-- Replace street with area name dropdown -->
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='street']" position="after">
+                <field name="area_name_id" string="اسم المنطقة"  placeholder="اختر اسم المنطقة..."
+                    options="{'no_create': True, 'no_create_edit': True}"/>
+            </xpath>
+          
             <xpath expr="//field[@name='street2']" position="attributes">
                 <attribute name="placeholder">اقرب نقطة دالة</attribute>
             </xpath>
-            <xpath expr="//field[@name='zip']" position="replace"/>
+            
+           <!-- Replace zip with area number dropdown -->
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-            <xpath expr="//field[@name='street2']" position="after">
-                <field name="zip" string="ZIP" placeholder="رقم المنطقة"/>
+            <xpath expr="//field[@name='zip']" position="after">
+                <field name="area_number_id" string="رقم المنطقة"
+                    placeholder="اختر رقم المنطقة..."
+                    domain="[('area_name_id', '=', area_name_id)]"
+                    options="{'no_create': True, 'no_create_edit': True}"/>
             </xpath>
 
             <xpath expr="//field[@name='phone']" position="attributes">
-                <attribute name="placeholder">رقم الهاتف الاول</attribute>
                 <attribute name="placeholder">رقم الهاتف الأول</attribute>
             </xpath>
 

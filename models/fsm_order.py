@@ -689,3 +689,25 @@ class FSMOrder(models.Model):
                 )
         
         return result
+    
+    def action_view_order(self):
+        """Open the FSM order form view"""
+        return {
+            'name': 'FSM Order',
+            'type': 'ir.actions.act_window',
+            'res_model': 'fsm.order',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+
+    def action_navigate_to(self):
+        """Open navigation to the order location"""
+        if self.location_id and self.location_id.partner_latitude and self.location_id.partner_longitude:
+            url = f"https://maps.google.com/maps?daddr={self.location_id.partner_latitude},{self.location_id.partner_longitude}"
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }

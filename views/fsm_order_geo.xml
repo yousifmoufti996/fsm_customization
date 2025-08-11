@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-name="fsm_customization.CustomGeoengineRenderer" t-inherit="base_geoengine.GeoengineRenderer" t-inherit-mode="extension">
+        <xpath expr="//div[@class='row d-flex justify-content-center']" position="replace">
+            <div class="row d-flex justify-content-center">
+                <button
+                    t-on-click="onNavigateClicked"
+                    class="btn btn-info border me-2"
+                    style="background-color: #17a2b8; border-color: #17a2b8; color: white;">
+                    NAVIGATE TO
+                </button>
+                <button
+                    t-on-click="onInfoBoxClicked"
+                    class="btn btn-secondary border">
+                    OPEN
+                </button>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -14,6 +14,9 @@ class AddProductWizard(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
+        if 'picking_type_id' in fields and not res.get('picking_type_id'):
+            warehouse = self.env['stock.warehouse'].search([], limit=1)
+        res['picking_type_id'] = warehouse.out_type_id.id
         if 'fsm_order_id' in fields_list and self.env.context.get('fsm_order_id'):
             res['fsm_order_id'] = self.env.context.get('fsm_order_id')
         return res

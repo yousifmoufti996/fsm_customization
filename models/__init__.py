@@ -23,5 +23,6 @@ from . import (
     area_number,
     current_location_wizard,
     res_partner_contacts,
+    fsm_order_geo
     
 )

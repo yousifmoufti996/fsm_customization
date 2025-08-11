@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Basic FSM Order GeoEngine View -->
+    <record id="view_fsm_order_geoengine" model="ir.ui.view">
+        <field name="name">fsm.order.geoengine.basic</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <geoengine>
+                <field name="name"/>
+                <field name="customer_name"/>
+                
+                <templates>
+                    <t t-name="info_box">
+                        <div>
+                            <h4><t t-esc="record.name"/></h4>
+                            <p><t t-esc="record.customer_name"/></p>
+                        </div>
+                    </t>
+                </templates>
+            </geoengine>
+        </field>
+    </record>
+</odoo>

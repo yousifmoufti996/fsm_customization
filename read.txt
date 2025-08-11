@@ -1,0 +1,48 @@
+put this in the ir.ui.view.fsm.order.map
+fieldservice_geoengine.ir_ui_view_fsm_order_map
+
+<geoengine editable="1">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="street"/>
+                <field name="street2"/>
+                <field name="city"/>
+                <field name="state_name"/>
+                <field name="zip"/>
+                <field name="country_name"/>
+                <field name="stage_name"/>
+                <field name="shape"/>
+                <field name="shape"/>
+                <field name="display_name"/>
+                <field name="custom_color"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+                <templates>
+                    <t t-name="info_box">
+                     <div>
+                      <b>
+                        Name: <field name="name"/>
+                      </b>
+                      <ul>
+                        <li>Phone: <field name="phone1"/> </li>
+                        <li>Mobile: <field name="mobile1"/> </li>
+                        <li>Street: <field name="street1"/> </li>
+                        <li>Street 2: <field name="street21"/> </li>
+                        <li>City: <field name="city1"/> </li>
+                        <li>State: <field name="state_name1"/> </li>
+                        <li>ZIP: <field name="zip1"/> </li>
+                        <li>Country: <field name="country_name1"/> </li>
+                        
+                        <li style="display:none;">Lat: <t t-esc="record.latitude"/> </li>
+                        <li style="display:none;">Lng: <t t-esc="record.longitude"/> </li>
+              
+                      </ul>
+                      <div style="text-align: center; margin-top: 10px;">
+                            <a href="#" style="display: inline-block; background-color: #17a2b8; border: 1px solid #17a2b8; color: white; padding: 8px 16px; border-radius: 3px; text-decoration: none;">
+                                NAVIGATE TO
+                            </a>
+                        </div>
+                     </div>
+                    </t>
+                </templates>
+</geoengine>

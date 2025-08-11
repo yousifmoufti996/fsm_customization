@@ -48,6 +48,8 @@ Technical Features:
         'fieldservice_account_analytic',
         'helpdesk_mgmt',
         'product_expiration',
+        'fieldservice_geoengine',
+        'base_geoengine',
         # Field Service Management base module
     ],
     
@@ -92,6 +94,8 @@ Technical Features:
         'views/res_partner_contacts.xml',
         'views/inherit_old_partner_view.xml',
         'views/current_location_wizard_view.xml',
+        # 'views/fsm_order_geo.xml',
+        # 'views/fsm_order_map_view.xml',
         
      
         # # Reports
@@ -110,6 +114,7 @@ Technical Features:
             # 'fsm_customization/static/src/css/fsm_style.css',
             # 'fsm_customization/static/src/js/get_current_location_action.js',
             'fsm_customization/static/src/js/get_current_location_action_second.js',
+            'fsm_customization/static/src/js/navigateto.js',
         ],
         # 'web.assets_frontend': [
         #     'fsm_customization/static/src/css/fsm_frontend.css',

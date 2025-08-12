@@ -43,7 +43,15 @@ class FSMOrder(models.Model):
     )
     def _sync_main_fields(self):
         """Sync *_1 fields into main fields."""
+        print("self.longitude")
+        print(self.longitude)
+        print('self.latitude')
+        print(self.latitude)
         for rec in self:
+            print("rec.longitude")
+            print(rec.longitude)
+            print('rec.latitude')
+            print(rec.latitude)
             rec.phone = rec.phone1
             rec.mobile = rec.mobile1
             rec.street = rec.street1

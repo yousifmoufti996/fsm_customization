@@ -506,7 +506,7 @@ class FSMOrder(models.Model):
             'temp_first_phone_number': '',
             'temp_second_phone_number': '',
             'temp_email1': '',
-            'temp_subscription_type': '',
+            'temp_subscription_type': False,
             'temp_contract_number': '',
             'temp_voucher_number': '',
             'temp_residence_card': '',

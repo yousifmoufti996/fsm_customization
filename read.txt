@@ -1,6 +1,5 @@
 put this in the ir.ui.view.fsm.order.map
 fieldservice_geoengine.ir_ui_view_fsm_order_map
-
 <geoengine editable="1">
                 <field name="name"/>
                 <field name="phone"/>
@@ -15,8 +14,8 @@ fieldservice_geoengine.ir_ui_view_fsm_order_map
                 <field name="shape"/>
                 <field name="display_name"/>
                 <field name="custom_color"/>
-                <field name="latitude"/>
-                <field name="longitude"/>
+                <!--<field name="latitude"/>-->
+                <!--<field name="longitude"/>-->
                 <templates>
                     <t t-name="info_box">
                      <div>
@@ -24,14 +23,16 @@ fieldservice_geoengine.ir_ui_view_fsm_order_map
                         Name: <field name="name"/>
                       </b>
                       <ul>
-                        <li>Phone: <field name="phone1"/> </li>
-                        <li>Mobile: <field name="mobile1"/> </li>
-                        <li>Street: <field name="street1"/> </li>
-                        <li>Street 2: <field name="street21"/> </li>
-                        <li>City: <field name="city1"/> </li>
-                        <li>State: <field name="state_name1"/> </li>
-                        <li>ZIP: <field name="zip1"/> </li>
-                        <li>Country: <field name="country_name1"/> </li>
+                        <li>الاسم: <field name="phone1"/> </li>
+                        <li>موبايل1: <field name="phone1"/> </li>
+                        <li>موبايل2: <field name="mobile1"/> </li>
+                        <li>اسم المنطقة: <field name="street1"/> </li>
+                        <li>اقرب نقطة دالة: <field name="street21"/> </li>
+                        <li>Lat: <field name="latitude1"/> </li>
+                        <li>Lng: <field name="longitude1"/> </li>
+                    
+                        <li>رقم المنطقة: <field name="zip1"/> </li>
+              
                         
                         <li style="display:none;">Lat: <t t-esc="record.latitude"/> </li>
                         <li style="display:none;">Lng: <t t-esc="record.longitude"/> </li>

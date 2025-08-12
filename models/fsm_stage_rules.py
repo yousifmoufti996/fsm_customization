@@ -105,8 +105,8 @@ class FSMOrder(models.Model):
     
     def action_set_on_the_way(self):
         """Set order stage to 'On The Way'"""
-        if self.worker_id != self.env.user:
-            raise AccessError(_("فقط العامل المخصص يمكنه تحديد مرحلة 'في الطريق'"))
+        # if self.worker_id != self.env.user:
+        #     raise AccessError(_("فقط العامل المخصص يمكنه تحديد مرحلة 'في الطريق'"))
         stage = self.env.ref('fsm_customization.fsm_stage_on_the_way')
         return self.write({'stage_id': stage.id})
 

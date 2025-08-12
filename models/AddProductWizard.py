@@ -29,16 +29,17 @@ class AddProductWizard(models.TransientModel):
                     _('Cannot add quantity %s. Only %s available in stock.') % 
                     (wizard.quantity, wizard.qty_available)
                 )
-
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         if 'picking_type_id' in fields_list and not res.get('picking_type_id'):
             warehouse = self.env['stock.warehouse'].search([], limit=1)
-            res['picking_type_id'] = warehouse.out_type_id.id
+            if warehouse:
+                res['picking_type_id'] = warehouse.out_type_id.id
         if 'fsm_order_id' in fields_list and self.env.context.get('fsm_order_id'):
             res['fsm_order_id'] = self.env.context.get('fsm_order_id')
         return res
+  
     
     def action_add_product(self):
         """Add product to FSM order and create/update sale order"""

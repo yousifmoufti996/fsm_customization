@@ -86,7 +86,7 @@ class AddProductWizard(models.TransientModel):
         existing_line = self.env['sale.order.line'].search([
             ('order_id', '=', self.fsm_order_id.sale_order_id.id),
             ('product_id', '=', self.product_id.id)
-        ])
+        ], limit=1)  # Add limit=1 to ensure we get only one record
         
         if existing_line:
             # Update existing line quantity

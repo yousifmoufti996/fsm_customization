@@ -15,27 +15,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 const text = item.textContent.trim();
                 console.log('Item text:', text);
 
-                // Match numbers after "Lat:" or "Lng:" anywhere in the string
                 const latMatch = text.match(/Lat:\s*([-+]?\d+(\.\d+)?)/i);
                 const lngMatch = text.match(/Lng:\s*([-+]?\d+(\.\d+)?)/i);
 
                 if (latMatch) {
                     latitude = latMatch[1];
-                    console.log('Found latitude:', latitude);
                 }
                 if (lngMatch) {
                     longitude = lngMatch[1];
-                    console.log('Found longitude:', longitude);
                 }
             });
-            
+
             console.log('Final latitude:', latitude);
             console.log('Final longitude:', longitude);
-            
+
             if (latitude && longitude) {
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-                console.log('Opening maps with:', mapsUrl);
-                window.open(mapsUrl, '_blank');
+                // Get current position
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const currentLat = position.coords.latitude;
+                        const currentLng = position.coords.longitude;
+
+                        console.log('Current location:', currentLat, currentLng);
+
+                        // Google Maps Directions API URL
+                        const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${currentLat},${currentLng}&destination=${latitude},${longitude}&travelmode=driving`;
+
+                        console.log('Opening route:', mapsUrl);
+                        window.open(mapsUrl, '_blank');
+                    }, function(error) {
+                        alert('Error getting current location: ' + error.message);
+                    });
+                } else {
+                    alert('Geolocation is not supported by your browser.');
+                }
             } else {
                 alert('No coordinates found');
             }

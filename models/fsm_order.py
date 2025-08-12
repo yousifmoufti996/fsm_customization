@@ -610,10 +610,10 @@ class FSMOrder(models.Model):
                 # Allow only stage changes by authorized users (if needed)
                 restricted_fields = set(vals.keys()) - allowed_fields
                 print('restricted_fields:', restricted_fields)
-                if restricted_fields:
-                    raise ValidationError(_(
-                        "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
-                    ) % ', '.join(restricted_fields))
+                # if restricted_fields:
+                #     raise ValidationError(_(
+                #         "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
+                #     ) % ', '.join(restricted_fields))
             
             # Rule 5: Manager cannot edit manager assignment for himself
             if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager and not self.env.user._is_admin():

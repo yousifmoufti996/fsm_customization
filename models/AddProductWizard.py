@@ -76,10 +76,9 @@ class AddProductWizard(models.TransientModel):
             }
             sale_order = self.env['sale.order'].create(sale_order_vals)
             
-            # Link the sale order to the FSM order
+            # Link the sale order to the FSM order - ONLY use sale_order_id
             self.fsm_order_id.write({
                 'sale_order_id': sale_order.id,
-                'sale_id': sale_order.id,  # This field might also be needed
             })
         
         # Add product line to existing sale order

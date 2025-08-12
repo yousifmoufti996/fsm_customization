@@ -65,12 +65,15 @@ class AddProductWizard(models.TransientModel):
             if not warehouse:
                 raise ValidationError(_('No warehouse found. Please configure a warehouse first.'))
             
+            # Ensure we have a proper picking type ID
+            picking_type_id = self.picking_type_id.id if self.picking_type_id else warehouse.out_type_id.id
+            
             # Create new sale order with required fields
             sale_order_vals = {
                 'partner_id': self.fsm_order_id.location_id.partner_id.id,
                 'origin': self.fsm_order_id.name,
                 'warehouse_id': warehouse.id,
-                'picking_type_id': self.picking_type_id or warehouse.out_type_id.id,
+                'picking_type_id': picking_type_id,
             }
             sale_order = self.env['sale.order'].create(sale_order_vals)
             self.fsm_order_id.sale_order_id = sale_order.id

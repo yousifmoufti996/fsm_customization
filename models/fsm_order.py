@@ -283,6 +283,7 @@ class FSMOrder(models.Model):
     temp_residence_card = fields.Char(string="بطاقة السكن")
     temp_id_card = fields.Char(string="بطاقة الهوية")
     temp_family_number = fields.Char(string="الرقم العائلي")
+    temp_user_name = fields.Char(string="User Name")
 
     # Status tracking
     contract_changes_pending = fields.Boolean(string='Contract Changes Pending', default=False)
@@ -319,6 +320,7 @@ class FSMOrder(models.Model):
             self.temp_residence_card = getattr(self.customer_id, 'residence_card', '') or ''
             self.temp_id_card = getattr(self.customer_id, 'id_card', '') or ''
             self.temp_family_number = getattr(self.customer_id, 'family_number', '') or ''
+            self.temp_user_name = getattr(self.customer_id, 'user_name', '') or ''
             
             # Reset pending changes flag
             self.contract_changes_pending = False
@@ -332,7 +334,7 @@ class FSMOrder(models.Model):
                 'temp_vat_number', 'temp_port_number', 'temp_full_name_and_surname',
                 'temp_mother_name_and_surname', 'temp_first_phone_number', 'temp_second_phone_number',
                 'temp_email1', 'temp_subscription_type', 'temp_contract_number',
-                'temp_voucher_number', 'temp_residence_card', 'temp_id_card', 'temp_family_number')
+                'temp_voucher_number', 'temp_residence_card', 'temp_id_card', 'temp_family_number', 'temp_user_name')
     def _onchange_contract_fields(self):
         """Mark changes as pending when contract fields are modified"""
         if any([
@@ -342,7 +344,7 @@ class FSMOrder(models.Model):
             self.temp_vat_number, self.temp_port_number, self.temp_full_name_and_surname,
             self.temp_mother_name_and_surname, self.temp_first_phone_number, self.temp_second_phone_number,
             self.temp_email1, self.temp_subscription_type, self.temp_contract_number,
-            self.temp_voucher_number, self.temp_residence_card, self.temp_id_card, self.temp_family_number
+            self.temp_voucher_number, self.temp_residence_card, self.temp_id_card, self.temp_family_number, self.temp_user_name
         ]):
             self.contract_changes_pending = True
 
@@ -400,6 +402,8 @@ class FSMOrder(models.Model):
             update_vals['port_number'] = self.temp_port_number
         if self.temp_family_number:  
             update_vals['family_number'] = self.temp_family_number
+        if self.temp_user_name:  
+            update_vals['user_name'] = self.temp_user_name
         print("sif self.temp_full_name_and_surname:")
         if self.temp_full_name_and_surname:
             update_vals['full_name_and_surname'] = self.temp_full_name_and_surname
@@ -512,6 +516,7 @@ class FSMOrder(models.Model):
             'temp_residence_card': '',
             'temp_id_card': '',
             'temp_family_number': '',
+            'temp_user_name': '',
             'contract_changes_pending': False,
         }
         

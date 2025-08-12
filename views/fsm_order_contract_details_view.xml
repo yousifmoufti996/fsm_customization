@@ -53,6 +53,8 @@
                                     
                             <label for="temp_family_number" string="الرقم العائلي"/>
                             <field name="temp_family_number" nolabel="1"/>
+                            <label for="customer_user_name" string="User Name"/>
+                            <field name="customer_user_name" nolabel="1"/>
 
                             
                         </group>

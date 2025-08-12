@@ -11,6 +11,25 @@ class AddProductWizard(models.TransientModel):
     qty_available = fields.Float(string='Available Quantity', related='product_id.qty_available', readonly=True)
 
 
+
+
+
+
+
+
+
+
+
+
+    @api.constrains('quantity')
+    def _check_quantity_available(self):
+        for wizard in self:
+            if (wizard.quantity > wizard.qty_available ) or (wizard.qty_available == 0):
+                raise ValidationError(
+                    _('Cannot add quantity %s. Only %s available in stock.') % 
+                    (wizard.quantity, wizard.qty_available)
+                )
+
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
@@ -21,15 +40,6 @@ class AddProductWizard(models.TransientModel):
             res['fsm_order_id'] = self.env.context.get('fsm_order_id')
         return res
     
-    @api.constrains('quantity')
-    def _check_quantity_available(self):
-        for wizard in self:
-            if (wizard.quantity > wizard.qty_available ) or (wizard.qty_available == 0):
-                raise ValidationError(
-                    _('Cannot add quantity %s. Only %s available in stock.') % 
-                    (wizard.quantity, wizard.qty_available)
-                )
-
     def action_add_product(self):
         """Add product to FSM order and create/update sale order"""
         if self.fsm_order_id and self.product_id:

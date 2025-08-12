@@ -35,12 +35,11 @@ class AddProductWizard(models.TransientModel):
         """Add product to FSM order and create/update sale order"""
         if self.fsm_order_id and self.product_id:
             
-            # Create order line instead of just adding to many2many
-            self.env['fsm.order.line'].create({
-                'fsm_order_id': self.fsm_order_id.id,
-                'product_id': self.product_id.id,
-                'quantity': self.quantity,
-            })
+            # Add product to FSM order's product_ids Many2many field
+            if self.product_id not in self.fsm_order_id.product_ids:
+                self.fsm_order_id.write({
+                    'product_ids': [(4, self.product_id.id)]
+                })
             
             # Create or update sale order
             self._create_or_update_sale_order()
@@ -76,12 +75,27 @@ class AddProductWizard(models.TransientModel):
                 'picking_type_id': picking_type_id,
             }
             sale_order = self.env['sale.order'].create(sale_order_vals)
-            self.fsm_order_id.sale_order_id = sale_order.id
+            
+            # Link the sale order to the FSM order
+            self.fsm_order_id.write({
+                'sale_order_id': sale_order.id,
+                'sale_id': sale_order.id,  # This field might also be needed
+            })
         
         # Add product line to existing sale order
-        self.env['sale.order.line'].create({
-            'order_id': self.fsm_order_id.sale_order_id.id,
-            'product_id': self.product_id.id,
-            'product_uom_qty': self.quantity,
-            'price_unit': self.product_id.list_price,
-        })
+        existing_line = self.env['sale.order.line'].search([
+            ('order_id', '=', self.fsm_order_id.sale_order_id.id),
+            ('product_id', '=', self.product_id.id)
+        ])
+        
+        if existing_line:
+            # Update existing line quantity
+            existing_line.product_uom_qty += self.quantity
+        else:
+            # Create new line
+            self.env['sale.order.line'].create({
+                'order_id': self.fsm_order_id.sale_order_id.id,
+                'product_id': self.product_id.id,
+                'product_uom_qty': self.quantity,
+                'price_unit': self.product_id.list_price,
+            })

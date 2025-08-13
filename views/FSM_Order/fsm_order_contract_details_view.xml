@@ -144,7 +144,9 @@
             name="action_open_customer_location_wizard"
             class="oe_stat_button btn-primary"
             icon="fa-crosshairs"
-            attrs="{'invisible': [('customer_id', '=', False)]}">
+            invisible="customer_id == False">
+            
+            <!-- attrs="{'invisible': [('customer_id', '=', False)]}"> -->
         <div class="o_stat_info">
             <span class="o_stat_text">جلب موقع</span>
             <span class="o_stat_text">العميل الحالي</span>

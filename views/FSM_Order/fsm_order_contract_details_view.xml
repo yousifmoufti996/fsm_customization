@@ -131,6 +131,7 @@
     <button name="action_approve_contract_changes" 
             type="object" 
             class="oe_stat_button btn-success"
+            confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."
             icon="fa-check-circle">
         <div class="o_stat_info">
             <span class="o_stat_text">اعتماد</span>

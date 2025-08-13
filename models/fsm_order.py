@@ -260,7 +260,36 @@ class FSMOrder(models.Model):
         'category_id',
         string="نوع الاشتراك"
     )
-
+    def load_customer_to_contract(self):
+        """Load customer data into contract fields"""
+        if not self.customer_id:
+            return
+        
+        self.temp_full_name_and_surname = self.customer_id.full_name_and_surname
+        self.temp_mother_name_and_surname = self.customer_id.mother_name_and_surname
+        self.temp_user_name = self.customer_id.user_name
+        self.temp_first_phone_number = self.customer_id.first_phone_number
+        self.temp_second_phone_number = self.customer_id.second_phone_number
+        self.temp_email1 = self.customer_id.email1
+        self.temp_area_name = self.customer_id.area_name_id
+        self.temp_area_number = self.customer_id.area_number_id
+        self.temp_home_number = self.customer_id.home_number
+        self.temp_nearest_point = self.customer_id.nearest_point
+        self.temp_latitude_coordinates = self.customer_id.partner_latitude
+        self.temp_longitude_coordinates = self.customer_id.partner_longitude
+        self.temp_local_number = self.customer_id.local_number
+        self.temp_alley_number = self.customer_id.alley_number
+        self.temp_house_number = self.customer_id.house_number
+        self.temp_vat_number = self.customer_id.vat_number
+        self.temp_port_number = self.customer_id.port_number
+        self.temp_contract_number = self.customer_id.contract_number
+        self.temp_voucher_number = self.customer_id.voucher_number
+        self.temp_residence_card = self.customer_id.residence_card
+        self.temp_id_card = self.customer_id.id_card
+        self.temp_family_number = self.customer_id.family_number
+        self.temp_subscription_type = self.customer_id.category_id
+        self.temp_menu_type_ids = self.customer_id.menu_type_ids
+        self.contract_changes_pending = False
     # def _auto_init(self):
     #     """Clear temp fields before conversion to prevent data type errors"""
     #     # Clear existing data in temp_area_name and temp_area_number before conversion

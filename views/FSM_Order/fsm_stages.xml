@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- FSM Order Stages -->
+        
+        <!-- Stage 1: On The Way / في الطريق -->
+        <record id="fsm_stage_on_the_way" model="fsm.stage">
+            <field name="name">في الطريق</field>
+            <field name="sequence">101</field>
+            <field name="stage_type">order</field>
+        </record>
+        <record id="fsm_stage_on_the_wayy" model="fsm.stage">
+            <field name="name">onway</field>
+            <field name="sequence">1012</field>
+            <field name="stage_type">order</field>
+        </record>
+        
+
+        <!-- Stage 2: Work in Progress / جاري العمل -->
+        <record id="fsm_stage_work_in_progress" model="fsm.stage">
+            <field name="name">جاري العمل</field>
+            <field name="sequence">201</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 3: Postponed / مؤجل -->
+        <record id="fsm_stage_postponed" model="fsm.stage">
+            <field name="name">مؤجل</field>
+            <field name="sequence">301</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 4: Marketing Follow-up / متابعة التسويق -->
+        <record id="fsm_stage_marketing_followup" model="fsm.stage">
+            <field name="name">متابعة التسويق</field>
+            <field name="sequence">401</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 5: Sales Follow-up / متابعة المبيعات -->
+        <record id="fsm_stage_sales_followup" model="fsm.stage">
+            <field name="name">متابعة المبيعات</field>
+            <field name="sequence">501</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 6: Waiting / في الانتظار -->
+        <record id="fsm_stage_waiting" model="fsm.stage">
+            <field name="name">في الانتظار</field>
+            <field name="sequence">601</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 7: Cancelled / ملغي -->
+        <record id="fsm_stage_cancelled" model="fsm.stage">
+            <field name="name">ملغي</field>
+            <field name="sequence">701</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 8: Work Completion Request / طلب اتمام العمل -->
+        <record id="fsm_stage_completion_request" model="fsm.stage">
+            <field name="name">طلب اتمام العمل</field>
+            <field name="sequence">801</field>
+            <field name="stage_type">order</field>
+        </record>
+
+        <!-- Stage 9: Work Completed / تم العمل -->
+        <record id="fsm_stage_work_completed" model="fsm.stage">
+            <field name="name">تم العمل</field>
+            <field name="sequence">901</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 10: Audited / تم التدقيق -->
+        <record id="fsm_stage_audited" model="fsm.stage">
+            <field name="name">تم التدقيق</field>
+            <field name="sequence">1001</field>
+            <field name="stage_type">order</field>
+            <field name="is_closed">True</field>
+        </record>
+
+        <!-- Stage 11: Emergency Stop / توقف طارئ -->
+        <record id="fsm_stage_emergency_stop" model="fsm.stage">
+            <field name="name">توقف طارئ</field>
+            <field name="sequence">1101</field>
+            <field name="stage_type">order</field>
+        </record>
+
+
+
+<!-- 
+         <record id="view_fsm_order_tree_inherit_problemn" model="ir.ui.view">
+            <field name="name">fsm.order.tree.inherit.problemn</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='stage_id']" position="after">
+                    <field name="can_start_work" invisible="1"/>
+                    <field name="can_complete_work" invisible="1"/>
+                    <field name="can_cancel" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+         -->
+
+        <!-- Inherit FSM Order Form View to Add Stage Buttons -->
+        <record id="fsm_order_form_stage_buttons" model="ir.ui.view">
+            <field name="name">fsm.order.form.stage.buttons</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+           
+                <xpath expr="//group[@name='description_grp']" position="before">
+
+
+                    <field name="fields_locked" invisible="1"/>
+                    <field name="is_postponed" invisible="1"/>
+                    <field name="is_work_in_progress" invisible="1"/>
+                    <field name="is_on_the_way" invisible="1"/>
+                    <field name="is_completion_request" invisible="1"/>
+                    <field name="is_emergency_stop" invisible="1"/>
+                    <field name="is_cancelled" invisible="1"/>
+                    <field name="is_work_completed" invisible="1"/>
+                    <field name="is_marketing_followup" invisible="1"/>
+                    <field name="is_sales_followup" invisible="1"/>
+                    <field name="is_waiting" invisible="1"/>
+                    <field name="is_audited" invisible="1"/>
+                    <field name="team_leader_id" invisible="1"/>
+                    <field name="manager_id" invisible="1"/>
+                    <field name="worker_id" invisible="1"/>
+                </xpath>
+
+                
+                <xpath expr="//header" position="inside">
+               
+                    <field name="fields_locked"  invisible="1"/> 
+                    <field name="is_on_the_way"  invisible="1"/> 
+                        <!-- On The Way Button -->
+
+                        <button name="action_complete" 
+                            string="Complete" 
+                            type="object" 
+                            class="btn-success"
+                            invisible="1"/>
+                    
+                        <button name="action_set_on_the_way" 
+                            string="في الطريق" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="is_on_the_way or (team_leader_id and team_leader_id != uid) or (worker_id and worker_id != uid) or is_audited or is_closed or is_completion_request or is_work_completed or is_work_in_progress"
+                            />
+                            
+                            
+                        <!-- Work in Progress Button -->
+                        <button name="action_set_work_in_progress" 
+                            string="جاري العمل" 
+                            type="object" 
+                            class="btn-warning"
+                            invisible="is_work_in_progress"/>
+
+                            <!-- or (team_leader_id and team_leader_id != uid) 
+                            or not is_on_the_way 
+                            or (team_leader_id == uid and not is_work_in_progress)" -->
+                        
+                        
+                        <!-- Postponed Button -->
+                        <button name="action_set_postponed" 
+                            string="مؤجل" 
+                            type="object" 
+                            class="btn-secondary"
+                            invisible="
+                            is_postponed
+                            or stage_id.is_closed == 'True'
+                            or is_work_in_progress
+                            or is_closed 
+                            or (team_leader_id and team_leader_id != uid)
+                        " 
+                        />
+                    
+                        
+                        <!-- Marketing Follow-up Button -->
+                        <button name="action_set_marketing_followup" 
+                            string="متابعة التسويق" 
+                            type="object" 
+                            class="btn-info"
+                            invisible="is_marketing_followup or is_work_in_progress or is_on_the_way or stage_id.is_closed or (team_leader_id and team_leader_id != uid)"/>
+
+
+                        <!-- Sales Follow-up Button -->
+                        <button name="action_set_sales_followup" 
+                            string="متابعة المبيعات" 
+                            type="object" 
+                            class="btn-info"
+                            invisible="is_sales_followup or is_work_in_progress or stage_id.is_closed == 'True' or is_on_the_way or (team_leader_id and team_leader_id != uid)" />
+
+
+                        <!-- Waiting Button -->
+                        <button name="action_set_waiting" 
+                            string="في الانتظار" 
+                            type="object" 
+                            class="btn-light"
+                            invisible="is_waiting or is_on_the_way or stage_id.is_closed or (team_leader_id and team_leader_id != uid)"/>
+                            
+                        
+                        
+                        <!-- Cancelled Button -->
+                        <button name="action_set_cancelled" 
+                            string="الغاء الطلب" 
+                            type="object" 
+                            class="btn-danger"
+                            invisible="stage_id.is_closed == 'True' or (team_leader_id and team_leader_id != uid) or is_cancelled or stage_id.name =='ملغي' or is_work_in_progress or  fields_locked or is_on_the_way"
+
+                            confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
+                                <!-- invisible="is_on_the_way or (worker_id and worker_id != uid) or is_audited or is_closed or is_completion_request or is_work_completed or is_work_in_progress" -->
+                        
+                        <!-- Completion Request Button - Team Leader only, after "جاري العمل" -->
+                        <button name="action_set_completion_request" 
+                            string="طلب اتمام العمل" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible=" not is_work_in_progress or is_completion_request or (manager_id and manager_id != uid) or stage_id.is_closed == 'True' or (team_leader_id and team_leader_id != uid) or not is_work_in_progress or is_work_completed"
+                            confirm="هل تم إنجاز العمل بالفعل؟"/>
+
+                        <!-- Work Completed Button - Manager only -->
+                        <button name="action_set_work_completed" 
+                            string="تم العمل" 
+                            type="object" 
+                            class="btn-success"
+                            invisible="not is_completion_request or (team_leader_id and team_leader_id != uid) or (manager_id and manager_id != uid) or is_work_completed"
+                            confirm="هل تم إنجاز العمل بالفعل؟"/>
+                        
+                        <!-- Audited Button -->
+                        <button name="action_set_audited" 
+                            string="تم التدقيق" 
+                            type="object" 
+                            class="btn-success"
+                            invisible="not is_work_completed or (team_leader_id and team_leader_id != uid) or is_audited"
+                            confirm="هل تم التدقيق على العمل؟"/>
+
+                        <!-- Emergency Stop Button -->
+                        <button name="action_set_emergency_stop" 
+                            string="توقف طارئ" 
+                            type="object" 
+                            class="btn-danger"
+                            invisible="is_emergency_stop or is_closed or (team_leader_id and team_leader_id != uid) or is_work_completed or is_completion_request or is_audited or is_cancelled or is_waiting or is_sales_followup or is_marketing_followup or is_postponed"
+                            confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
+            </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

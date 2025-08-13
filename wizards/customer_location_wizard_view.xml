@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_customer_location_wizard_form" model="ir.ui.view">
+            <field name="name">customer.location.wizard.form</field>
+            <field name="model">customer.location.wizard</field>
+            <field name="arch" type="xml">
+                <form string="الحصول على موقع العميل الحالي">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="customer_id" readonly="1"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <field name="fsm_order_id" invisible="1"/>
+                            
+                            <!-- Current Location Section -->
+                            <group string="الموقع الحالي المحفوظ" col="2">
+                                <field name="current_latitude" string="خط العرض الحالي"/>
+                                <field name="current_longitude" string="خط الطول الحالي"/>
+                            </group>
+                            
+                            <!-- Get Current Location Button -->
+                            <div class="text-center mb-3">
+                                <button name="action_get_customer_browser_location"
+                                        type="object"
+                                        string="🎯 الحصول على موقع العميل الحالي"
+                                        class="btn btn-primary btn-lg"/>
+                                <br/>
+                                <small class="text-muted mt-2">
+                                    سيتم حفظ الموقع الحالي كموقع لهذا العميل
+                                </small>
+                            </div>
+                            
+                            <!-- New Coordinates Section -->
+                            <separator string="الإحداثيات الجديدة"/>
+                            <group col="2">
+                                <field name="latitude" string="خط العرض الجديد"/>
+                                <field name="longitude" string="خط الطول الجديد"/>
+                                <field name="accuracy_m" string="دقة الموقع (متر)" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_save_customer_location" 
+                                type="object" 
+                                string="حفظ موقع العميل" 
+                                class="btn-primary"
+                               invisible="latitude == False or longitude == False"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

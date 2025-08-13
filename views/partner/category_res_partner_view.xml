@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Partner Form View to Add Category -->
+        <record id="view_partner_form_category" model="ir.ui.view">
+            <field name="name">res.partner.form.category</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+               
+                <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='category_id']]" position="after">
+                    <label for="partner_category_id" class="oe_inline"/>
+                    <div class="o_row o_row_readonly">
+                        <field name="partner_category_id" string="Black/White list"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit Partner Tree View to Add Category -->
+        <record id="view_partner_tree_category" model="ir.ui.view">
+            <field name="name">res.partner.tree.category</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="partner_category_id" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit Partner Search View to Add Category Filter -->
+        <record id="view_partner_search_category" model="ir.ui.view">
+            <field name="name">res.partner.search.category</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="partner_category_id"/>
+                </xpath>
+                <xpath expr="//filter[@name='inactive']" position="after">
+                    <separator/>
+                    <filter string="Blacklisted" name="blacklisted" 
+                            domain="[('partner_category_id.code', '=', 'BLACKLIST')]"/>
+                    <filter string="Whitelisted" name="whitelisted" 
+                            domain="[('partner_category_id.code', '=', 'WHITELIST')]"/>
+                    <filter string="VIP" name="vip" 
+                            domain="[('partner_category_id.code', '=', 'VIP')]"/>
+                    <filter string="Uncategorized" name="uncategorized" 
+                            domain="[('partner_category_id', '=', False)]"/>
+                </xpath>
+            
+            </field>
+        </record>
+
+        <!-- Partner Kanban View with Category Colors -->
+        <!-- <record id="view_partner_kanban_category" model="ir.ui.view">
+            <field name="name">res.partner.kanban.category</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="default_group_by">partner_category_id</attribute>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_kanban_card')]" position="attributes">
+                    <attribute name="t-attf-class">oe_kanban_card oe_kanban_global_click #{record.partner_category_color.raw_value and 'oe_kanban_color_' + record.partner_category_color.raw_value or ''}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="partner_category_id"/>
+                    <field name="partner_category_color"/>
+                    <field name="partner_category_name"/>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_kanban_partner_categories')]" position="after">
+                    <div class="oe_kanban_partner_category" t-if="record.partner_category_name.value">
+                        <span class="badge badge-pill"><t t-esc="record.partner_category_name.value"/></span>
+                    </div>
+                </xpath>
+            </field>
+        </record> -->
+
+        <!-- Action to Manage Partner Categories (Quick Access) -->
+        <!-- <record id="action_set_partner_blacklist" model="ir.actions.server">
+            <field name="name">Set as Blacklisted</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                for record in records:
+                    record.set_partner_blacklist()
+            </field>
+        </record> -->
+
+        <record id="action_set_partner_whitelist" model="ir.actions.server">
+            <field name="name">Set as Whitelisted</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                for record in records:
+                    record.set_whitelist()
+            </field>
+        </record>
+
+        <record id="action_remove_partner_category" model="ir.actions.server">
+            <field name="name">Remove Category</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                for record in records:
+                    record.remove_category()
+            </field>
+        </record>
+
+    </data>
+</odoo>

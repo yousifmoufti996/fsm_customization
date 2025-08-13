@@ -17,7 +17,7 @@
             <xpath expr="//field[@name='email1']" position="replace"/>
             <xpath expr="//field[@name='subscription_type']" position="replace"/>
 
-            <!-- Hide these fields from the old tab (we'll move them to new tab) -->
+            <!-- Hide these fields from the old tab (we'll move them to new locations) -->
             <xpath expr="//field[@name='menu_type_ids']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -48,26 +48,34 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Hide original email, website, tags, vat to move them later -->
+            <!-- <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='website']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+          
+
+        
+         
+            <!-- Add service details to main area before notebook -->
             <xpath expr="//notebook" position="before"> 
                 <group invisible="1">
                     <field name="area_name"/>
                     <field name="area_number"/>
                     <field name="zip"/>
                 </group>
-                <group string="تفاصيل الخدمة" col="2">
-                    <group  >
-                        <field name="menu_type_ids"  string="مجموع عملاء فرعية" widget="many2many_tags" readonly="0"/>
-                        <field name="ref" string="رقم المحلة"/>
-                        <field name="pole" string="العمود"/>
-                    </group>
-                    <group>
-                        <field name="user_name" string="User Name"/>
-                        <field name="family_number" string="الرقم العائلي"/>
-                        <field name="category_id" string="نوع الاشتراك" widget="many2many_tags"/>
-                    </group>
-                </group>
+                
+          
+            
             </xpath>
-
 
             <!-- Change labels of standard fields to match Arabic names -->
 
@@ -89,12 +97,54 @@
             <xpath expr="//field[@name='zip']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <!-- <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
 
             <xpath expr="//field[@name='zip']" position="after">
+            
                 <field name="area_number_id" string="رقم المنطقة"
                     placeholder="اختر رقم المنطقة..."
                     domain="[('area_name_id', '=', area_name_id)]"
                     options="{'no_create': True, 'no_create_edit': True}"/>
+                    <!-- <label for="menu_type_ids" string="مجموع عملاء فرعية"/> -->
+
+                    <field name="menu_type_ids"  widget="many2many_tags" readonly="0" placeholder="مجموع عملاء فرعية..."/>
+
+
+            </xpath>
+            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='email']]" position="after">
+                <label for="family_number" class="oe_inline"/>
+                <div class="o_row o_row_readonly">
+                    <field name="family_number" string="الرقم العائلي" readonly="0" />
+                </div>
+            </xpath>
+
+            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='family_number']]" position="after">
+                <label for="category_id" class="oe_inline"/>
+                <div class="o_row o_row_readonly">
+                    <field name="category_id" string="نوع الاشتراك" widget="many2many_tags"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='category_id']]" position="after">
+                <label for="ref" class="oe_inline"/>
+                <div class="o_row o_row_readonly">
+                    <field name="ref" string="رقم المحلة"/>
+                </div>
+            </xpath>
+            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='ref']]" position="after">
+                <label for="pole" class="oe_inline"/>
+                <div class="o_row o_row_readonly">
+                    <field name="pole" string="العمود"/>
+                    <field name="number_of_expired_days" string="العمود" invisible='1'/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='number_of_expired_days']" position="after">
+                <label for="user_name" class="oe_inline"/>
+                <div class="o_row o_row_readonly">
+                    <field name="user_name" string="User Name"/>
+                </div>
             </xpath>
 
             <xpath expr="//field[@name='phone']" position="attributes">
@@ -105,13 +155,8 @@
                 <attribute name="placeholder">رقم الهاتف الثاني</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='email']" position="attributes">
-                <attribute name="placeholder">البريد الالكتروني</attribute>
-            </xpath>
-
             <xpath expr="//field[@name='name']" position="attributes">
                 <attribute name="placeholder">الاسم رباعي واللقب</attribute>
-                
             </xpath>
 
             <xpath expr="//field[@name='partner_longitude']" position="attributes">
@@ -128,9 +173,7 @@
                         name="action_open_google_maps"
                         class="oe_stat_button"
                         icon="fa-map-marker"
-                        invisible="(not partner_latitude) or (not partner_longitude)"
-
-                        >
+                        invisible="(not partner_latitude) or (not partner_longitude)">
                     <div class="o_stat_info">
                         <span class="o_stat_text">عرض موقع الزبون</span>
                     </div>
@@ -146,6 +189,8 @@
                     </div>
                 </button>
             </xpath>
+            
+            <!-- Hide city, state, country -->
             <field name="city" invisible='1'/>
             <field name="state_id" invisible='1'/>
             <xpath expr="//field[@name='city']" position="attributes">
@@ -155,6 +200,11 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Hide original comment field to move it -->
+            <xpath expr="//field[@name='comment']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             
@@ -174,8 +224,6 @@
                 <field name="area_number" optional="hide" string="رقم المنطقة (نص)"/>
                 <field name="partner_latitude" invisible='1' />
                 <field name="partner_longitude" invisible='1'/>
-
-          
 
                 <field name="google_maps_url" 
                     string="📍 خرائط"

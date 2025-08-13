@@ -33,3 +33,12 @@ access_area_number_user,area.number.user,model_area_number,base.group_user,1,1,1
 access_area_number_manager,area.number.manager,model_area_number,base.group_system,1,1,1,1
 
 access_current_location_wizard_user,current.location.wizard.user,model_current_location_wizard,base.group_user,1,1,1,1
+
+
+access_partner_category_user,partner.category.user,model_partner_category,base.group_user,1,0,0,0
+access_partner_category_manager,partner.category.manager,model_partner_category,base.group_system,1,1,1,1
+access_partner_category_sales,partner.category.sales,model_partner_category,sales_team.group_sale_manager,1,1,1,0
+
+access_customer_location_wizard_user,customer.location.wizard.user,model_customer_location_wizard,base.group_user,1,1,1,1
+access_customer_location_wizard_fsm_user,customer.location.wizard.fsm.user,model_customer_location_wizard,fieldservice.group_fsm_user,1,1,1,1
+access_customer_location_wizard_fsm_manager,customer.location.wizard.fsm.manager,model_customer_location_wizard,fieldservice.group_fsm_manager,1,1,1,1

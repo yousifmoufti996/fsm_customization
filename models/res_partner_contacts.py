@@ -10,6 +10,11 @@ class ResPartner(models.Model):
     )
     user_name = fields.Char("User Name")
     
+    @api.onchange('area_name_id')
+    def _onchange_area_name_id(self):
+        # Clear the menu_type_ids when area changes
+        if self.area_name_id:
+            self.menu_type_ids = False 
     # Add unique constraint
     _sql_constraints = [
         ('user_name_unique', 'UNIQUE(user_name)', 'اسم المستخدم موجود بالفعل! يرجى اختيار اسم مستخدم آخر.')

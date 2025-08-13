@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Inherit FSM Order form view to add problem fields -->
+    <record id="view_fsm_order_form_inherit_problem" model="ir.ui.view">
+        <field name="name">fsm.order.form.inherit.problem</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='description_grp']" position="after">
+                <group string="تفاصيل المشكلة والحل" col="2">
+                    <group string="تفاصيل المشكلة">
+                        <field name="customer_id" invisible="1"/>
+                        <field name="problem_type_id" string="نوع المشكلة"/>
+                        <field name="estimated_problem_duration_display" string="المدة المتوقعة" readonly="1"/>
+                    </group>
+                    <group string="تفاصيل الحل">
+                        <field name="problem_solution_id" string="الحل المختار"
+                            domain="[('problem_type_id', '=', problem_type_id)]"/>
+                    </group>
+                </group>
+                
+                <group name="solution_details" invisible="problem_solution_id == False" col="1">
+                    <field name="solution_description" string="وصف الحل" readonly="1" 
+                        widget="text" placeholder="سيظهر وصف الحل هنا بعد اختيار الحل..."/>
+                </group>
+            </xpath>
+
+
+            
+        </field>
+    </record>
+
+    <!-- Inherit FSM Order tree view to add problem fields -->
+    <record id="view_fsm_order_tree_inherit_problem" model="ir.ui.view">
+        <field name="name">fsm.order.tree.inherit.problem</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="problem_type_id" optional="show"/>
+                <field name="estimated_problem_duration_display" />
+                <field name="problem_solution_id" optional="show"/>
+
+             
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

@@ -281,6 +281,10 @@ class FSMOrder(models.Model):
     temp_contract_number = fields.Char(string="رقم العقد")
     temp_voucher_number = fields.Char(string="رقم الوصل")
     temp_residence_card = fields.Char(string="بطاقة السكن")
+    temp_menu_type_ids = fields.Many2many( related='customer_id.menu_type_ids', string='مجموع عملاء فرعية', readonly=False)
+   
+    
+  
     temp_id_card = fields.Char(string="بطاقة الهوية")
     temp_family_number = fields.Char(string="الرقم العائلي")
     temp_user_name = fields.Char(string="User Name")
@@ -318,6 +322,7 @@ class FSMOrder(models.Model):
             self.temp_contract_number = getattr(self.customer_id, 'contract_number', '') or ''
             self.temp_voucher_number = getattr(self.customer_id, 'voucher_number', '') or ''
             self.temp_residence_card = getattr(self.customer_id, 'residence_card', '') or ''
+            self.temp_menu_type_ids = getattr(self.customer_id, 'menu_type_ids', '') or False
             self.temp_id_card = getattr(self.customer_id, 'id_card', '') or ''
             self.temp_family_number = getattr(self.customer_id, 'family_number', '') or ''
             self.temp_user_name = getattr(self.customer_id, 'user_name', '') or ''
@@ -334,7 +339,7 @@ class FSMOrder(models.Model):
                 'temp_vat_number', 'temp_port_number', 'temp_full_name_and_surname',
                 'temp_mother_name_and_surname', 'temp_first_phone_number', 'temp_second_phone_number',
                 'temp_email1', 'temp_subscription_type', 'temp_contract_number',
-                'temp_voucher_number', 'temp_residence_card', 'temp_id_card', 'temp_family_number', 'temp_user_name')
+                'temp_voucher_number', 'temp_residence_card', 'temp_id_card', 'temp_family_number', 'temp_user_name', 'temp_menu_type_ids')
     def _onchange_contract_fields(self):
         """Mark changes as pending when contract fields are modified"""
         if any([
@@ -344,7 +349,7 @@ class FSMOrder(models.Model):
             self.temp_vat_number, self.temp_port_number, self.temp_full_name_and_surname,
             self.temp_mother_name_and_surname, self.temp_first_phone_number, self.temp_second_phone_number,
             self.temp_email1, self.temp_subscription_type, self.temp_contract_number,
-            self.temp_voucher_number, self.temp_residence_card, self.temp_id_card, self.temp_family_number, self.temp_user_name
+            self.temp_voucher_number, self.temp_residence_card,self.temp_menu_type_ids, self.temp_id_card, self.temp_family_number, self.temp_user_name
         ]):
             self.contract_changes_pending = True
 
@@ -428,6 +433,8 @@ class FSMOrder(models.Model):
             update_vals['voucher_number'] = self.temp_voucher_number
         if self.temp_residence_card:
             update_vals['residence_card'] = self.temp_residence_card
+        if self.temp_menu_type_ids:
+            update_vals['menu_type_ids'] = self.temp_menu_type_ids
         if self.temp_id_card:
             update_vals['id_card'] = self.temp_id_card
 
@@ -514,6 +521,7 @@ class FSMOrder(models.Model):
             'temp_contract_number': '',
             'temp_voucher_number': '',
             'temp_residence_card': '',
+            'temp_menu_type_ids': False,
             'temp_id_card': '',
             'temp_family_number': '',
             'temp_user_name': '',
@@ -707,12 +715,64 @@ class FSMOrder(models.Model):
         }
 
 
+    # def action_navigate_to(self):
+    #     """Open navigation to the order location"""
+    #     if self.location_id and self.location_id.partner_latitude and self.location_id.partner_longitude:
+    #         url = f"https://maps.google.com/maps?daddr={self.location_id.partner_latitude},{self.location_id.partner_longitude}"
+    #         return {
+    #             'type': 'ir.actions.act_url',
+    #             'url': url,
+    #             'target': 'new',
+    #         }
     def action_navigate_to(self):
-        """Open navigation to the order location"""
+        """Open navigation to the order location with routing"""
         if self.location_id and self.location_id.partner_latitude and self.location_id.partner_longitude:
-            url = f"https://maps.google.com/maps?daddr={self.location_id.partner_latitude},{self.location_id.partner_longitude}"
+            # Return a client action that will handle geolocation and routing
             return {
-                'type': 'ir.actions.act_url',
-                'url': url,
-                'target': 'new',
+                'type': 'ir.actions.client',
+                'tag': 'fsm_navigate_with_route',
+                'params': {
+                    'latitude': self.location_id.partner_latitude,
+                    'longitude': self.location_id.partner_longitude,
+                    'location_name': self.location_id.name,
+                    'order_name': self.name,
+                }
             }
+        else:
+            # Fallback notification if no coordinates
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Navigation Error',
+                    'message': 'No coordinates found for this location. Please update the location coordinates.',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+            
+    def action_open_customer_location_wizard(self):
+        """Open wizard to get current location and save it to customer"""
+        self.ensure_one()
+        if not self.customer_id:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'خطأ',
+                    'message': 'لا يوجد عميل محدد لهذا الطلب',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+        
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "customer.location.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_customer_id": self.customer_id.id,
+                "default_fsm_order_id": self.id,
+            },
+        }

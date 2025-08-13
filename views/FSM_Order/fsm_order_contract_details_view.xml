@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Contract Details Tab for FSM Order -->
+    <record id="view_fsm_order_form_contract_details" model="ir.ui.view">
+        <field name="name">fsm.order.form.contract.details</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Contract Details tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="تفاصيل العقد" name="contract_details" invisible="customer_id == False">
+    <group>
+        <!-- Personal Information -->
+        <group string="المعلومات الشخصية">
+            <label for="temp_full_name_and_surname" string="الاسم رباعي واللقب"/>
+            <field name="temp_full_name_and_surname" nolabel="1"/>
+
+            <label for="temp_mother_name_and_surname" string="اسم الام الثلاثي واللقب"/>
+            <field name="temp_mother_name_and_surname" nolabel="1"/>
+
+            <label for="temp_user_name" string="User Name"/>
+            <field name="temp_user_name" nolabel="1"/>
+        </group>
+
+        <!-- Contact Information -->
+        <group string="معلومات الاتصال">
+            <label for="temp_first_phone_number" string="رقم الهاتف الأول"/>
+            <field name="temp_first_phone_number" nolabel="1"/>
+
+            <label for="temp_second_phone_number" string="رقم الهاتف الثاني"/>
+            <field name="temp_second_phone_number" nolabel="1"/>
+
+            <label for="temp_email1" string="البريد الالكتروني"/>
+            <field name="temp_email1" nolabel="1"/>
+        </group>
+    </group>
+
+    <group>
+        <!-- Contract Information -->
+        <group string="معلومات العقد">
+            <label for="temp_subscription_type" string="نوع الاشتراك"/>
+            <field name="temp_subscription_type" nolabel="1" widget="many2many_tags"/>
+
+            <label for="temp_contract_number" string="رقم العقد"/>
+            <field name="temp_contract_number" nolabel="1"/>
+
+            <label for="temp_voucher_number" string="رقم الوصل"/>
+            <field name="temp_voucher_number" nolabel="1"/>
+
+            <label for="temp_vat_number" string="رقم الفات"/>
+            <field name="temp_vat_number" nolabel="1"/>
+
+            <label for="temp_port_number" string="رقم البورت"/>
+            <field name="temp_port_number" nolabel="1"/>
+
+            <label for="temp_menu_type_ids" string='مجموع عملاء فرعية'/>
+            <field name="temp_menu_type_ids" nolabel="1" widget="many2many_tags" edit="1"/>
+        </group>
+
+        <!-- Address and Location -->
+        <group string="العنوان والموقع">
+            <label for="temp_area_name" string="اسم المنطقة"/>
+            <field name="temp_area_name" nolabel="1" placeholder="اختر اسم المنطقة..."
+                   options="{'no_create': True, 'no_create_edit': True}"/>
+
+            <label for="temp_area_number" string="رقم المنطقة"/>
+            <field name="temp_area_number" nolabel="1"
+                   placeholder="اختر رقم المنطقة..."
+                   domain="[('area_name_id', '=', temp_area_name)]"
+                   options="{'no_create': True, 'no_create_edit': True}"/>
+
+            <label for="temp_home_number" string="رقم المنزل"/>
+            <field name="temp_home_number" nolabel="1"/>
+
+            <label for="temp_nearest_point" string="أقرب نقطة دالة"/>
+            <field name="temp_nearest_point" nolabel="1"/>
+
+            <label for="temp_longitude_coordinates" string="احداثيات الطول"/>
+            <field name="temp_longitude_coordinates" nolabel="1"/>
+
+            <label for="temp_latitude_coordinates" string="احداثيات العرض"/>
+            <field name="temp_latitude_coordinates" nolabel="1"/>
+        </group>
+
+        <!-- Document Information -->
+        <group string="معلومات المستمسكات">
+            <label for="temp_id_card" string="بطاقة الهوية"/>
+            <field name="temp_id_card" nolabel="1"/>
+
+            <label for="temp_residence_card" string="بطاقة السكن"/>
+            <field name="temp_residence_card" nolabel="1"/>
+
+            <label for="temp_family_number" string="الرقم العائلي"/>
+            <field name="temp_family_number" nolabel="1"/>
+
+            <label for="temp_local_number" string="رقم المحلة"/>
+            <field name="temp_local_number" nolabel="1"/>
+
+            <label for="temp_alley_number" string="رقم الزقاق"/>
+            <field name="temp_alley_number" nolabel="1"/>
+
+            <label for="temp_house_number" string="رقم الدار"/>
+            <field name="temp_house_number" nolabel="1"/>
+        </group>
+    </group>
+
+    <!-- Approval buttons -->
+    <!-- <div class="oe_button_box" style="margin-top: 20px;">
+        <button name="action_approve_contract_changes" 
+                type="object" 
+                class="oe_stat_button btn-success"
+                string="اعتماد التغييرات"
+                confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."/>
+        <button type="object"
+                name="action_open_customer_location_wizard"
+                class="oe_stat_button"
+                icon="fa-crosshairs"
+                invisible="customer_id == False">
+            <div class="o_stat_info">
+                <span class="o_stat_text">جلب موقع</span>
+                <span class="o_stat_text">العميل الحالي</span>
+            </div>
+        </button>
+    </div> -->
+
+    
+<div class="oe_button_box" name="button_box">
+    <!-- Approve Changes Button -->
+    <button name="action_approve_contract_changes" 
+            type="object" 
+            class="oe_stat_button btn-success"
+            icon="fa-check-circle">
+        <div class="o_stat_info">
+            <span class="o_stat_text">اعتماد</span>
+            <span class="o_stat_text">التغييرات</span>
+        </div>
+    </button>
+    
+    <!-- Get Location Button -->
+    <button type="object"
+            name="action_open_customer_location_wizard"
+            class="oe_stat_button btn-primary"
+            icon="fa-crosshairs"
+            attrs="{'invisible': [('customer_id', '=', False)]}">
+        <div class="o_stat_info">
+            <span class="o_stat_text">جلب موقع</span>
+            <span class="o_stat_text">العميل الحالي</span>
+        </div>
+    </button>
+</div>
+<!-- 
+<div class="row mt-3">
+    <div class="col-md-6">
+        <button name="action_approve_contract_changes" 
+                type="object" 
+                class="btn btn-success btn-lg w-100"
+                confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
+            <i class="fa fa-check-circle me-2"></i>
+            اعتماد التغييرات
+        </button>
+    </div>
+    <div class="col-md-6">
+        <button type="object"
+                name="action_open_customer_location_wizard"
+                class="btn btn-primary btn-lg w-100"
+                attrs="{'invisible': [('customer_id', '=', False)]}">
+            <i class="fa fa-crosshairs me-2"></i>
+            جلب موقع العميل الحالي
+        </button>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border-success">
+            <div class="card-body text-center p-3">
+                <button name="action_approve_contract_changes" 
+                        type="object" 
+                        class="btn btn-success btn-lg w-100"
+                        confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
+                    <i class="fa fa-check-circle fa-2x d-block mb-2"></i>
+                    <strong>اعتماد التغييرات</strong>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card border-primary" attrs="{'invisible': [('customer_id', '=', False)]}">
+            <div class="card-body text-center p-3">
+                <button type="object"
+                        name="action_open_customer_location_wizard"
+                        class="btn btn-primary btn-lg w-100">
+                    <i class="fa fa-crosshairs fa-2x d-block mb-2"></i>
+                    <strong>جلب موقع العميل</strong>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="oe_button_box" name="button_box">
+  
+    <button name="action_approve_contract_changes" 
+            type="object" 
+            class="oe_stat_button btn-success"
+            icon="fa-check-circle"
+            confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <i class="fa fa-check"></i>
+            </span>
+            <span class="o_stat_text">اعتماد التغييرات</span>
+        </div>
+    </button>
+    
+   
+    <button type="object"
+            name="action_open_customer_location_wizard"
+            class="oe_stat_button btn-info"
+            icon="fa-map-marker"
+            attrs="{'invisible': [('customer_id', '=', False)]}">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <i class="fa fa-crosshairs"></i>
+            </span>
+            <span class="o_stat_text">جلب موقع العميل</span>
+        </div>
+    </button>
+    
+   
+    <button type="object"
+            name="action_view_customer_location"
+            class="oe_stat_button"
+            icon="fa-location-arrow"
+            attrs="{'invisible': ['|', ('customer_id', '=', False), '|', ('customer_id.partner_latitude', '=', False), ('customer_id.partner_longitude', '=', False)]}">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <field name="customer_id" invisible="1"/>
+                موجود
+            </span>
+            <span class="o_stat_text">إحداثيات العميل</span>
+        </div>
+    </button>
+</div> -->
+
+
+</page>
+
+
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

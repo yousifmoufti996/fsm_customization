@@ -10,12 +10,12 @@
             <xpath expr="//field[@name='person_id'][not(ancestor::group[@name='assignment_details'])]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='fsm_route_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='fsm_route_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='calendar_event_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath>
+            </xpath> -->
 
 
             <!-- <xpath expr="//div[@class='o_address_format']" position="attributes">

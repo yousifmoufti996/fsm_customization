@@ -24,7 +24,7 @@ from . import (
     res_partner_contacts,
     fsm_order_geo,
     partner_category,
-    res_partner_inherit,
+    # res_partner_inherit,
     customer_location_wizard,
     
 )

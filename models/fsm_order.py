@@ -31,7 +31,7 @@ class FSMOrder(models.Model):
         string='Number of Expired Days',
         readonly=True
     )
-    # reason = fields.Text(string="السبب", tracking=True)
+    reason = fields.Text(string="السبب", tracking=True)
 
     # Add reason field that becomes mandatory for specific stages
     stage_reason = fields.Text(string='سبب تغيير المرحلة',

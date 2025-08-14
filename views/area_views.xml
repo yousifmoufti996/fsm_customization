@@ -119,9 +119,10 @@
     <menuitem id="menu_area_management_root" 
               name="إدارة المناطق" 
               sequence="15" 
-              web_icon="fa-map-marker"
+              parent="contacts.res_partner_menu_config"
               />
-              <!-- parent="menu_area_management_root"  -->
+              <!-- web_icon="fa-map-marker"
+              parent="menu_area_management_root"  -->
     
     <menuitem id="menu_area_configuration" 
               name="الإعدادات" 

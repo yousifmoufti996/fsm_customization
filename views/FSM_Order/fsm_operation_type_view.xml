@@ -101,10 +101,10 @@
                        invisible="type == False" 
                        required="type != False"/>
                 
-                <!-- <field name="type_operation_reason" 
+                <field name="type_operation_reason" 
                        invisible="type == False" 
                        required="type != False"/>
-                 -->
+                
                
             </xpath>
         </field>

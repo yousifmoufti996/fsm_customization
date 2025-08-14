@@ -62,7 +62,8 @@ class FSMOrder(models.Model):
                             ))
                     
                     # Team Leader Rules
-                    if record.team_leader_id == current_user:
+                    # if record.team_leader_id == current_user:
+                    if record.person_id == current_user:
                         # Team leader can only select "جاري العمل" after "في الطريق" by supervisor
                         if new_stage.name == 'جاري العمل' and old_stage.name != 'في الطريق':
                             raise ValidationError(_(
@@ -112,7 +113,8 @@ class FSMOrder(models.Model):
 
     def action_set_work_in_progress(self):
         """Set order stage to 'Work in Progress'"""
-        if self.team_leader_id == self.env.user:
+        # if self.team_leader_id == self.env.user:
+        if self.person_id == self.env.user:
             if self.stage_id.name != 'في الطريق':
                 raise ValidationError(_("التيم ليدر يمكنه اختيار 'جاري العمل' فقط بعد مرحلة 'في الطريق'"))
         
@@ -127,7 +129,7 @@ class FSMOrder(models.Model):
         if not self.customer_availability_time:
             raise ValidationError(_("يجب تحديد وقت تواجد العميل عند اختيار مرحلة 'مؤجل'"))
         for rec in self:
-            if not rec.reason:
+            if not rec.stage_reason:
                 raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_postponed')
             rec.stage_id = cancelled_stage
@@ -136,7 +138,7 @@ class FSMOrder(models.Model):
     def action_set_marketing_followup(self):
         """Set order stage to 'Marketing Follow-up'"""
         for rec in self:
-            if not rec.reason:
+            if not rec.stage_reason:
                 raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_marketing_followup')
             rec.stage_id = cancelled_stage
@@ -145,7 +147,7 @@ class FSMOrder(models.Model):
     def action_set_sales_followup(self):
         """Set order stage to 'Sales Follow-up'"""
         for rec in self:
-            if not rec.reason:
+            if not rec.stage_reason:
                 raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_sales_followup')
             rec.stage_id = cancelled_stage
@@ -158,7 +160,7 @@ class FSMOrder(models.Model):
 
     def action_set_cancelled(self):
         for rec in self:
-            if not rec.reason:
+            if not rec.stage_reason:
                 raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
             rec.stage_id = cancelled_stage
@@ -167,7 +169,7 @@ class FSMOrder(models.Model):
     # def action_cancel_order(self):
     #     """Cancel the order"""
     #     for rec in self:
-    #         if not rec.reason:
+    #         if not rec.stage_reason:
     #             raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
     #         cancelled_stage = self.env.ref('fsm_customization.fsm_stage_cancelled')
     #         rec.stage_id = cancelled_stage
@@ -175,7 +177,8 @@ class FSMOrder(models.Model):
     
     def action_set_completion_request(self):
         """Set order stage to 'Work Completion Request'"""
-        if self.team_leader_id == self.env.user:
+        # if self.team_leader_id == self.env.user:
+        if self.person_id == self.env.user:
             if self.stage_id.name != 'جاري العمل':
                 raise ValidationError(_("التيم ليدر يمكنه اختيار 'طلب اتمام العمل' فقط بعد مرحلة 'جاري العمل'"))
         
@@ -243,7 +246,8 @@ class FSMOrder(models.Model):
             if  not rec.problem_type_id or not rec.problem_solution_id:
                 raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
             
-            if  rec.team_leader_id == self.env.user :
+            # if  rec.team_leader_id == self.env.user :
+            if  rec.person_id == self.env.user :
                 # (record.manager_id == self.env.user and self.env.user != record.person_id)
                 raise ValidationError("ليست صلاحيات التيم ليدر")
             audited_stage = self.env.ref('fsm_customization.fsm_stage_audited')
@@ -256,7 +260,7 @@ class FSMOrder(models.Model):
         # stage = self.env.ref('fsm_customization.fsm_stage_emergency_stop')
         # return self.write({'stage_id': stage.id})
         for rec in self:
-            if not rec.reason:
+            if not rec.stage_reason:
                 raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_emergency_stop')
             rec.stage_id = cancelled_stage

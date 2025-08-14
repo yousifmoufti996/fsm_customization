@@ -100,7 +100,12 @@
                 <field name="operation_type_id" 
                        invisible="type == False" 
                        required="type != False"/>
-                <field name="reason"/>
+                
+                <field name="type_operation_reason" 
+                       invisible="type == False" 
+                       required="type != False"/>
+                
+               
             </xpath>
         </field>
     </record>

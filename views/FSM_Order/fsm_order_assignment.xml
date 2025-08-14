@@ -7,6 +7,53 @@
         <field name="model">fsm.order</field>
         <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='person_id'][not(ancestor::group[@name='assignment_details'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fsm_route_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='calendar_event_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+
+            <!-- <xpath expr="//div[@class='o_address_format']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//label[@for='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+             -->
+            <!-- Hide the address format div -->
+            <xpath expr="//div[@class='o_address_format']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Hide the Address label -->
+            <xpath expr="//label[@for='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Hide any address-related fields that might still show -->
+            <!-- <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            
+            <!-- Hide street/address related fields if they exist -->
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+
+
             <xpath expr="//field[@name='type']" position="after">
             
                 <field name="customer_availability_time" string="وقت تواجد العميل"/>
@@ -21,23 +68,20 @@
                         <field name="skill_worker_ids" invisible="1"/>
                         <!-- <field name="person_id"/> -->
                         <field name="person_id" 
-                            string="Assigned To"
+                            string="Team Leader"
                             domain="[('id', 'in', skill_worker_ids)]"
                             context="{}"
                             options="{'no_create': True, 'no_edit': True, 'can_create': False, 'can_write': False}"
                             />
+                            <!-- string="Assigned To" -->
                        
                     </group>
-                    <group>
-                        <field name="team_leader_id" 
-                               options="{'no_create': True, 'no_create_edit': True}"
-                               domain="[('share', '=', False)]"/>
-                       
-                    </group>
+                   
                     <group>
                         <field name="manager_id" 
-                               options="{'no_create': True, 'no_create_edit': True}"
-                               domain="[('share', '=', False)]"/>
+                            string="Supervisor"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                            domain="[('share', '=', False)]"/>
                      
                     </group>
                     <group>
@@ -61,7 +105,8 @@
         <field name="inherit_id" ref="fieldservice.fsm_order_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='person_id']" position="after">
-                <field name="team_leader_id" optional="show"/>
+                <!-- <field name="team_leader_id" optional="show"/> -->
+                <!-- <field name="team_leader_id" optional="show"/> -->
                 <field name="manager_id" optional="show"/>
                 <field name="worker_id" optional="show"/>
             </xpath>

@@ -8,6 +8,11 @@
         <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='description_grp']" position="after">
+                <group string="تفاصيل وسبب التأجيل" col="2">
+                                    <field name="stage_reason"/>
+
+                </group>
+
                 <group string="تفاصيل المشكلة والحل" col="2">
                     <group string="تفاصيل المشكلة">
                         <field name="customer_id" invisible="1"/>

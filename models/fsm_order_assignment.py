@@ -14,7 +14,7 @@ class FSMOrder(models.Model):
     )
     manager_id = fields.Many2one(
         'res.users', 
-        string='Manager',
+        string='Supervisor',
         tracking=True,
         help='Manager overseeing this order'
     )
@@ -30,10 +30,38 @@ class FSMOrder(models.Model):
         string='وقت تواجد العميل',
         help='Required when order is postponed'
     )
+    
+    @api.onchange('customer_availability_time')
+    def _onchange_customer_availability_time2(self):
+        """Warn user if selecting past time"""
+        if self.customer_availability_time:
+            if self.customer_availability_time <= fields.Datetime.now():
+                return {
+                    'warning': {
+                        'title': 'تحذير',
+                        'message': 'وقت تواجد العميل يجب أن يكون في المستقبل'
+                    }
+                }
+    # @api.constrains('customer_availability_time')
+    # def _check_customer_availability_time_future(self):
+    #     """Ensure customer availability time is not in the past"""
+    #     for record in self:
+    #         if record.customer_availability_time:
+    #             now = fields.Datetime.now()
+    #             if record.customer_availability_time <= now:
+    #                 # Format the datetime for better user experience
+    #                 current_time = now.strftime('%Y-%m-%d %H:%M')
+    #                 selected_time = record.customer_availability_time.strftime('%Y-%m-%d %H:%M')
+    #                 raise ValidationError(
+    #                     f"وقت تواجد العميل يجب أن يكون في المستقبل\n"
+    #                     f"الوقت المختار: {selected_time}\n"
+    #                     f"الوقت الحالي: {current_time}"
+    #                 )
+                    
     fields_locked = fields.Boolean("الحقول مقفلة", default=False, readonly=True)
     
-    # Add reason field for specific stages
-    stage_reason = fields.Text(string='السبب', tracking=True)
+    
+    # stage_reason = fields.Text(string='السبب', tracking=True)
 
 
     @api.constrains('stage_id')
@@ -78,7 +106,7 @@ class FSMOrder(models.Model):
                             ))
                     
                     # Team Leader Rules
-                    if record.team_leader_id == current_user:
+                    if record.person_id == current_user:
                         # Team leader can only select "جاري العمل" after "في الطريق" by supervisor
                         if new_stage.name == 'جاري العمل' and old_stage.name != 'في الطريق':
                             raise ValidationError(_(
@@ -115,7 +143,8 @@ class FSMOrder(models.Model):
     def _onchange_team_id_assignment(self):
         """Auto-assign team leader when team changes"""
         if self.team_id and hasattr(self.team_id, 'user_id') and self.team_id.user_id:
-            self.team_leader_id = self.team_id.user_id
+            # self.team_leader_id = self.team_id.user_id
+            self.person_id = self.team_id.user_id
 
 
     def action_assign_team_leader(self):

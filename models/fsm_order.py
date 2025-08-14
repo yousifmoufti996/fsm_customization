@@ -31,10 +31,29 @@ class FSMOrder(models.Model):
         string='Number of Expired Days',
         readonly=True
     )
-    reason = fields.Text(string="السبب", tracking=True)
+    # reason = fields.Text(string="السبب", tracking=True)
 
     # Add reason field that becomes mandatory for specific stages
-    stage_reason = fields.Text(string='Stage Reason', tracking=True)
+    stage_reason = fields.Text(string='سبب تغيير المرحلة',
+        tracking=True,
+        help="مطلوب عند: الإلغاء، التأجيل، التوقف الطارئ، المتابعة التسويقية والمبيعات"
+        )
+    
+    type_operation_reason = fields.Text(
+        string="سبب نوع العملية", 
+        tracking=True,
+        help="تبرير اختيار نوع العملية والعملية المحددة"
+    )
+    
+    #Always Required When Both Fields Are Set
+    # @api.constrains('type', 'operation_type_id', 'type_operation_reason')
+    # def _check_type_operation_reason_required(self):
+    #     for record in self:
+    #         if record.type and record.operation_type_id and not record.type_operation_reason:
+    #             raise ValidationError("سبب نوع العملية مطلوب عند تحديد نوع العملية والعملية")
+    #or Required Only at Completion Stage in the _check_stage_reason_required 
+        
+        
     estimated_problem_duration = fields.Float(
         string='Estimated Duration (Hours)', 
         help='Duration estimated based on problem type',
@@ -193,6 +212,10 @@ class FSMOrder(models.Model):
     def _check_stage_reason_required(self):
         """Make reason mandatory for specific stages"""
         for record in self:
+            #Required Only at Completion Stage
+            if record.stage_id.name == 'طلب اتمام العمل':
+                if (record.type or record.operation_type_id) and not record.type_operation_reason:
+                    raise ValidationError("سبب نوع العملية مطلوب عند طلب إتمام العمل")
             if record.stage_id:
                 stage_name = record.stage_id.name
                 required_reason_stages = [

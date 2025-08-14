@@ -94,7 +94,7 @@ Technical Features:
         'views/partner/res_partner_contacts.xml',
         'views/partner/inherit_old_partner_view.xml',
         'views/partner/category_views.xml',
-        'views/partner/category_res_partner_view.xml',
+        # 'views/partner/category_res_partner_view.xml',
         'views/FSM_Order/navigationto_view.xml',
         
         

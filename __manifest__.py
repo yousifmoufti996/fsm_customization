@@ -76,27 +76,27 @@ Technical Features:
         # 'data/deactivate_old_stages.xml',
         
         #views
-        'views/FSM_Order/fsm_stages.xml',
-        'views/FSM_Order/fsm_order.xml',
-        'views/problem_management_views.xml',  
-        'views/FSM_Order/fsm_order_contract_details_view.xml',  
-        'views/FSM_Order/fsm_order_contact_details.xml',  
-        'views/FSM_Order/fsm_order_assignment.xml',  
-        'views/FSM_Order/fsm_order_replies_view.xml',
+        # 'views/FSM_Order/fsm_stages.xml',
+        # 'views/FSM_Order/fsm_order.xml',
+        # 'views/problem_management_views.xml',  
+        # 'views/FSM_Order/fsm_order_contract_details_view.xml',  
+        # 'views/FSM_Order/fsm_order_contact_details.xml',  
+        # 'views/FSM_Order/fsm_order_assignment.xml',  
+        # 'views/FSM_Order/fsm_order_replies_view.xml',
      
-        'views/FSM_Order/fsm_reply_action_view.xml',
-        'views/partner/res_partner_view.xml',  
-        'views/FSM_Order/fsm_operation_type_view.xml',  
-        'views/FSM_Order/fsm_order_stage_duration.xml',  
-        'views/FSM_Order/fsm_order_dashboard_view.xml',
-        'views/FSM_Order/fsm_order_products_view.xml',
-        'views/area_views.xml',
-        'views/partner/res_partner_contacts.xml',
-        'views/partner/inherit_old_partner_view.xml',
-        'views/partner/category_views.xml',
-        'views/partner/category_res_partner_view.xml',
-        'views/FSM_Order/navigationto_view.xml',
-        'views/FSM_Order/fsm_person_views.xml',
+        # 'views/FSM_Order/fsm_reply_action_view.xml',
+        # 'views/partner/res_partner_view.xml',  
+        # 'views/FSM_Order/fsm_operation_type_view.xml',  
+        # 'views/FSM_Order/fsm_order_stage_duration.xml',  
+        # 'views/FSM_Order/fsm_order_dashboard_view.xml',
+        # 'views/FSM_Order/fsm_order_products_view.xml',
+        # 'views/area_views.xml',
+        # 'views/partner/res_partner_contacts.xml',
+        # 'views/partner/inherit_old_partner_view.xml',
+        # 'views/partner/category_views.xml',
+        # 'views/partner/category_res_partner_view.xml',
+        # 'views/FSM_Order/navigationto_view.xml',
+        # 'views/FSM_Order/fsm_person_views.xml',
         
         
         
@@ -111,9 +111,9 @@ Technical Features:
         # 'reports/fsm_report_templates.xml',
         
         # Wizards
-        'wizards/AddProductWizard_view.xml',
-        'wizards/current_location_wizard_view.xml',
-        'wizards/customer_location_wizard_view.xml',
+        # 'wizards/AddProductWizard_view.xml',
+        # 'wizards/current_location_wizard_view.xml',
+        # 'wizards/customer_location_wizard_view.xml',
     ],
     
    

@@ -42,3 +42,13 @@ access_partner_category_sales,partner.category.sales,model_partner_category,sale
 access_customer_location_wizard_user,customer.location.wizard.user,model_customer_location_wizard,base.group_user,1,1,1,1
 access_customer_location_wizard_fsm_user,customer.location.wizard.fsm.user,model_customer_location_wizard,fieldservice.group_fsm_user,1,1,1,1
 access_customer_location_wizard_fsm_manager,customer.location.wizard.fsm.manager,model_customer_location_wizard,fieldservice.group_fsm_manager,1,1,1,1
+
+
+
+
+access_location_creation_wizard_user,location.creation.wizard.user,fsm_customization.model_location_creation_wizard,fieldservice.group_fsm_user,1,1,1,0
+access_location_creation_wizard_manager,location.creation.wizard.manager,fsm_customization.model_location_creation_wizard,fieldservice.group_fsm_manager,1,1,1,1
+access_location_creation_wizard_admin,location.creation.wizard.admin,fsm_customization.model_location_creation_wizard,base.group_system,1,1,1,1
+access_location_creation_wizard_line_user,location.creation.wizard.line.user,fsm_customization.model_location_creation_wizard_line,fieldservice.group_fsm_user,1,1,1,0
+access_location_creation_wizard_line_manager,location.creation.wizard.line.manager,fsm_customization.model_location_creation_wizard_line,fieldservice.group_fsm_manager,1,1,1,1
+access_location_creation_wizard_line_admin,location.creation.wizard.line.admin,fsm_customization.model_location_creation_wizard_line,base.group_system,1,1,1,1

@@ -7,19 +7,19 @@ class FSMOrder(models.Model):
     _inherit = 'fsm.order'
 
     team_leader_id = fields.Many2one(
-        'res.users',
+        'res.partner',
         string='Team Leader',
         tracking=True,
         help='Team leader responsible for this order'
     )
     manager_id = fields.Many2one(
-        'res.users', 
+        'res.partner', 
         string='Supervisor',
         tracking=True,
         help='Manager overseeing this order'
     )
     worker_id = fields.Many2one(
-        'res.users',
+        'res.partner',
         string='Worker',
         tracking=True,
         help='Worker assigned to execute this order'
@@ -154,7 +154,6 @@ class FSMOrder(models.Model):
             'name': 'Assign Team Leader',
             'res_model': 'res.users',
             'view_mode': 'tree,form',
-            'domain': [('share', '=', False)],
             'target': 'new',
             'context': {
                 'default_groups_id': [(4, self.env.ref('base.group_user').id)],
@@ -168,7 +167,6 @@ class FSMOrder(models.Model):
             'name': 'Assign Manager',
             'res_model': 'res.users',
             'view_mode': 'tree,form',
-            'domain': [('share', '=', False)],
             'target': 'new',
             'context': {
                 'default_groups_id': [(4, self.env.ref('base.group_user').id)],
@@ -182,7 +180,6 @@ class FSMOrder(models.Model):
             'name': 'Assign Worker',
             'res_model': 'res.users',
             'view_mode': 'tree,form', 
-            'domain': [('share', '=', False)],
             'target': 'new',
             'context': {
                 'default_groups_id': [(4, self.env.ref('base.group_user').id)],

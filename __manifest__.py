@@ -96,6 +96,7 @@ Technical Features:
         'views/partner/category_views.xml',
         'views/partner/category_res_partner_view.xml',
         'views/FSM_Order/navigationto_view.xml',
+        'views/FSM_Order/fsm_person_views.xml',
         
         
         

@@ -212,27 +212,26 @@ class FSMOrder(models.Model):
     
     
 
-    def _track_stage_change(self, order, new_stage_id):
-        """Track when stage changes to record duration"""
-        now = fields.Datetime.now()
-        
-        # End current stage if exists
-        # current_stage_duration = order.stage_duration_ids.filtered('is_current')
-        # if current_stage_duration:
-        #     current_stage_duration.write({
-        #         'end_date': now,
-        #         # 'is_current': False
-        #     })
-        
-        # Start new stage
-        new_stage = self.env['fsm.stage'].browse(new_stage_id)
-        self.env['fsm.stage.duration'].create({
-            'order_id': order.id,
-            'stage_id': new_stage_id,
-            'start_date': now,
-            # 'is_current': True,
-            'sequence': len(order.stage_duration_ids) + 1
-        })
+    # def _track_stage_change(self, order, new_stage_id):
+    #     """Track when stage changes to record duration"""
+    #     now = fields.Datetime.now()
+    
+    # # End current stage if exists
+    #     current_stage_duration = order.stage_duration_ids.filtered(lambda x: not x.end_date)
+    #     if current_stage_duration:
+    #         current_stage_duration.write({'end_date': now})
+            
+    #     # Start new stage
+    #     next_sequence = max(order.stage_duration_ids.mapped('sequence') or [0]) + 1
+    #     self.env['fsm.stage.duration'].create({
+    #         'order_id': order.id,
+    #         'stage_id': new_stage_id,
+    #         'start_date': now,
+    #         'sequence': next_sequence
+    #     })
+            
+       
+       
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -248,3 +247,48 @@ class FSMOrder(models.Model):
                     'sequence': 1
                 })
         return orders
+    
+    def write(self, vals):
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        # Store old stage_id before write
+        old_stages = {order.id: order.stage_id.id for order in self}
+        
+        # Call super first
+        result = super().write(vals)
+        
+        # Track stage changes after write
+        if 'stage_id' in vals:
+            _logger.info(f"Stage change detected: {vals}")
+            now = fields.Datetime.now()
+            for order in self:
+                old_stage_id = old_stages[order.id]
+                if old_stage_id != order.stage_id.id:
+                    _logger.info(f"Order {order.id}: {old_stage_id} -> {order.stage_id.id}")
+                    
+                    # Check if we already have a record for this stage without end_date
+                    existing_current = order.stage_duration_ids.filtered(
+                        lambda x: x.stage_id.id == order.stage_id.id and not x.end_date
+                    )
+                    
+                    if existing_current:
+                        _logger.info(f"Already have current record for stage {order.stage_id.id}")
+                        continue
+                    
+                    # End previous stage
+                    prev_duration = order.stage_duration_ids.filtered(
+                        lambda x: x.stage_id.id == old_stage_id and not x.end_date
+                    )
+                    if prev_duration:
+                        prev_duration.write({'end_date': now})
+                    
+                    # Create new stage record
+                    self.env['fsm.stage.duration'].create({
+                        'order_id': order.id,
+                        'stage_id': order.stage_id.id,
+                        'start_date': now,
+                        'sequence': len(order.stage_duration_ids) + 1
+                    })
+        
+        return result

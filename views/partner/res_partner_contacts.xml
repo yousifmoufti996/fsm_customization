@@ -16,9 +16,20 @@
             <xpath expr="//field[@name='second_phone_number']" position="replace"/>
             <xpath expr="//field[@name='email1']" position="replace"/>
             <xpath expr="//field[@name='subscription_type']" position="replace"/>
+            <field name="voucher_number" invisible='1' />  
+             
+            <!-- <xpath expr="//field[@name='email']" position="replace"/> -->
+            
+            <xpath expr="//sheet/group/group/field[@name='email']" position="replace"/>
+
+
+
 
             <!-- Hide these fields from the old tab (we'll move them to new locations) -->
             <xpath expr="//field[@name='menu_type_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='title']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             
@@ -40,6 +51,9 @@
             <xpath expr="//field[@name='pole']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='voucher_number']" position="after">
+               <field name="email" />
+            </xpath>
             <xpath expr="//field[@name='subscription_type_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -49,9 +63,15 @@
             </xpath>
 
             <!-- Hide original email, website, tags, vat to move them later -->
-            <!-- <xpath expr="//field[@name='email']" position="attributes">
+            
+            <xpath expr="//label[@for='email']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath> -->
+            </xpath>
+            <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+       
+
             <xpath expr="//field[@name='website']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -110,10 +130,11 @@
                     <!-- <label for="menu_type_ids" string="مجموع عملاء فرعية"/> -->
 
                     <field name="menu_type_ids"  widget="many2many_tags" readonly="0" placeholder="مجموع عملاء فرعية..."/>
+                    <!-- <field name="menu_type_ids"  widget="many2many" readonly="0" placeholder="مجموع عملاء فرعية..."/> -->
 
 
             </xpath>
-            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='email']]" position="after">
+            <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='mobile']]" position="after">
                 <label for="family_number" class="oe_inline"/>
                 <div class="o_row o_row_readonly">
                     <field name="family_number" string="الرقم العائلي" readonly="0" />

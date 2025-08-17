@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="fsm_person_form_edit" model="ir.ui.view">
+            <field name="name">fsm.person.form.edit</field>
+            <field name="model">fsm.person</field>
+            <field name="inherit_id" ref="fieldservice.fsm_person_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="attributes">
+                    <attribute name="groups">fieldservice.group_fsm_user</attribute>
+                    <attribute name="readonly">0</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

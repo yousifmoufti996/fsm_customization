@@ -49,6 +49,7 @@
               <field name="customer_user_name"/>
               <field name="customer_category_id" widget="many2many_tags"/>
               <field name="customer_menu_type_ids" widget="many2many_tags"/>          
+
               <field name="customer_number_of_expired_days"/>
               <field name="customer_total_due"/>
           </group>

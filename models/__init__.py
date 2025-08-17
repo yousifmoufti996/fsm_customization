@@ -1,3 +1,4 @@
+
 from . import (
     fsm_order,
     problem_solution,
@@ -15,16 +16,17 @@ from . import (
     fsm_stage_rules,
     product,
     fsm_order_products,
-    AddProductWizard,
     fsm_order_line,
     res_partner_fsm_order,
     area_name,
     area_number,
-    current_location_wizard,
     res_partner_contacts,
     fsm_order_geo,
     partner_category,
     res_partner_inherit,
-    customer_location_wizard,
+    fsm_person,
+    res_partner_location_auto
     
 )
+
+

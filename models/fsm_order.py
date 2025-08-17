@@ -147,6 +147,12 @@ class FSMOrder(models.Model):
     
     customer_category_id = fields.Many2many(related='customer_id.category_id', string='Subscription Type', readonly=True)
     customer_menu_type_ids = fields.Many2many(related='customer_id.menu_type_ids', string='مجموع عملاء فرعية', readonly=True)
+    @api.onchange('customer_menu_type_ids')
+    def _onchange_customer_menu_type_ids(self):
+        if self.customer_menu_type_ids:
+            # Keep only the last selected
+            self.customer_menu_type_ids = self.customer_menu_type_ids[-1]
+            
     customer_city = fields.Char(related='customer_id.city', string='City', readonly=True)
     customer_local_number = fields.Char(related='customer_id.local_number', string='رقم المحلة', readonly=True)
     customer_family_number = fields.Char(related='customer_id.family_number', string='الرقم العائلي', readonly=True)
@@ -334,7 +340,11 @@ class FSMOrder(models.Model):
     temp_voucher_number = fields.Char(string="رقم الوصل")
     temp_residence_card = fields.Char(string="بطاقة السكن")
     temp_menu_type_ids = fields.Many2many( related='customer_id.menu_type_ids', string='مجموع عملاء فرعية', readonly=False)
-   
+    @api.onchange('temp_menu_type_ids')
+    def _onchange_temp_menu_type_ids(self):
+        if self.temp_menu_type_ids:
+            # Keep only the last selected
+            self.temp_menu_type_ids = self.temp_menu_type_ids[-1]
     
   
     temp_id_card = fields.Char(string="بطاقة الهوية")
@@ -634,8 +644,8 @@ class FSMOrder(models.Model):
                 transitioning_to_completed = True
             
             # Track stage changes (if you still need this method)
-            for order in self:
-                self._track_stage_change(order, vals['stage_id'])
+            # for order in self:
+            #     self._track_stage_change(order, vals['stage_id'])
         
         # Store old values for comparison (for tracking messages)
         old_values = {}

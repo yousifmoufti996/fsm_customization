@@ -57,6 +57,9 @@
 
             <label for="temp_menu_type_ids" string='مجموع عملاء فرعية'/>
             <field name="temp_menu_type_ids" nolabel="1" widget="many2many_tags" edit="1"/>
+         
+
+          
         </group>
 
         <!-- Address and Location -->
@@ -146,113 +149,12 @@
             icon="fa-crosshairs"
             invisible="customer_id == False">
             
-            <!-- attrs="{'invisible': [('customer_id', '=', False)]}"> -->
         <div class="o_stat_info">
             <span class="o_stat_text">جلب موقع</span>
             <span class="o_stat_text">العميل الحالي</span>
         </div>
     </button>
 </div>
-<!-- 
-<div class="row mt-3">
-    <div class="col-md-6">
-        <button name="action_approve_contract_changes" 
-                type="object" 
-                class="btn btn-success btn-lg w-100"
-                confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
-            <i class="fa fa-check-circle me-2"></i>
-            اعتماد التغييرات
-        </button>
-    </div>
-    <div class="col-md-6">
-        <button type="object"
-                name="action_open_customer_location_wizard"
-                class="btn btn-primary btn-lg w-100"
-                attrs="{'invisible': [('customer_id', '=', False)]}">
-            <i class="fa fa-crosshairs me-2"></i>
-            جلب موقع العميل الحالي
-        </button>
-    </div>
-</div>
-
-<div class="row mt-4">
-    <div class="col-md-6 mb-3">
-        <div class="card border-success">
-            <div class="card-body text-center p-3">
-                <button name="action_approve_contract_changes" 
-                        type="object" 
-                        class="btn btn-success btn-lg w-100"
-                        confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
-                    <i class="fa fa-check-circle fa-2x d-block mb-2"></i>
-                    <strong>اعتماد التغييرات</strong>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 mb-3">
-        <div class="card border-primary" attrs="{'invisible': [('customer_id', '=', False)]}">
-            <div class="card-body text-center p-3">
-                <button type="object"
-                        name="action_open_customer_location_wizard"
-                        class="btn btn-primary btn-lg w-100">
-                    <i class="fa fa-crosshairs fa-2x d-block mb-2"></i>
-                    <strong>جلب موقع العميل</strong>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-<div class="oe_button_box" name="button_box">
-  
-    <button name="action_approve_contract_changes" 
-            type="object" 
-            class="oe_stat_button btn-success"
-            icon="fa-check-circle"
-            confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً.">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_value">
-                <i class="fa fa-check"></i>
-            </span>
-            <span class="o_stat_text">اعتماد التغييرات</span>
-        </div>
-    </button>
-    
-   
-    <button type="object"
-            name="action_open_customer_location_wizard"
-            class="oe_stat_button btn-info"
-            icon="fa-map-marker"
-            attrs="{'invisible': [('customer_id', '=', False)]}">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_value">
-                <i class="fa fa-crosshairs"></i>
-            </span>
-            <span class="o_stat_text">جلب موقع العميل</span>
-        </div>
-    </button>
-    
-   
-    <button type="object"
-            name="action_view_customer_location"
-            class="oe_stat_button"
-            icon="fa-location-arrow"
-            attrs="{'invisible': ['|', ('customer_id', '=', False), '|', ('customer_id.partner_latitude', '=', False), ('customer_id.partner_longitude', '=', False)]}">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_value">
-                <field name="customer_id" invisible="1"/>
-                موجود
-            </span>
-            <span class="o_stat_text">إحداثيات العميل</span>
-        </div>
-    </button>
-</div> -->
-
-
 </page>
 
 

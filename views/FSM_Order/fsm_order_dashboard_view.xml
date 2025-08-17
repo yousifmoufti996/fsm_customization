@@ -231,10 +231,32 @@
                                         style="font-weight: bold;">عرض التفاصيل</button>
                             </div>
                         </div>
+
+
+                        <div class="col-md-3">
+                            <div class="alert alert-secondary text-center">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px;">
+                                    <field name="total_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+                                    عدد العمليات لكل موظف
+                                </p>
+
+                                 <!-- Dropdown للاختيار -->
+                                <field name="group_by_field" class="mb-2" style="width: 100%;"/>
+                                <button name="action_view_all_orders_grouped" 
+                                        type="object" 
+                                        class="btn btn-sm btn-secondary"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        
+                        
                     </div>
+
                     
                     <!-- إحصائيات الموظفين -->
-                    <div class="row mt16">
+                    <!-- <div class="row mt16">
                         <div class="col-md-12">
                             <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
                                 عدد العمليات لكل موظف
@@ -246,7 +268,7 @@
                                 </pre>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     
                     <!-- معلومات إضافية -->
                     <div class="row mt16">

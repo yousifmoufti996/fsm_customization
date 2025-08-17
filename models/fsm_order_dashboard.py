@@ -75,7 +75,28 @@ class FSMOrderDashboard(models.TransientModel):
         string="عدد عمليات SLA",
         compute="_compute_order_statistics"
     )
+    group_by_field = fields.Selection([
+        ('person_id', 'الموظف'),
+        ('manager_id', 'المدير'),
+        ('worker_id', 'العامل'),
+    ], string="تجميع حسب", default='person_id')
     
+    
+    
+    def action_view_all_orders_grouped(self):
+        """يفتح Tree view للأوردرات مجمعة حسب الحقل المختار"""
+        group_by = self.group_by_field or 'person_id'
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'جميع العمليات ({dict(self._fields["group_by_field"].selection).get(group_by)})',
+            'res_model': 'fsm.order',
+            'view_mode': 'tree,form',
+            'domain': [],
+            'context': {
+               'group_by': group_by, 
+            }
+        }
+       
     @api.depends('date_from', 'date_to', 'team_id')
     def _compute_employee_statisticss(self):
         for record in self:

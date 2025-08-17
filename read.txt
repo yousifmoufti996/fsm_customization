@@ -1,3 +1,12 @@
+1-in the edit form of the fsm order ->fsm.order.form.stage.duration 
+comment <field name="is_current" invisible="1"/>
+
+2-in the fsm.person
+Field Service Workers
+edit form
+<field name="partner_id" groups="base.group_no_one" readonly="0"/>
+instead of readonly="1"
+
 put this in the ir.ui.view.fsm.order.map
 fieldservice_geoengine.ir_ui_view_fsm_order_map
 <geoengine editable="1">

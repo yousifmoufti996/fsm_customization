@@ -230,7 +230,7 @@
                             string="طلب اتمام العمل" 
                             type="object" 
                             class="btn-primary"
-                            invisible=" not is_work_in_progress or is_completion_request or (manager_id and manager_id != uid) or stage_id.is_closed == 'True' or (person_id and person_id != uid) or not is_work_in_progress or is_work_completed"
+                            invisible=" not is_work_in_progress or is_completion_request or (manager_id and manager_id != uid) or stage_id.is_closed == 'True' or (person_id and person_id != uid) or is_work_completed"
                             confirm="هل تم إنجاز العمل بالفعل؟"/>
                             <!-- invisible=" not is_work_in_progress or is_completion_request or (manager_id and manager_id != uid) or stage_id.is_closed == 'True' or (team_leader_id and team_leader_id != uid) or not is_work_in_progress or is_work_completed" -->
 

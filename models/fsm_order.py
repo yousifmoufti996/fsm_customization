@@ -425,7 +425,9 @@ class FSMOrder(models.Model):
     def action_approve_contract_changes(self):
         """Approve and save contract changes to res.partner"""
         print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
-        if self.manager_id and  (self.manager_id != self.env.user):
+        if not (self.manager_id and  (self.manager_id != self.env.user)):
+            print(self.manager_id.name , "self.manager_id.name")
+            print(self.env.user.name , "self.env.user.name")
             print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
             raise UserError("فقط المشرف يمكنه اعتماد تغييرات العقد")
         

@@ -2,14 +2,21 @@
 comment <field name="is_current" invisible="1"/>
 
 2-in the fsm.person
-Field Service Workers
-edit form
-<field name="partner_id" groups="base.group_no_one" readonly="0"/>
-instead of readonly="1"
+  Field Service Workers
+  edit form
+  <field name="partner_id" groups="base.group_no_one" readonly="0"/>
+  instead of readonly="1"
+3-update stages in fsmorder form
+  edit view form
+  inherted views
+  fsmcustomization.fsm_order_form_stage_buttons
+  from this file : fsm_stages.xml
+  search for
+  <button name="action_set_work_in_progress" 
 
-put this in the ir.ui.view.fsm.order.map
-fieldservice_geoengine.ir_ui_view_fsm_order_map
-<geoengine editable="1">
+4-put this in the ir.ui.view.fsm.order.map
+  fieldservice_geoengine.ir_ui_view_fsm_order_map
+  <geoengine editable="1">
                 <field name="name"/>
                 <field name="phone"/>
                 <field name="street"/>

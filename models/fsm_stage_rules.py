@@ -19,10 +19,13 @@ class FSMOrder(models.Model):
     is_work_completed = fields.Boolean(compute='_compute_stage_flags', store=False)
     is_audited = fields.Boolean(compute='_compute_stage_flags', store=False)
     is_emergency_stop = fields.Boolean(compute='_compute_stage_flags', store=False)
+    is_new_stage = fields.Boolean(compute='_compute_stage_flags', store=False)
+    
 
     @api.constrains('stage_id')
     def _check_stage_transition_rules(self):
         """Validate stage transitions based on business rules"""
+        is_super_admin = self.env.user.has_group('base.group_system')
         for record in self:
             # Get the original stage from the database
             if record.id:
@@ -56,9 +59,28 @@ class FSMOrder(models.Model):
                     
                     # Rule 6: Only maintenance supervisor can set "تم العمل"
                     if new_stage.name == 'تم العمل':
-                        if not record.manager_id or record.manager_id != current_user:
+                        if not is_super_admin and (not record.manager_id or record.manager_id != current_user):
                             raise ValidationError(_(
                                 "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
+                            ))
+                    # Rule for Cancel Request - Only team leader can set it
+                    if new_stage.name == 'طلب الغاء':
+                        if record.person_id != current_user:
+                            raise ValidationError(_(
+                                "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب الغاء'"
+                            ))
+
+                    # Rule for Emergency Stop Request - Only team leader can set it  
+                    if new_stage.name == 'طلب توقف طارئ':
+                        if record.person_id != current_user:
+                            raise ValidationError(_(
+                                "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب توقف طارئ'"
+                            ))
+                    # Rule for Audited stage - Only auditor can set it
+                    if new_stage.name == 'تم التدقيق':
+                        if record.auditor_id and record.auditor_id != current_user:
+                            raise ValidationError(_(
+                                "فقط المدقق المخصص يمكنه اختيار مرحلة 'تم التدقيق'"
                             ))
                     
                     # Team Leader Rules
@@ -89,6 +111,10 @@ class FSMOrder(models.Model):
             'is_work_completed': 'fsm_customization.fsm_stage_work_completed',
             'is_audited': 'fsm_customization.fsm_stage_audited',
             'is_emergency_stop': 'fsm_customization.fsm_stage_emergency_stop',
+            'is_postponed_request': 'fsm_customization.fsm_stage_postponed_request',
+            'is_cancel_request': 'fsm_customization.fsm_stage_cancel_request',  
+            'is_new_stage': 'fieldservice.fsm_stage_new',
+            'is_emergency_stop_request': 'fsm_customization.fsm_stage_emergency_stop_request',
         }
         # Cache stage_ids only once for performance
         resolved_ids = {}
@@ -166,6 +192,16 @@ class FSMOrder(models.Model):
             rec.stage_id = cancelled_stage
         return self.write({'stage_id': cancelled_stage.id})
     
+    def action_set_postponed_request(self):
+        for rec in self:
+            # if not rec.stage_reason:
+            #     raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
+            if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+                raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب تأجيل'"))
+            postponed_request = self.env.ref('fsm_customization.fsm_stage_postponed_request')
+            rec.stage_id = postponed_request
+        return self.write({'stage_id': postponed_request.id})
+    
     # def action_cancel_order(self):
     #     """Cancel the order"""
     #     for rec in self:
@@ -191,28 +227,10 @@ class FSMOrder(models.Model):
         return self.write({'stage_id': stage.id})
 
     
-    # def action_set_work_completed(self):
-    #     """Set order stage to 'Work Completed'"""
-    #     if self.manager_id != self.env.user:
-    #         raise AccessError(_("فقط مشرف الصيانة يمكنه تحديد مرحلة 'تم العمل'"))
-    #     for rec in self:
-    #         if rec.stage_id.name != 'طلب اتمام العمل':
-    #             raise ValidationError("لا يمكن الانتقال إلى 'تم العمل' قبل المرور بمرحلة 'طلب اتمام العمل'.")
-    #         if   not rec.type or not rec.operation_type_id:
-    #             raise ValidationError("يرجى إدخال العملية ونوع العملية قبل إتمام العمل.")
-    #         if   not rec.problem_type_id or not rec.problem_solution_id:
-    #             raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
-    #         # check also for solution and operation_type (see next section)
-    #         # completed_stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
-    #         # rec.stage_id = completed_stage
-    #     stage = self.env.ref('fsm_customization.fsm_stage_work_completed')
-    #     vals = {'stage_id': stage.id}
-    #     if not self.date_end:
-    #         vals['date_end'] = fields.Datetime.now()
-    #     return self.write(vals)
     def action_set_work_completed(self):
+        is_super_admin = self.env.user.has_group('base.group_system')
         """Set order stage to 'Work Completed'"""
-        if self.manager_id != self.env.user:
+        if not is_super_admin and self.manager_id != self.env.user:
             raise AccessError(_("فقط مشرف الصيانة يمكنه تحديد مرحلة 'تم العمل'"))
         
         # Validate all records before making any changes
@@ -236,20 +254,17 @@ class FSMOrder(models.Model):
 
     def action_set_audited(self):
         """Set order stage to 'Audited'"""
+        if (self.auditor_id != self.env.user and self.env.user.has_group('base.group_system')== False):
+            raise AccessError(_("فقط المدقق المخصص يمكنه تحديد مرحلة 'تم التدقيق'"))
         for rec in self:
-            
-            if rec.stage_id.name != 'تم العمل':
-                
-                raise ValidationError("لا يمكن الانتقال إلى 'تم التدقيق' قبل المرور بمرحلة 'تم العمل'.")
+            # if rec.stage_id.name != 'تم العمل':
+            #     raise ValidationError("لا يمكن الانتقال إلى 'تم التدقيق' قبل المرور بمرحلة 'تم العمل'.")
             if  not rec.type or not rec.operation_type_id:
                 raise ValidationError("يرجى إدخال العملية ونوع العملية قبل إتمام العمل.")
             if  not rec.problem_type_id or not rec.problem_solution_id:
                 raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
             
-            # if  rec.team_leader_id == self.env.user :
-            if  rec.person_id == self.env.user :
-                # (record.manager_id == self.env.user and self.env.user != record.person_id)
-                raise ValidationError("ليست صلاحيات التيم ليدر")
+            
             audited_stage = self.env.ref('fsm_customization.fsm_stage_audited')
             rec.stage_id = audited_stage
         stage = self.env.ref('fsm_customization.fsm_stage_audited')
@@ -265,3 +280,55 @@ class FSMOrder(models.Model):
             cancelled_stage = self.env.ref('fsm_customization.fsm_stage_emergency_stop')
             rec.stage_id = cancelled_stage
         return self.write({'stage_id': cancelled_stage.id})
+    
+    
+    is_postponed_request = fields.Boolean(compute='_compute_stage_flags', store=False)
+    is_cancel_request = fields.Boolean(compute='_compute_stage_flags', store=False)
+    is_emergency_stop_request = fields.Boolean(compute='_compute_stage_flags', store=False)
+    
+    
+    def action_set_cancel_request(self):
+        """Set order stage to 'Cancel Request' - Only Team Leader"""
+        if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+            raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب الغاء'"))
+        
+        for rec in self:
+            if not rec.stage_reason:
+                raise ValidationError("الرجاء تعبئة حقل السبب قبل طلب الإلغاء.")
+            
+            cancel_request_stage = self.env.ref('fsm_customization.fsm_stage_cancel_request')
+            rec.stage_id = cancel_request_stage
+        return self.write({'stage_id': cancel_request_stage.id})
+
+    def action_set_emergency_stop_request(self):
+        """Set order stage to 'Emergency Stop Request' - Only Team Leader"""
+        if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+            raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب توقف طارئ'"))
+        
+        for rec in self:
+            if not rec.stage_reason:
+                raise ValidationError("الرجاء تعبئة حقل السبب قبل طلب التوقف الطارئ.")
+            emergency_stop_request_stage = self.env.ref('fsm_customization.fsm_stage_emergency_stop_request')
+            rec.stage_id = emergency_stop_request_stage
+        return self.write({'stage_id': emergency_stop_request_stage.id})
+    
+    
+    
+    user_is_sales_or_marketing = fields.Boolean(
+        compute='_compute_user_groups',
+        store=False
+    )
+
+    @api.depends('create_uid')
+    def _compute_user_groups(self):
+        """Check if current user is in sales or marketing groups"""
+        for rec in self:
+            current_user = self.env.user
+            # Check for Odoo default sales group
+            is_sales = current_user.has_group('sales_team.group_sale_salesman') or \
+                    current_user.has_group('sales_team.group_sale_manager')
+            
+            # Check for your custom marketing group
+            is_marketing = current_user.has_group('fsm_customization.group_marketing_user')
+            
+            rec.user_is_sales_or_marketing = is_sales or is_marketing

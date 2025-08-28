@@ -52,3 +52,6 @@ access_location_creation_wizard_admin,location.creation.wizard.admin,fsm_customi
 access_location_creation_wizard_line_user,location.creation.wizard.line.user,fsm_customization.model_location_creation_wizard_line,fieldservice.group_fsm_user,1,1,1,0
 access_location_creation_wizard_line_manager,location.creation.wizard.line.manager,fsm_customization.model_location_creation_wizard_line,fieldservice.group_fsm_manager,1,1,1,1
 access_location_creation_wizard_line_admin,location.creation.wizard.line.admin,fsm_customization.model_location_creation_wizard_line,base.group_system,1,1,1,1
+
+
+access_fsm_order_callcenter_user,FSM Order Call Center User,fieldservice.model_fsm_order,group_callcenter_user,1,1,1,0

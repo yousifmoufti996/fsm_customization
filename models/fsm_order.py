@@ -2,11 +2,23 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError 
 
-
+print("=== FSM ORDER MODEL FILE IS LOADING ===")
 class FSMOrder(models.Model):
     _inherit = 'fsm.order'
-    
-    
+    print("=== FSM ORDER MODEL FILE IS LOADIe ===")
+    test_user_group = fields.Boolean(
+        compute='_compute_test_user_group',
+        string='Test User Group'
+    )
+
+    @api.depends_context('uid')  
+    def _compute_test_user_group(self):
+        print("=== TEST COMPUTE RUNNING ===")
+        for record in self:
+            record.test_user_group = True
+        print("=== TEST COMPUTE DONE ===")
+        
+        
     currency_id = fields.Many2one(
         'res.currency',
         related='company_id.currency_id',
@@ -44,7 +56,66 @@ class FSMOrder(models.Model):
         tracking=True,
         help="تبرير اختيار نوع العملية والعملية المحددة"
     )
+    user_is_manager = fields.Boolean(
+        compute='_compute_user_permissions',
+        string='User is Manager of this Order'
+    )
+    user_is_callcenter = fields.Boolean(
+        compute='_compute_user_permissions',
+        # compute='_compute_user_is_callcenter',
+        string='User is Call Center'
+    )
+    user_is_auditor = fields.Boolean(
+        compute='_compute_user_is_auditor',
+        string='User is auditor'
+    )
+    is_new_record = fields.Boolean(compute="_compute_is_new")
+
+    def _compute_is_new(self):
+        for rec in self:
+            rec.is_new_record = not bool(rec.id)
     
+    
+    @api.depends_context('uid')
+    def _compute_user_is_auditor(self):
+        for record in self:
+            record.user_is_auditor = self.env.user.has_group('fsm_customization.group_fsm_auditor') or False
+            
+    user_is_admin = fields.Boolean(
+        # compute='_compute_user_is_admin',
+        compute='_compute_user_permissions',
+        string='User is Administrator'
+    )
+    
+    @api.depends('manager_id')
+    @api.depends_context('uid')
+    def _compute_user_permissions(self):
+        """Compute user permissions for access control"""
+        print("=== COMPUTING USER PERMISSIONS ===")
+        print(f"Current user: {self.env.user.name}")
+        print(f"Current user ID: {self.env.user.id}")
+        
+        for record in self:
+            is_callcenter = self.env.user.has_group('fsm_customization.group_callcenter_user')
+            is_admin = self.env.user.has_group('base.group_system')
+            is_manager = (record.manager_id.id == self.env.user.partner_id.id) if record.manager_id else False
+        
+            
+            print(f"Has callcenter group: {is_callcenter}")
+            print(f"Has admin group: {is_admin}")
+            print(f"is_manager : {is_manager}")
+            
+            record.user_is_callcenter = is_callcenter
+            record.user_is_admin = is_admin
+            record.user_is_manager = is_manager
+            
+        print("=== END COMPUTING ===")
+
+    # @api.depends_context('uid')
+    # def _compute_user_is_admin(self):
+    #     for record in self:
+    #         record.user_is_admin = self.env.user.has_group('base.group_system')
+            
     #Always Required When Both Fields Are Set
     # @api.constrains('type', 'operation_type_id', 'type_operation_reason')
     # def _check_type_operation_reason_required(self):
@@ -52,8 +123,7 @@ class FSMOrder(models.Model):
     #         if record.type and record.operation_type_id and not record.type_operation_reason:
     #             raise ValidationError("سبب نوع العملية مطلوب عند تحديد نوع العملية والعملية")
     #or Required Only at Completion Stage in the _check_stage_reason_required 
-        
-        
+    
     estimated_problem_duration = fields.Float(
         string='Estimated Duration (Hours)', 
         help='Duration estimated based on problem type',
@@ -698,6 +768,12 @@ class FSMOrder(models.Model):
                     raise ValidationError(_(
                         "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
                     ))
+            if 'resolution' in vals and record.auditor_id and record.auditor_id == self.env.user and not self.env.user._is_admin():
+            
+                raise ValidationError(_(
+                    
+                    "لا يمكن سوى للمدقق تعديل أو إلغاء حقل resolution"
+                ))
         
         # Perform the actual write operation
         result = super().write(vals)

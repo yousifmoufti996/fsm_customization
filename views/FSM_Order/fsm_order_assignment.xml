@@ -70,24 +70,34 @@
                         <field name="person_id" 
                             string="Team Leader"
                             domain="[('id', 'in', skill_worker_ids)]"
+                             readonly="not (user_is_admin or user_is_manager)"
                             context="{}"
                             options="{'no_create': True, 'no_edit': True, 'can_create': False, 'can_write': False}"
-                            />
-                            <!-- string="Assigned To" -->
-                       
+                        />
                     </group>
                    
                     <group>
+                     <field name="user_is_admin" invisible="1"/>
+                     <field name="user_is_manager" invisible="1"/>
                         <field name="manager_id" 
                             string="Supervisor"
                             options="{'no_create': True, 'no_create_edit': True}"
-                            />
+                            readonly="not (user_is_admin or user_is_manager)"
+                            
+                        />
                      
                     </group>
                     <group>
                         <field name="worker_id" 
-                               options="{'no_create': True, 'no_create_edit': True}"
-                               />
+                            options="{'no_create': True, 'no_create_edit': True}"
+                            readonly="not (user_is_admin or user_is_manager)"
+                        />
+                    
+                    </group>
+                    <group>
+                        <field name="auditor_id"
+                         readonly="not (user_is_admin or user_is_manager)"
+                            options="{'no_create': True, 'no_create_edit': True}"/>
                     
                     </group>
                 </group>
@@ -109,6 +119,7 @@
                 <!-- <field name="team_leader_id" optional="show"/> -->
                 <field name="manager_id" optional="show"/>
                 <field name="worker_id" optional="show"/>
+                <field name="auditor_id" optional="show"/>
             </xpath>
         </field>
     </record>

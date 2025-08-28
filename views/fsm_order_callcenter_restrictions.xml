@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+<odoo>
+    
+    <record id="view_fsm_order_form_callcenter_restrictions" model="ir.ui.view">
+        <field name="name">fsm.order.form.callcenter.restrictions</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//field[@name='template_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='operation_type_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type_operation_reason']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='customer_availability_time']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='opportunity_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sales_person_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_task_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='calendar_event_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fsm_route_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state_name']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_name']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='customer_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='person_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vehicle_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_value']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_uom']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system</attribute>
+            </xpath>
+        </field>
+    </record>
+    
+</odoo> -->
+            <!-- <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system,group_fsm_team</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="groups">fsm_customization.group_callcenter_user,base.group_system,group_fsm_team,</attribute>
+            </xpath> -->
+
+
+
+
+
+<odoo>
+    
+    <!-- Make FSM Order fields readonly for non-call-center users -->
+    <record id="view_fsm_order_form_callcenter_restrictions" model="ir.ui.view">
+        <field name="name">fsm.order.form.callcenter.restrictions</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <field name="user_is_callcenter" invisible="1"/>
+                <field name="user_is_admin" invisible="1"/>
+                <field name="user_is_auditor" invisible="1"/>
+                <field name="resolution" invisible="1"/>
+                <field name="user_is_manager" invisible="1"/>
+                
+                <!-- <field name="is_new_record" invisible="1"/> -->
+            </xpath>
+       
+
+            <!-- Make fields readonly for non-call-center users -->
+            
+            <xpath expr="//field[@name='template_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+
+            </xpath>
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+
+                
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='operation_type_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type_operation_reason']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='customer_availability_time']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='opportunity_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sales_person_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_task_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='calendar_event_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fsm_route_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state_name']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_name']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='customer_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <!-- <xpath expr="//field[@name='person_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='vehicle_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_id']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_value']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='size_uom']" position="attributes">
+                <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='resolution']" position="attributes">
+                <attribute name="readonly">not user_is_auditor and not user_is_admin</attribute>
+            </xpath>
+
+
+            <!-- Assignment Details - Manager only -->
+            <xpath expr="//field[@name='person_id']" position="attributes">
+                <attribute name="readonly">not (user_is_admin or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='manager_id']" position="attributes">
+                <attribute name="readonly">not (user_is_admin or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='worker_id']" position="attributes">
+                <attribute name="readonly">not (user_is_admin or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='auditor_id']" position="attributes">
+                <attribute name="readonly">not (user_is_admin or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="attributes">
+                <attribute name="readonly">not (user_is_admin or user_is_manager)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='template_id']" position="before">
+
+                <field name="user_is_callcenter" />
+                <field name="user_is_admin" />
+                <field name="user_is_manager" />
+                <field name="user_is_auditor" />
+                <field name="test_user_group" />
+            </xpath>
+           
+        </field>
+    </record>
+    
+</odoo>

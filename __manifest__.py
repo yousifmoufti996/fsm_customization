@@ -63,7 +63,7 @@ Technical Features:
    
     'data': [
         # Security
-        # 'security/fsm_security.xml',
+        'security/fsm_security.xml',
         'security/ir.model.access.csv',
         
         # Data
@@ -97,6 +97,7 @@ Technical Features:
         'views/partner/category_res_partner_view.xml',
         'views/FSM_Order/navigationto_view.xml',
         'views/FSM_Order/fsm_person_views.xml',
+        'views/fsm_order_callcenter_restrictions.xml',
         
         
         

@@ -16,6 +16,7 @@ class FSMOrder(models.Model):
         'res.partner', 
         string='Supervisor',
         tracking=True,
+        
         help='Manager overseeing this order'
     )
     worker_id = fields.Many2one(
@@ -24,7 +25,56 @@ class FSMOrder(models.Model):
         tracking=True,
         help='Worker assigned to execute this order'
     )
+    auditor_id = fields.Many2one(
+        'res.users',
+        string='Auditor',
+        domain="[('groups_id.name', 'in', ['Auditor User', 'Access Rights', 'Settings'])]",
+        # domain="[('groups_id', 'in', [ref('fsm_customization.group_fsm_auditor','base.group_system')])]",
+        tracking=True,
+        default=lambda self: self._get_default_auditor(),
+        help='المستخدم المسؤول عن تدقيق الطلب'  # User responsible for auditing the order
+    )
     
+    # @api.model
+    # def create(self, vals):
+    #     record = super().create(vals)
+    #     if record.auditor_id:
+    #         # Send notification to auditor
+    #         record._notify_auditor_assignment()
+    #     return record
+
+    # def _notify_auditor_assignment(self):
+    #     """Send notification to assigned auditor"""
+    #     if self.auditor_id:
+    #         self.message_post(
+    #             body=f"تم تعيينك كمدقق لهذا الطلب: {self.name}",
+    #             partner_ids=[self.auditor_id.partner_id.id],
+    #             subtype_xmlid='mail.mt_comment'
+    #         )
+    
+    @api.constrains('auditor_id', 'stage_id')
+    def _check_auditor_required(self):
+        """Make auditor required for certain stages"""
+        for record in self:
+            if record.stage_id.name in ['تم العمل', 'تم التدقيق'] and not record.auditor_id:
+                raise ValidationError("يجب تحديد المدقق قبل الانتقال إلى هذه المرحلة")
+    
+    def _get_default_auditor(self):
+        """Get default auditor based on business rules"""
+        # Option 1: Same as manager
+        # if self.manager_id:
+        #     return self.manager_id.id
+        
+        # Option 2: First user with auditor role
+        auditor_group = self.env.ref('your_module.group_fsm_auditor', raise_if_not_found=False)
+        if auditor_group:
+            auditor_users = self.env['res.users'].search([('groups_id', 'in', auditor_group.id)], limit=1)
+            if auditor_users:
+                return auditor_users.id
+        
+        # Option 3: Current user
+        # return self.env.user.id
+            
     # Customer availability time for postponed orders (requirement 3)
     customer_availability_time = fields.Datetime(
         string='وقت تواجد العميل',
@@ -67,6 +117,7 @@ class FSMOrder(models.Model):
     @api.constrains('stage_id')
     def _check_stage_transition_rules(self):
         """Validate stage transitions based on business rules"""
+        is_super_admin = self.env.user.has_group('base.group_system')
         for record in self:
             if record.id:
                 # Get original stage from database to compare
@@ -100,7 +151,7 @@ class FSMOrder(models.Model):
                     
                     # Rule 6: Only maintenance supervisor can set "تم العمل"
                     if new_stage.name == 'تم العمل':
-                        if not record.manager_id or record.manager_id != current_user:
+                        if not is_super_admin and (not record.manager_id or record.manager_id != current_user):
                             raise ValidationError(_(
                                 "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
                             ))

@@ -9,18 +9,19 @@
         <field name="arch" type="xml">
             <xpath expr="//group[@name='description_grp']" position="after">
                 <group string="تفاصيل وسبب التأجيل" col="2">
-                        <field name="stage_reason"/>
+                        <field name="stage_reason"
+                         readonly="not (user_is_admin or user_is_manager)"/>
 
                 </group>
 
                 <group string="تفاصيل المشكلة والحل" col="2">
                     <group string="تفاصيل المشكلة">
                         <field name="customer_id" invisible="1"/>
-                        <field name="problem_type_id" string="نوع المشكلة"/>
+                        <field name="problem_type_id" string="نوع المشكلة" readonly="not (user_is_admin or user_is_manager)"/>
                         <field name="estimated_problem_duration_display" string="المدة المتوقعة" readonly="1"/>
                     </group>
                     <group string="تفاصيل الحل">
-                        <field name="problem_solution_id" string="الحل المختار"
+                        <field name="problem_solution_id"  string="الحل المختار" readonly="not (user_is_admin or user_is_manager)"
                             domain="[('problem_type_id', '=', problem_type_id)]"/>
                     </group>
                 </group>

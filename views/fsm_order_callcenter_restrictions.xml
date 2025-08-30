@@ -155,21 +155,21 @@
             <!-- <xpath expr="//field[@name='project_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath> -->
-            <xpath expr="//field[@name='project_task_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='project_task_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='priority']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath>
-            <xpath expr="//field[@name='calendar_event_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='calendar_event_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
-            <xpath expr="//field[@name='fsm_route_id']" position="attributes">
+            </xpath> -->
+            <!-- <xpath expr="//field[@name='fsm_route_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='street']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath>
@@ -194,18 +194,18 @@
             <!-- <xpath expr="//field[@name='person_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath> -->
-            <xpath expr="//field[@name='vehicle_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='vehicle_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
-            <xpath expr="//field[@name='size_id']" position="attributes">
+            </xpath> -->
+            <!-- <xpath expr="//field[@name='size_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
-            <xpath expr="//field[@name='size_value']" position="attributes">
+            </xpath> -->
+            <!-- <xpath expr="//field[@name='size_value']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath>
             <xpath expr="//field[@name='size_uom']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='resolution']" position="attributes">
                 <attribute name="readonly">not user_is_auditor and not user_is_admin</attribute>
             </xpath>

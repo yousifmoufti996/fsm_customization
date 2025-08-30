@@ -1,6 +1,11 @@
 1-in the edit form of the fsm order ->fsm.order.form.stage.duration 
 comment <field name="is_current" invisible="1"/>
 
+1.1-in the edit form of the fsm order 
+
+  <button id="action_complete" name="action_complete" string="Complete" class="oe_highlight" type="object" groups="fieldservice.group_fsm_user" invisible="1"/>
+  <button id="action_cancel" name="action_cancel" string="Cancel Order" type="object" groups="fieldservice.group_fsm_dispatcher" invisible="1"/>
+
 2-in the fsm.person
   Field Service Workers
   edit form
@@ -13,6 +18,7 @@ comment <field name="is_current" invisible="1"/>
   from this file : fsm_stages.xml
   search for
   <button name="action_set_work_in_progress" 
+
 
 4-put this in the ir.ui.view.fsm.order.map
   fieldservice_geoengine.ir_ui_view_fsm_order_map

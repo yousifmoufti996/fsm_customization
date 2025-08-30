@@ -149,9 +149,9 @@
             <!-- <xpath expr="//field[@name='opportunity_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath> -->
-            <xpath expr="//field[@name='sales_person_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='sales_person_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='project_id']" position="attributes">
                 <attribute name="readonly">not (user_is_callcenter or user_is_admin or id == False)</attribute>
             </xpath>

@@ -156,7 +156,7 @@
                             string="في الطريق" 
                             type="object" 
                             class="btn-primary"
-                            invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid)"
+                            invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"
                             />
                             
                         <!-- Work in Progress Button - Show in: On The Way, Emergency Stop, Postponed Request, Cancel Request, Waiting -->
@@ -171,7 +171,7 @@
                             string="مؤجل" 
                             type="object" 
                             class="btn-secondary"
-                            invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request) or (manager_id and manager_id != uid)"
+                            invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request) or (manager_id and manager_id != uid and not user_is_admin)"
                         />
                             
                         <!-- Marketing Follow-up Button - Show in: New, Waiting -->
@@ -179,14 +179,14 @@
                             string="متابعة التسويق" 
                             type="object" 
                             class="btn-info"
-                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid)"/>
+                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
 
                         <!-- Sales Follow-up Button - Show in: New, Waiting -->
                         <button name="action_set_sales_followup" 
                             string="متابعة المبيعات" 
                             type="object" 
                             class="btn-info"
-                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid)"/>
+                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
 
                         <!-- Waiting Button - Show in: Postponed, Cancelled, Marketing Followup, Sales Followup, Postponed Request, Cancel Request -->
                         <button name="action_set_waiting" 
@@ -195,7 +195,7 @@
                             class="btn-light"
                             invisible="not (is_postponed or is_cancelled or is_marketing_followup or is_sales_followup or is_postponed_request or is_cancel_request) 
                                 or not id 
-                                or (manager_id and manager_id != uid) 
+                                or (manager_id and manager_id != uid and not user_is_admin) 
                                 or not user_is_sales_or_marketing"
                             confirm="هل أنت متأكد من جعل هذا الطلب قيد الانتظار؟"/>
                         
@@ -206,7 +206,7 @@
                             class="btn-danger"
                             invisible="not (is_new_stage or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) 
                                 or not id 
-                                or (manager_id and manager_id != uid)" 
+                                or (manager_id and manager_id != uid and not user_is_admin)" 
                             confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
 
                         <!-- Completion Request Button - Show in: Work in Progress -->
@@ -238,7 +238,7 @@
                             string="توقف طارئ" 
                             type="object" 
                             class="btn-danger"
-                            invisible="not (is_on_the_way or is_work_in_progress) or not id or (manager_id and manager_id != uid)"
+                            invisible="not (is_on_the_way or is_work_in_progress) or not id or (manager_id and manager_id != uid and not user_is_admin)"
                             confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
                            
                         <!-- Postponed Request Button - Show in: On The Way, Work in Progress -->

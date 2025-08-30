@@ -115,7 +115,7 @@
             <field name="arch" type="xml">
            
                 <xpath expr="//group[@name='description_grp']" position="before">
-                      <field name="user_is_callcenter"  invisible="1"/>
+                    <field name="user_is_callcenter" invisible="1"/>
                     <field name="fields_locked" invisible="1"/>
                     <field name="is_postponed" invisible="1"/>
                     <field name="is_work_in_progress" invisible="1"/>
@@ -141,126 +141,52 @@
                 </xpath>
 
                 <xpath expr="//header" position="inside">
-                    <field name="fields_locked"  invisible="1"/> 
-                    <field name="is_on_the_way"  invisible="1"/> 
+                    <field name="fields_locked" invisible="1"/> 
+                    <field name="is_on_the_way" invisible="1"/> 
                         
                         <!-- Complete Button (hidden as per original) -->
-                        <button name="action_complete" 
-                            string="Complete" 
-                            type="object" 
-                            class="btn-success"
-                            invisible="1"/>
+                        <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="1"/>
                     
                         <!-- On The Way Button - Show in: New, Postponed Request, Cancel Request, Waiting -->
-                        <button name="action_set_on_the_way" 
-                            string="في الطريق" 
-                            type="object" 
-                            class="btn-primary"
-                            invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"
-                            />
+                        <button name="action_set_on_the_way" string="في الطريق" type="object" class="btn-primary" invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
                             
+                             
                         <!-- Work in Progress Button - Show in: On The Way, Emergency Stop, Postponed Request, Cancel Request, Waiting -->
-                        <button name="action_set_work_in_progress" 
-                            string="جاري العمل" 
-                            type="object" 
-                            class="btn-warning"
-                            invisible="not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) or not id or (person_id and person_id != uid)"/>
+                        <button name="action_set_work_in_progress" string="جاري العمل" type="object" class="btn-warning" invisible="not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting or is_completion_request) or not id or (person_id and person_id != uid)"/>
+
 
                         <!-- Postponed Button - Show in: New, Marketing Followup, Sales Followup, Emergency Stop, Postponed Request, Cancel Request -->
-                        <button name="action_set_postponed" 
-                            string="مؤجل" 
-                            type="object" 
-                            class="btn-secondary"
-                            invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request) or (manager_id and manager_id != uid and not user_is_admin)"
-                        />
-                            
+                        <button name="action_set_postponed" string="مؤجل" type="object" class="btn-secondary" invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid)"/>
+                        
                         <!-- Marketing Follow-up Button - Show in: New, Waiting -->
-                        <button name="action_set_marketing_followup" 
-                            string="متابعة التسويق" 
-                            type="object" 
-                            class="btn-info"
-                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
+                        <button name="action_set_marketing_followup" string="متابعة التسويق" type="object" class="btn-info" invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
 
                         <!-- Sales Follow-up Button - Show in: New, Waiting -->
-                        <button name="action_set_sales_followup" 
-                            string="متابعة المبيعات" 
-                            type="object" 
-                            class="btn-info"
-                            invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
+                        <button name="action_set_sales_followup" string="متابعة المبيعات" type="object" class="btn-info" invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
 
                         <!-- Waiting Button - Show in: Postponed, Cancelled, Marketing Followup, Sales Followup, Postponed Request, Cancel Request -->
-                        <button name="action_set_waiting" 
-                            string="في الانتظار" 
-                            type="object" 
-                            class="btn-light"
-                            invisible="not (is_postponed or is_cancelled or is_marketing_followup or is_sales_followup or is_postponed_request or is_cancel_request) 
-                                or not id 
-                                or (manager_id and manager_id != uid and not user_is_admin) 
-                                or not user_is_sales_or_marketing"
-                            confirm="هل أنت متأكد من جعل هذا الطلب قيد الانتظار؟"/>
+                        <button name="action_set_waiting" string="في الانتظار" type="object" class="btn-light" invisible="not (is_postponed or is_cancelled or is_marketing_followup or is_sales_followup or is_postponed_request or is_cancel_request)                                  or not id                                  or (manager_id and manager_id != uid and not user_is_admin)                                  or not user_is_sales_or_marketing" confirm="هل أنت متأكد من جعل هذا الطلب قيد الانتظار؟"/>
                         
-                        <!-- Cancelled Button - Show in: New, Postponed, Marketing Followup, Sales Followup, Emergency Stop, Postponed Request, Cancel Request, Waiting -->
-                        <button name="action_set_cancelled" 
-                            string="الغاء الطلب" 
-                            type="object" 
-                            class="btn-danger"
-                            invisible="not (is_new_stage or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) 
-                                or not id 
-                                or (manager_id and manager_id != uid and not user_is_admin)" 
-                            confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
-
+                                     <!-- Cancelled Button - Show in: New, Postponed, Marketing Followup, Sales Followup, Emergency Stop, Postponed Request, Cancel Request, Waiting -->
+                        <button name="action_set_cancelled" string="الغاء الطلب" type="object" class="btn-danger" invisible="not (is_new_stage or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_cancel_request or is_waiting)" confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
+                            
                         <!-- Completion Request Button - Show in: Work in Progress -->
-                        <button name="action_set_completion_request" 
-                            string="طلب اتمام العمل" 
-                            type="object"  
-                            class="btn-primary"
-                            invisible="not is_work_in_progress or not id or (person_id and person_id != uid)"
-                            confirm="هل تم إنجاز العمل بالفعل؟"/>
+                        <button name="action_set_completion_request" string="طلب اتمام العمل" type="object" class="btn-primary" invisible="not is_work_in_progress or not id or (person_id and person_id != uid)" confirm="هل تم إنجاز العمل بالفعل؟"/>
                            
                         <!-- Work Completed Button - Show in: Completion Request -->
-                        <button name="action_set_work_completed" 
-                            string="تم العمل" 
-                            type="object" 
-                            class="btn-success"
-                            invisible="not is_completion_request or not id or (auditor_id and auditor_id != uid)"
-                            confirm="هل تم إنجاز العمل بالفعل؟"/>
+                        <button name="action_set_work_completed" string="تم العمل" type="object" class="btn-success" invisible="not is_completion_request or not id or (auditor_id and auditor_id != uid)" confirm="هل تم إنجاز العمل بالفعل؟"/>
                            
                         <!-- Audited Button - Show in: Work Completed, Cancelled -->
-                        <button name="action_set_audited" 
-                            string="تم التدقيق" 
-                            type="object" 
-                            class="btn-success"
-                            invisible="not (is_work_completed or is_cancelled) or not id or (auditor_id and auditor_id != uid)"
-                            confirm="هل تم التدقيق على العمل؟"/>
+                        <button name="action_set_audited" string="تم التدقيق" type="object" class="btn-success" invisible="not (is_work_completed or is_cancelled) or not id or (auditor_id and auditor_id != uid)" confirm="هل تم التدقيق على العمل؟"/>
                            
                         <!-- Emergency Stop Button - Show in: On The Way, Work in Progress -->
-                        <button name="action_set_emergency_stop" 
-                            string="توقف طارئ" 
-                            type="object" 
-                            class="btn-danger"
-                            invisible="not (is_on_the_way or is_work_in_progress) or not id or (manager_id and manager_id != uid and not user_is_admin)"
-                            confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
+                        <button name="action_set_emergency_stop" string="توقف طارئ" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (manager_id and manager_id != uid and not user_is_admin)" confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
                            
                         <!-- Postponed Request Button - Show in: On The Way, Work in Progress -->
-                        <button name="action_set_postponed_request" 
-                            string="طلب تأجيل" 
-                            type="object" 
-                            class="btn-danger"
-                            invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)"
-                            confirm="هل تريد طلب تأجيل هذا الطلب؟"/>
+                        <button name="action_set_postponed_request" string="طلب تأجيل" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)" confirm="هل تريد طلب تأجيل هذا الطلب؟"/>
 
                         <!-- Cancel Request Button - Show in: On The Way, Work in Progress -->
-                        <button name="action_set_cancel_request" 
-                            string="طلب الغاء" 
-                            type="object" 
-                            class="btn-danger"
-                            invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)"
-                            confirm="هل تريد طلب إلغاء هذا الطلب؟"/>
-
-                       
-            </xpath>
-            </field>
-        </record>
+                        <button name="action_set_cancel_request" string="طلب الغاء" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)" confirm="هل تريد طلب إلغاء هذا الطلب؟"/>
 
     </data>
 </odoo>

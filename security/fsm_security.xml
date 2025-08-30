@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         
         <!-- Call Center User Group -->
         <record id="group_callcenter_user" model="res.groups">
@@ -19,7 +19,7 @@
         <!-- Auditor Group -->
         <record id="group_fsm_auditor" model="res.groups">
             <field name="name">Auditor User</field>
-            <field name="category_id" ref="base.module_category_field_service"/>
+            <field name="category_id" ref="base.module_category_services"/>
             <field name="comment">Can audit FSM orders</field>
         </record>
     </data>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
         
         <!-- FSM Order Stages -->
         
@@ -111,7 +111,7 @@
         <record id="fsm_order_form_stage_buttons" model="ir.ui.view">
             <field name="name">fsm.order.form.stage.buttons</field>
             <field name="model">fsm.order</field>
-            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="inherit_id" ref="view_fsm_order_form_inherit_problem"/>
             <field name="arch" type="xml">
            
                 <xpath expr="//group[@name='description_grp']" position="before">
@@ -159,7 +159,7 @@
                             string="في الطريق" 
                             type="object" 
                             class="btn-primary"
-                            invisible="(manager_id and manager_id != uid) or is_postponed or is_on_the_way or is_emergency_stop or   is_audited or is_closed or is_completion_request or is_work_completed or is_work_in_progress or is_marketing_followup or is_sales_followup"
+                            invisible="(manager_id and manager_id != uid) or is_audited or is_postponed or is_on_the_way or is_emergency_stop or   is_audited or is_closed or is_completion_request or is_work_completed or is_work_in_progress or is_marketing_followup or is_sales_followup"
                             />
                             
                             
@@ -168,7 +168,7 @@
                             string="جاري العمل" 
                             type="object" 
                             class="btn-warning"
-                            invisible="not id or is_new_stage or is_cancelled or is_postponed or is_work_completed or (person_id and person_id != uid) or is_work_in_progress or is_marketing_followup or is_sales_followup"/>
+                            invisible="not id or is_new_stage or is_cancelled  or is_audited or is_postponed or is_work_completed or (person_id and person_id != uid) or is_work_in_progress or is_marketing_followup or is_sales_followup"/>
 
                        
                         <!-- Postponed Button -->
@@ -194,7 +194,7 @@
                             string="متابعة التسويق" 
                             type="object" 
                             class="btn-info"
-                            invisible="(manager_id and manager_id != uid) or is_cancel_request or is_postponed_request or is_cancelled or is_emergency_stop or is_postponed or is_work_completed or is_completion_request or is_marketing_followup or is_sales_followup or is_work_in_progress or is_on_the_way or stage_id.is_closed == 'True' "/>
+                            invisible="(manager_id and manager_id != uid) or is_audited or is_cancel_request or is_postponed_request or is_cancelled or is_emergency_stop or is_postponed or is_work_completed or is_completion_request or is_marketing_followup or is_sales_followup or is_work_in_progress or is_on_the_way or stage_id.is_closed == 'True' "/>
 
 
                         <!-- Sales Follow-up Button -->
@@ -202,7 +202,7 @@
                             string="متابعة المبيعات" 
                             type="object" 
                             class="btn-info"
-                            invisible="(manager_id and manager_id != uid) or is_cancel_request or is_postponed_request or is_cancelled or is_emergency_stop or is_postponed or is_work_completed or is_completion_request or is_marketing_followup or is_sales_followup or is_work_in_progress or stage_id.is_closed == 'True' or is_on_the_way " />
+                            invisible="(manager_id and manager_id != uid) or is_cancel_request or is_audited or is_postponed_request or is_cancelled or is_emergency_stop or is_postponed or is_work_completed or is_completion_request or is_marketing_followup or is_sales_followup or is_work_in_progress or stage_id.is_closed == 'True' or is_on_the_way " />
 
 
 
@@ -227,8 +227,8 @@
                             type="object" 
                             class="btn-danger"
                             invisible="not id 
-                                or not (is_postponed or is_sales_followup or is_marketing_followup or is_emergency_stop or is_cancel_request or is_waiting) 
-                                or is_new_stage 
+                                or not (is_new_stage or is_postponed or is_sales_followup or is_marketing_followup or is_emergency_stop or is_cancel_request or is_waiting) 
+                            
                                 or (manager_id and manager_id != uid) 
                                 or is_completion_request 
                                 or is_cancelled 

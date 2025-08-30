@@ -76,8 +76,8 @@ Technical Features:
         # 'data/deactivate_old_stages.xml',
         
         #views
-        'views/FSM_Order/fsm_stages.xml',
         'views/FSM_Order/fsm_order.xml',
+        'views/FSM_Order/fsm_stages.xml',
         'views/problem_management_views.xml',  
         'views/FSM_Order/fsm_order_contract_details_view.xml',  
         'views/FSM_Order/fsm_order_contact_details.xml',  

@@ -495,11 +495,13 @@ class FSMOrder(models.Model):
     def action_approve_contract_changes(self):
         """Approve and save contract changes to res.partner"""
         print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
-        # if not (self.manager_id and  (self.manager_id != self.env.user)):
-        #     print(self.manager_id.name , "self.manager_id.name")
-        #     print(self.env.user.name , "self.env.user.name")
-        #     print("لا يمكن اعتماد تغييرات العقد لأحد المشرفين")
-        #     raise UserError("فقط المشرف يمكنه اعتماد تغييرات العقد")
+        print("self.env.user._is_admin()",self.env.user._is_admin())
+        print('self.manager_id',self.manager_id)
+        print('self.env.user',self.env.user)
+        
+        if not (self.manager_id == self.env.user.partner_id or self.env.user._is_admin() or self.user_is_callcenter):
+            
+            raise UserError("فقط المشرف أو الإدارة أو مركز الاتصال يمكنه اعتماد تغييرات العقد")
         
         
         print(self.temp_full_name_and_surname)
@@ -612,15 +614,15 @@ class FSMOrder(models.Model):
         #     }
         # }
         # Show success notification and refresh the view
-        self.env['bus.bus']._sendone(
-            self.env.user.partner_id,
-            'simple_notification',
-            {
-                'title': 'تم بنجاح!',
-                'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
-                'type': 'success',
-            }
-        )
+        # self.env['bus.bus']._sendone(
+        #     self.env.user.partner_id,
+        #     'simple_notification',
+        #     {
+        #         'title': 'تم بنجاح!',
+        #         'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
+        #         'type': 'success',
+        #     }
+        # )
 
         # Return action to refresh the current record
         return {

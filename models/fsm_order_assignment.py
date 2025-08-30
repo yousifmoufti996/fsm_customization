@@ -237,28 +237,28 @@ class FSMOrder(models.Model):
             }
         }
 
-    def _send_assignment_notification(self, assigned_user, role):
-        """Send notification to assigned user"""
-        if assigned_user:
-            subject = f"FSM Order Assignment - {role}"
-            body = f"""
-            <p>Dear {assigned_user.name},</p>
-            <p>You have been assigned as <strong>{role}</strong> for FSM Order: <strong>{self.name}</strong></p>
-            <p><strong>Customer:</strong> {self.customer_id.name if self.customer_id else 'N/A'}</p>
-            <p><strong>Location:</strong> {self.location_id.name if self.location_id else 'N/A'}</p>
-            <p><strong>Priority:</strong> {dict(self._fields['priority'].selection).get(self.priority, 'N/A')}</p>
-            <p><strong>Scheduled Start:</strong> {self.scheduled_date_start or 'Not scheduled'}</p>
-            <p>Please check the order details in the system.</p>
-            <p>Best regards,<br/>FSM System</p>
-            """
+    # def _send_assignment_notification(self, assigned_user, role):
+    #     """Send notification to assigned user"""
+    #     if assigned_user:
+    #         subject = f"FSM Order Assignment - {role}"
+    #         body = f"""
+    #         <p>Dear {assigned_user.name},</p>
+    #         <p>You have been assigned as <strong>{role}</strong> for FSM Order: <strong>{self.name}</strong></p>
+    #         <p><strong>Customer:</strong> {self.customer_id.name if self.customer_id else 'N/A'}</p>
+    #         <p><strong>Location:</strong> {self.location_id.name if self.location_id else 'N/A'}</p>
+    #         <p><strong>Priority:</strong> {dict(self._fields['priority'].selection).get(self.priority, 'N/A')}</p>
+    #         <p><strong>Scheduled Start:</strong> {self.scheduled_date_start or 'Not scheduled'}</p>
+    #         <p>Please check the order details in the system.</p>
+    #         <p>Best regards,<br/>FSM System</p>
+    #         """
             
-            self.message_post(
-                body=body,
-                subject=subject,
-                partner_ids=[assigned_user.partner_id.id],
-                message_type='notification',
-                subtype_xmlid='mail.mt_comment'
-            )
+    #         self.message_post(
+    #             body=body,
+    #             subject=subject,
+    #             partner_ids=[assigned_user.partner_id.id],
+    #             message_type='notification',
+    #             subtype_xmlid='mail.mt_comment'
+    #         )
 
     @api.model
     def is_fsm_manager(self):

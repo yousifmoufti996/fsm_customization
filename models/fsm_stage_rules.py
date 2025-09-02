@@ -59,7 +59,8 @@ class FSMOrder(models.Model):
                     
                     # Rule 6: Only maintenance supervisor can set "تم العمل"
                     if new_stage.name == 'تم العمل':
-                        if not is_super_admin and (not record.manager_id or record.manager_id != current_user):
+                        manager_user = record.manager_id.user_id if record.manager_id else None
+                        if not is_super_admin and (not manager_user or manager_user != current_user):
                             raise ValidationError(_(
                                 "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
                             ))
@@ -78,11 +79,13 @@ class FSMOrder(models.Model):
                             ))
                     # Rule for Audited stage - Only auditor can set it
                     if new_stage.name == 'تم التدقيق':
-                        if record.auditor_id and record.auditor_id != current_user:
+                        # Updated to check auditor_id.user_id instead of auditor_id directly
+                        auditor_user = record.auditor_id.user_id if record.auditor_id else None
+                        if auditor_user and auditor_user != current_user:
                             raise ValidationError(_(
                                 "فقط المدقق المخصص يمكنه اختيار مرحلة 'تم التدقيق'"
                             ))
-                    
+                        
                     # Team Leader Rules
                     # if record.team_leader_id == current_user:
                     if record.person_id == current_user:
@@ -230,9 +233,10 @@ class FSMOrder(models.Model):
     def action_set_work_completed(self):
         is_super_admin = self.env.user.has_group('base.group_system')
         """Set order stage to 'Work Completed'"""
-        if not is_super_admin and self.manager_id != self.env.user:
+        manager_user = self.manager_id.user_id if self.manager_id else None
+        if not is_super_admin and manager_user != self.env.user:
             raise AccessError(_("فقط مشرف الصيانة يمكنه تحديد مرحلة 'تم العمل'"))
-        
+            
         # Validate all records before making any changes
         for rec in self:
             if rec.stage_id.name != 'طلب اتمام العمل':
@@ -254,7 +258,8 @@ class FSMOrder(models.Model):
 
     def action_set_audited(self):
         """Set order stage to 'Audited'"""
-        if (self.auditor_id != self.env.user and self.env.user.has_group('base.group_system')== False):
+        auditor_user = self.auditor_id.user_id if self.auditor_id else None
+        if (auditor_user != self.env.user and self.env.user.has_group('base.group_system')== False):
             raise AccessError(_("فقط المدقق المخصص يمكنه تحديد مرحلة 'تم التدقيق'"))
         for rec in self:
             # if rec.stage_id.name != 'تم العمل':

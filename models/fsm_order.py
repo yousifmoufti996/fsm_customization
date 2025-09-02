@@ -98,9 +98,8 @@ class FSMOrder(models.Model):
         for record in self:
             is_callcenter = self.env.user.has_group('fsm_customization.group_callcenter_user')
             is_admin = self.env.user.has_group('base.group_system')
-            is_manager = (record.manager_id.id == self.env.user.partner_id.id) if record.manager_id else False
+            is_manager = (record.manager_id.user_id.id == self.env.user.id) if record.manager_id and record.manager_id.user_id else False
         
-            
             print(f"Has callcenter group: {is_callcenter}")
             print(f"Has admin group: {is_admin}")
             print(f"is_manager : {is_manager}")
@@ -111,18 +110,6 @@ class FSMOrder(models.Model):
             
         print("=== END COMPUTING ===")
 
-    # @api.depends_context('uid')
-    # def _compute_user_is_admin(self):
-    #     for record in self:
-    #         record.user_is_admin = self.env.user.has_group('base.group_system')
-            
-    #Always Required When Both Fields Are Set
-    # @api.constrains('type', 'operation_type_id', 'type_operation_reason')
-    # def _check_type_operation_reason_required(self):
-    #     for record in self:
-    #         if record.type and record.operation_type_id and not record.type_operation_reason:
-    #             raise ValidationError("سبب نوع العملية مطلوب عند تحديد نوع العملية والعملية")
-    #or Required Only at Completion Stage in the _check_stage_reason_required 
     
     estimated_problem_duration = fields.Float(
         string='Estimated Duration (Hours)', 
@@ -389,22 +376,7 @@ class FSMOrder(models.Model):
         self.temp_subscription_type = self.customer_id.category_id
         self.temp_menu_type_ids = self.customer_id.menu_type_ids
         self.contract_changes_pending = False
-    # def _auto_init(self):
-    #     """Clear temp fields before conversion to prevent data type errors"""
-    #     # Clear existing data in temp_area_name and temp_area_number before conversion
-    #     if hasattr(self.env.cr, 'execute'):
-    #         try:
-    #             # Check if columns exist and clear them
-    #             self.env.cr.execute("""
-    #                 UPDATE fsm_order 
-    #                 SET temp_area_name = NULL, temp_area_number = NULL 
-    #                 WHERE temp_area_name IS NOT NULL OR temp_area_number IS NOT NULL
-    #             """)
-    #         except Exception:
-    #             # Ignore errors if columns don't exist yet
-    #             pass
-        
-    #     return super()._auto_init()
+   
         
     temp_contract_number = fields.Char(string="رقم العقد")
     temp_voucher_number = fields.Char(string="رقم الوصل")
@@ -498,11 +470,9 @@ class FSMOrder(models.Model):
         print("self.env.user._is_admin()",self.env.user._is_admin())
         print('self.manager_id',self.manager_id)
         print('self.env.user',self.env.user)
-        
-        if not (self.manager_id == self.env.user.partner_id or self.env.user._is_admin() or self.user_is_callcenter):
-            
+        manager_user_id = self.manager_id.user_id.id if self.manager_id and self.manager_id.user_id else False
+        if not (manager_user_id == self.env.user.id or self.env.user._is_admin() or self.user_is_callcenter):
             raise UserError("فقط المشرف أو الإدارة أو مركز الاتصال يمكنه اعتماد تغييرات العقد")
-        
         
         print(self.temp_full_name_and_surname)
         if not self.customer_id:
@@ -527,10 +497,7 @@ class FSMOrder(models.Model):
             update_vals['partner_longitude'] = self.temp_longitude_coordinates
         if self.temp_latitude_coordinates:
             update_vals['partner_latitude'] = self.temp_latitude_coordinates 
-        # if self.temp_longitude_coordinates:
-        #     update_vals['longitude_coordinates'] = self.temp_longitude_coordinates
-        # if self.temp_latitude_coordinates:
-        #     update_vals['latitude_coordinates'] = self.temp_latitude_coordinates
+      
         if self.temp_local_number:
             update_vals['local_number'] = self.temp_local_number
         if self.temp_alley_number:
@@ -601,28 +568,6 @@ class FSMOrder(models.Model):
         self.contract_approved_by = self.env.user
         self.contract_approved_date = fields.Datetime.now()
         
-        # Clear temporary fields after successful approval
-        # self.action_reset_contract_fields()
-
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'display_notification',
-        #     'params': {
-        #         'title': 'تم بنجاح!',
-        #         'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
-        #         'type': 'success',
-        #     }
-        # }
-        # Show success notification and refresh the view
-        # self.env['bus.bus']._sendone(
-        #     self.env.user.partner_id,
-        #     'simple_notification',
-        #     {
-        #         'title': 'تم بنجاح!',
-        #         'message': f'تم اعتماد وحفظ معلومات العقد للعميل: {self.customer_id.name}',
-        #         'type': 'success',
-        #     }
-        # )
 
         # Return action to refresh the current record
         return {
@@ -750,33 +695,25 @@ class FSMOrder(models.Model):
                     'estimated_problem_duration',        
                     'estimated_problem_duration_display'
                 }
-                
-                print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-                print('vals.keys():', set(vals.keys()))
-                print('allowed_fields:', allowed_fields)
-                print('move_ids in allowed_fields:', 'move_ids' in allowed_fields)
-                
+              
                 # Allow only stage changes by authorized users (if needed)
                 restricted_fields = set(vals.keys()) - allowed_fields
-                print('restricted_fields:', restricted_fields)
-                # if restricted_fields:
-                #     raise ValidationError(_(
-                #         "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
-                #     ) % ', '.join(restricted_fields))
             
+              
             # Rule 5: Manager cannot edit manager assignment for himself
-            if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager and not self.env.user._is_admin():
-                if vals['manager_id'] != record.manager_id.id:
+            if 'manager_id' in vals and record.manager_id and record.manager_id.user_id == self.env.user and not self.is_fsm_manager and not self.env.user._is_admin():
+                new_manager = self.env['hr.employee'].browse(vals['manager_id']) if vals['manager_id'] else False
+                if not new_manager or new_manager.id != record.manager_id.id:
                     raise ValidationError(_(
                         "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
                     ))
-            if 'resolution' in vals and record.auditor_id and record.auditor_id == self.env.user and not self.env.user._is_admin():
             
+            # Updated auditor check
+            if 'resolution' in vals and record.auditor_id and record.auditor_id.user_id == self.env.user and not self.env.user._is_admin():
                 raise ValidationError(_(
-                    
                     "لا يمكن سوى للمدقق تعديل أو إلغاء حقل resolution"
                 ))
-        
+            
         # Perform the actual write operation
         result = super().write(vals)
         
@@ -856,16 +793,6 @@ class FSMOrder(models.Model):
             'target': 'current',
         }
 
-
-    # def action_navigate_to(self):
-    #     """Open navigation to the order location"""
-    #     if self.location_id and self.location_id.partner_latitude and self.location_id.partner_longitude:
-    #         url = f"https://maps.google.com/maps?daddr={self.location_id.partner_latitude},{self.location_id.partner_longitude}"
-    #         return {
-    #             'type': 'ir.actions.act_url',
-    #             'url': url,
-    #             'target': 'new',
-    #         }
     def action_navigate_to(self):
         """Open navigation to the order location with routing"""
         if self.location_id and self.location_id.partner_latitude and self.location_id.partner_longitude:

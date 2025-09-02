@@ -28,7 +28,7 @@
             <field name="name">FSM Order Worker Access</field>
             <field name="model_id" ref="fieldservice.model_fsm_order"/>
             <field name="groups" eval="[(4, ref('group_fsm_worker'))]"/>
-            <field name="domain_force">[('worker_id', '=', user.id)]</field>
+            <field name="domain_force">[('worker_id.user_id', '=', user.id)]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="False"/>

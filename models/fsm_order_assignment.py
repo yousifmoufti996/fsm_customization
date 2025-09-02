@@ -13,68 +13,55 @@ class FSMOrder(models.Model):
         help='Team leader responsible for this order'
     )
     manager_id = fields.Many2one(
-        'res.partner', 
+        'hr.employee',  
         string='Supervisor',
         tracking=True,
-        
         help='Manager overseeing this order'
     )
     worker_id = fields.Many2one(
-        'res.partner',
+        'hr.employee',  # Changed from 'res.partner'
         string='Worker',
         tracking=True,
         help='Worker assigned to execute this order'
     )
+
+    # Change auditor_id third
     auditor_id = fields.Many2one(
-        'res.users',
+        'hr.employee',  # Changed from 'res.users'
         string='Auditor',
-        domain="[('groups_id.name', 'in', ['Auditor User', 'Access Rights', 'Settings'])]",
-        # domain="[('groups_id', 'in', [ref('fsm_customization.group_fsm_auditor','base.group_system')])]",
+        domain="[('user_id.groups_id.name', 'in', ['Auditor User', 'Access Rights', 'Settings'])]",
         tracking=True,
         default=lambda self: self._get_default_auditor(),
-        help='المستخدم المسؤول عن تدقيق الطلب'  # User responsible for auditing the order
+        help='المستخدم المسؤول عن تدقيق الطلب'
     )
-    
-    # @api.model
-    # def create(self, vals):
-    #     record = super().create(vals)
-    #     if record.auditor_id:
-    #         # Send notification to auditor
-    #         record._notify_auditor_assignment()
-    #     return record
-
-    # def _notify_auditor_assignment(self):
-    #     """Send notification to assigned auditor"""
-    #     if self.auditor_id:
-    #         self.message_post(
-    #             body=f"تم تعيينك كمدقق لهذا الطلب: {self.name}",
-    #             partner_ids=[self.auditor_id.partner_id.id],
-    #             subtype_xmlid='mail.mt_comment'
-    #         )
-    
-    # @api.constrains('auditor_id', 'stage_id')
-    # def _check_auditor_required(self):
-    #     """Make auditor required for certain stages"""
-    #     for record in self:
-    #         if record.stage_id.name in ['تم العمل', 'تم التدقيق'] and not record.auditor_id:
-    #             raise ValidationError("يجب تحديد المدقق قبل الانتقال إلى هذه المرحلة")
-    
     def _get_default_auditor(self):
-        """Get default auditor based on business rules"""
-        # Option 1: Same as manager
-        # if self.manager_id:
-        #     return self.manager_id.id
+        """Get default auditor based on business rules - updated for hr.employee"""
+        # Find employee with auditor role
+        auditor_users = self.env['res.users'].search([
+            ('groups_id.name', 'in', ['Auditor User', 'Access Rights', 'Settings'])
+        ], limit=1)
         
-        # Option 2: First user with auditor role
-        auditor_group = self.env.ref('your_module.group_fsm_auditor', raise_if_not_found=False)
-        if auditor_group:
-            auditor_users = self.env['res.users'].search([('groups_id', 'in', auditor_group.id)], limit=1)
-            if auditor_users:
-                return auditor_users.id
+        if auditor_users:
+            # Find employee linked to this user
+            employee = self.env['hr.employee'].search([
+                ('user_id', '=', auditor_users.id)
+            ], limit=1)
+            if employee:
+                return employee.id
+        return False
+    
+    # def _get_default_auditor(self):
+    #     """Get default auditor based on business rules"""
+    
+    #     # Option 2: First user with auditor role
+    #     auditor_group = self.env.ref('your_module.group_fsm_auditor', raise_if_not_found=False)
+    #     if auditor_group:
+    #         auditor_users = self.env['res.users'].search([('groups_id', 'in', auditor_group.id)], limit=1)
+    #         if auditor_users:
+    #             return auditor_users.id
+
         
-        # Option 3: Current user
-        # return self.env.user.id
-            
+     
     # Customer availability time for postponed orders (requirement 3)
     customer_availability_time = fields.Datetime(
         string='وقت تواجد العميل',
@@ -92,27 +79,9 @@ class FSMOrder(models.Model):
                         'message': 'وقت تواجد العميل يجب أن يكون في المستقبل'
                     }
                 }
-    # @api.constrains('customer_availability_time')
-    # def _check_customer_availability_time_future(self):
-    #     """Ensure customer availability time is not in the past"""
-    #     for record in self:
-    #         if record.customer_availability_time:
-    #             now = fields.Datetime.now()
-    #             if record.customer_availability_time <= now:
-    #                 # Format the datetime for better user experience
-    #                 current_time = now.strftime('%Y-%m-%d %H:%M')
-    #                 selected_time = record.customer_availability_time.strftime('%Y-%m-%d %H:%M')
-    #                 raise ValidationError(
-    #                     f"وقت تواجد العميل يجب أن يكون في المستقبل\n"
-    #                     f"الوقت المختار: {selected_time}\n"
-    #                     f"الوقت الحالي: {current_time}"
-    #                 )
-                    
+  
     fields_locked = fields.Boolean("الحقول مقفلة", default=False, readonly=True)
     
-    
-    # stage_reason = fields.Text(string='السبب', tracking=True)
-
 
     @api.constrains('stage_id')
     def _check_stage_transition_rules(self):
@@ -151,7 +120,7 @@ class FSMOrder(models.Model):
                     
                     # Rule 6: Only maintenance supervisor can set "تم العمل"
                     if new_stage.name == 'تم العمل':
-                        if not is_super_admin and (not record.manager_id or record.manager_id != current_user):
+                        if not is_super_admin and (not record.manager_id or record.manager_id.user_id != current_user):
                             raise ValidationError(_(
                                 "فقط مشرف الصيانة يمكنه اختيار مرحلة 'تم العمل'"
                             ))
@@ -170,25 +139,7 @@ class FSMOrder(models.Model):
                                 "التيم ليدر يمكنه اختيار 'طلب اتمام العمل' فقط بعد مرحلة 'جاري العمل'"
                             ))
 
-    # @api.constrains('stage_id')
-    # def _check_stage_transition_from_in_the_way(self):
-    #     for record in self:
-    #         if hasattr(record, '_origin') and record._origin.stage_id:
-    #             old_stage = record._origin.stage_id
-    #             new_stage = record.stage_id
-                
-    #             if old_stage and old_stage != new_stage:
-    #                 # Check if old stage was "في الطريق"
-    #                 if old_stage.name == 'في الطريق' or old_stage.name == 'On The Way':
-    #                     # Define allowed next stages for FSM orders
-    #                     allowed_stage_names = ['جاري العمل', 'توقف طارئ','Emergency Stop','Work in Progress']
-                        
-    #                     if new_stage.name not in allowed_stage_names:
-    #                         raise ValidationError(_(
-    #                             "إذا كان الطلب في الطريق، يمكنك فقط اختيار 'جاري العمل' أو 'توقف طارئ' كمرحلة تالية.\n"
-    #                             "If the order is 'In the Way', you can only select 'Work in Progress' or 'Emergency Stop' as the next stage."
-    #                         ))
-
+   
 
     @api.onchange('team_id')
     def _onchange_team_id_assignment(self):
@@ -216,12 +167,11 @@ class FSMOrder(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Assign Manager',
-            'res_model': 'res.users',
+            'res_model': 'hr.employee',
             'view_mode': 'tree,form',
             'target': 'new',
-            'context': {
-                'default_groups_id': [(4, self.env.ref('base.group_user').id)],
-            }
+            'domain': [('user_id', '!=', False)],
+            'context': {}
         }
 
     def action_assign_worker(self):
@@ -237,77 +187,9 @@ class FSMOrder(models.Model):
             }
         }
 
-    # def _send_assignment_notification(self, assigned_user, role):
-    #     """Send notification to assigned user"""
-    #     if assigned_user:
-    #         subject = f"FSM Order Assignment - {role}"
-    #         body = f"""
-    #         <p>Dear {assigned_user.name},</p>
-    #         <p>You have been assigned as <strong>{role}</strong> for FSM Order: <strong>{self.name}</strong></p>
-    #         <p><strong>Customer:</strong> {self.customer_id.name if self.customer_id else 'N/A'}</p>
-    #         <p><strong>Location:</strong> {self.location_id.name if self.location_id else 'N/A'}</p>
-    #         <p><strong>Priority:</strong> {dict(self._fields['priority'].selection).get(self.priority, 'N/A')}</p>
-    #         <p><strong>Scheduled Start:</strong> {self.scheduled_date_start or 'Not scheduled'}</p>
-    #         <p>Please check the order details in the system.</p>
-    #         <p>Best regards,<br/>FSM System</p>
-    #         """
-            
-    #         self.message_post(
-    #             body=body,
-    #             subject=subject,
-    #             partner_ids=[assigned_user.partner_id.id],
-    #             message_type='notification',
-    #             subtype_xmlid='mail.mt_comment'
-    #         )
-
+  
     @api.model
     def is_fsm_manager(self):
         return self.env.user.has_group('fieldservice.group_fsm_manager')
     
-    # def write(self, vals):
-    #     """Override write to implement business rules and field locking"""
-        
-    #     # Check if we're transitioning TO 'تم العمل' stage
-    #     transitioning_to_completed = False
-    #     if 'stage_id' in vals:
-    #         new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
-    #         if new_stage.name == 'تم العمل':
-    #             transitioning_to_completed = True
-            
-    #         # Track stage changes
-    #         for order in self:
-    #             self._track_stage_change(order, vals['stage_id'])
-        
-    #     # Apply business rules for each record
-    #     for record in self:
-    #         # Rule 4: Lock all fields when work is already completed 
-    #         # (except when transitioning TO completed stage)
-    #         if record.stage_id.name == 'تم العمل' and not transitioning_to_completed:
-    #             # Allow only stage changes by authorized users (if needed)
-    #             restricted_fields = set(vals.keys()) - {'stage_id', 'fields_locked'}
-    #             print('restricted_fields')
-    #             print(restricted_fields)
-    #             if restricted_fields:
-    #                 raise ValidationError(_(
-    #                     "لا يمكن التعديل على الحقول بعد إتمام العمل. الحقول المحظورة: %s"
-    #                 ) % ', '.join(restricted_fields))
-            
-    #         # Rule 5: Manager cannot edit manager assignment for himself
-    #         if 'manager_id' in vals and record.manager_id == self.env.user and not self.is_fsm_manager:
-    #             if vals['manager_id'] != record.manager_id.id:
-    #                 raise ValidationError(_(
-    #                     "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
-    #                 ))
-        
-    #     # Perform the actual write operation
-    #     result = super().write(vals)
-        
-    #     # Lock fields when work is completed
-    #     if 'stage_id' in vals:
-    #         new_stage = self.env['fsm.stage'].browse(vals['stage_id'])
-    #         for record in self:
-    #             if new_stage.name == 'تم العمل':
-    #                 record.sudo().write({'fields_locked': True})
-        
-    #     return result
-  
+   

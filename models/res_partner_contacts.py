@@ -9,7 +9,7 @@ class ResPartner(models.Model):
         'اسم المنطقة'
     )
     user_name = fields.Char("User Name")
-    
+    company_type = fields.Selection(default='person')
     @api.onchange('area_name_id')
     def _onchange_area_name_id(self):
         # Clear the menu_type_ids when area changes

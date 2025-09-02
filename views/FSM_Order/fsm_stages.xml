@@ -156,7 +156,7 @@
 
 
                         <!-- Postponed Button - Show in: New, Marketing Followup, Sales Followup, Emergency Stop, Postponed Request, Cancel Request -->
-                        <button name="action_set_postponed" string="مؤجل" type="object" class="btn-secondary" invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid)"/>
+                        <button name="action_set_postponed" string="مؤجل" type="object" class="btn-secondary" invisible="not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>
                         
                         <!-- Marketing Follow-up Button - Show in: New, Waiting -->
                         <button name="action_set_marketing_followup" string="متابعة التسويق" type="object" class="btn-info" invisible="not (is_new_stage or is_waiting) or (manager_id and manager_id != uid and not user_is_admin)"/>

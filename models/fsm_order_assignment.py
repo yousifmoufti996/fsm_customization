@@ -52,12 +52,12 @@ class FSMOrder(models.Model):
     #             subtype_xmlid='mail.mt_comment'
     #         )
     
-    @api.constrains('auditor_id', 'stage_id')
-    def _check_auditor_required(self):
-        """Make auditor required for certain stages"""
-        for record in self:
-            if record.stage_id.name in ['تم العمل', 'تم التدقيق'] and not record.auditor_id:
-                raise ValidationError("يجب تحديد المدقق قبل الانتقال إلى هذه المرحلة")
+    # @api.constrains('auditor_id', 'stage_id')
+    # def _check_auditor_required(self):
+    #     """Make auditor required for certain stages"""
+    #     for record in self:
+    #         if record.stage_id.name in ['تم العمل', 'تم التدقيق'] and not record.auditor_id:
+    #             raise ValidationError("يجب تحديد المدقق قبل الانتقال إلى هذه المرحلة")
     
     def _get_default_auditor(self):
         """Get default auditor based on business rules"""

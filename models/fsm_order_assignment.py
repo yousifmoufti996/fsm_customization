@@ -16,12 +16,14 @@ class FSMOrder(models.Model):
         'hr.employee',  
         string='Supervisor',
         tracking=True,
+        ondelete='set null',
         help='Manager overseeing this order'
     )
     worker_id = fields.Many2one(
         'hr.employee',  # Changed from 'res.partner'
         string='Worker',
         tracking=True,
+        ondelete='set null',
         help='Worker assigned to execute this order'
     )
 
@@ -31,6 +33,7 @@ class FSMOrder(models.Model):
         string='Auditor',
         domain="[('user_id.groups_id.name', 'in', ['Auditor User', 'Access Rights', 'Settings'])]",
         tracking=True,
+        ondelete='set null',
         default=lambda self: self._get_default_auditor(),
         help='المستخدم المسؤول عن تدقيق الطلب'
     )

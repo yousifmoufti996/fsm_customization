@@ -34,6 +34,13 @@ class CustomerLocationWizard(models.TransientModel):
                 'partner_latitude': self.latitude,
                 'partner_longitude': self.longitude,
             })
+        # Update FSM order's temporary coordinates if fsm_order_id is provided
+        if self.fsm_order_id:
+            self.fsm_order_id.write({
+                'temp_latitude_coordinates': self.latitude,
+                'temp_longitude_coordinates': self.longitude,
+            })
+            
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',

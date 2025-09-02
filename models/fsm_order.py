@@ -637,7 +637,32 @@ class FSMOrder(models.Model):
             except (ValueError, IndexError):
                 pass
         return 0.0
-    
+    manager_user_is_current = fields.Boolean(
+        compute="_compute_manager_user_is_current",
+        store=False
+    )
+
+    @api.depends("manager_id.user_id")
+    def _compute_manager_user_is_current(self):
+        uid = self.env.uid
+        for order in self:
+            order.manager_user_is_current = (
+                order.manager_id and order.manager_id.user_id and order.manager_id.user_id.id == uid
+            )
+            
+    auditor_user_is_current = fields.Boolean(
+        compute="_compute_auditor_user_is_current",
+        store=False
+    )
+
+    @api.depends("auditor_id.user_id")
+    def _compute_auditor_user_is_current(self):
+        uid = self.env.uid
+        for order in self:
+            order.auditor_user_is_current = (
+                order.auditor_id and order.auditor_id.user_id and order.auditor_id.user_id.id == uid
+            )
+
     @api.model
     def create(self, vals):
         """Override create to handle duration fields"""

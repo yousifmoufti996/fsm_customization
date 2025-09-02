@@ -38,31 +38,6 @@
                         </h1>
                     </div>
                     
-                    <!-- فلاتر البحث -->
-                    <div class="row mt16">
-                        <div class="col-md-12">
-                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
-                                فلاتر البحث
-                            </h3>
-                        </div>
-                    </div>
-                    <group style="direction: rtl; text-align: right;">
-                        <group >
-                            <!-- <field name="date_from"/>
-                            <field name="date_to"/> -->
-                            <field name="date_from" required="1" widget="date" readonly="0" edit="true"/>
-                            <field name="date_to" required="1" widget="date" readonly="0" edit="true"/>
-                        </group>
-                        <!-- <group>
-                            <field name="team_id"/>
-                            <field name="person_id"/>
-                        </group> -->
-                        <group>
-                            <field name="team_id" options="{'no_create': True , 'edit': True}" edit="true"/>
-                            <field name="person_id" options="{'no_create': True}" edit="true" domain="[('team_id', '=', team_id)]" context="{'default_team_id': team_id}"/>
-                        </group>
-                    </group>
-                    
                     <separator/>
                     
                     <!-- إحصائيات العمليات الرئيسية -->
@@ -269,6 +244,34 @@
                             </div>
                         </div>
                     </div> -->
+                    <separator/>
+
+                     <!-- فلاتر البحث -->
+                    <div class="row mt16">
+                        <div class="col-md-12">
+                            <h3 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; text-align: right;">
+                                فلاتر البحث
+                            </h3>
+                        </div>
+                    </div>
+                    <group style="direction: rtl; text-align: right;">
+                        <group >
+                            <!-- <field name="date_from"/>
+                            <field name="date_to"/> -->
+                            <field name="date_from" required="1" widget="date" readonly="0" edit="true"/>
+                            <field name="date_to" required="1" widget="date" readonly="0" edit="true"/>
+                        </group>
+                        <!-- <group>
+                            <field name="team_id"/>
+                            <field name="person_id"/>
+                        </group> -->
+                        <group>
+                            <field name="team_id" options="{'no_create': True , 'edit': True}" edit="true"/>
+                            <field name="person_id" options="{'no_create': True}" edit="true" domain="[('team_id', '=', team_id)]" context="{'default_team_id': team_id}"/>
+                        </group>
+                    </group>
+                    
+                    <separator/>
                     
                     <!-- معلومات إضافية -->
                     <div class="row mt16">

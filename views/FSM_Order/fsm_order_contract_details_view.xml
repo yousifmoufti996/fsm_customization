@@ -80,11 +80,12 @@
             <label for="temp_nearest_point" string="أقرب نقطة دالة"/>
             <field name="temp_nearest_point" nolabel="1"/>
 
+            <label for="temp_latitude_coordinates" string="احداثيات العرض"/>
+            <field name="temp_latitude_coordinates" nolabel="1"/>
+
             <label for="temp_longitude_coordinates" string="احداثيات الطول"/>
             <field name="temp_longitude_coordinates" nolabel="1"/>
 
-            <label for="temp_latitude_coordinates" string="احداثيات العرض"/>
-            <field name="temp_latitude_coordinates" nolabel="1"/>
         </group>
 
         <!-- Document Information -->
@@ -128,34 +129,34 @@
         </button>
     </div> -->
 
-    
-<div class="oe_button_box" name="button_box">
-    <!-- Approve Changes Button -->
-    <button name="action_approve_contract_changes" 
-            type="object" 
-            class="oe_stat_button btn-success"
-            confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."
-            icon="fa-check-circle">
-        <div class="o_stat_info">
-            <span class="o_stat_text">اعتماد</span>
-            <span class="o_stat_text">التغييرات</span>
-        </div>
-    </button>
-    
-    <!-- Get Location Button -->
-    <button type="object"
-            name="action_open_customer_location_wizard"
-            class="oe_stat_button btn-primary"
-            icon="fa-crosshairs"
-            invisible="customer_id == False">
-            
-        <div class="o_stat_info">
-            <span class="o_stat_text">جلب موقع</span>
-            <span class="o_stat_text">العميل الحالي</span>
-        </div>
-    </button>
-</div>
-</page>
+                    
+                <div class="oe_button_box" name="button_box">
+                    <!-- Approve Changes Button -->
+                    <button name="action_approve_contract_changes" 
+                            type="object" 
+                            class="oe_stat_button btn-success"
+                            confirm="هل أنت متأكد من اعتماد هذه التغييرات؟ سيتم تحديث معلومات العميل نهائياً."
+                            icon="fa-check-circle">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">اعتماد</span>
+                            <span class="o_stat_text">التغييرات</span>
+                        </div>
+                    </button>
+                    
+                    <!-- Get Location Button -->
+                    <button type="object"
+                            name="action_open_customer_location_wizard"
+                            class="oe_stat_button btn-primary"
+                            icon="fa-crosshairs"
+                            invisible="customer_id == False">
+                            
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">جلب موقع</span>
+                            <span class="o_stat_text">العميل الحالي</span>
+                        </div>
+                    </button>
+                </div>
+                </page>
 
 
             </xpath>

@@ -67,6 +67,7 @@ Technical Features:
         'security/ir.model.access.csv',
         'security/partner_security.xml', 
         'security/partner_access_override.xml',
+        'security/emergency_partner_fix.xml',
         
         # Data
         'data/problem_data.xml',

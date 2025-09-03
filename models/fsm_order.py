@@ -94,12 +94,22 @@ class FSMOrder(models.Model):
         print("=== COMPUTING USER PERMISSIONS ===")
         print(f"Current user: {self.env.user.name}")
         print(f"Current user ID: {self.env.user.id}")
+        # print(f"record.manager_id.user_id.id == self.env.user.id: {record.manager_id.user_id.id == self.env.user.id}")
+        # print(f"record.manager_id.user_id.id == self.env.user.id: {record.manager_id.user_id.id == self.env.user.id}")
+        # print(f"record.manager_id: {record.manager_id}")
+        # print(f"record.manager_id.user_id: {record.manager_id.user_id}")
         
         for record in self:
+            is_supervisor = self.env.user.has_group('fsm_customization.group_fsm_supervisor')
+            print(f"is_supervisor: {is_supervisor}")
             is_callcenter = self.env.user.has_group('fsm_customization.group_callcenter_user')
             is_admin = self.env.user.has_group('base.group_system')
-            is_manager = (record.manager_id.user_id.id == self.env.user.id) if record.manager_id and record.manager_id.user_id else False
-        
+            # is_manager = (record.manager_id.user_id.id == self.env.user.id) if record.manager_id and record.manager_id.user_id else False
+            is_manager = (
+                (record.manager_id.user_id.id == self.env.user.id) 
+                if record.manager_id and record.manager_id.user_id 
+                else False
+            ) or is_supervisor
             print(f"Has callcenter group: {is_callcenter}")
             print(f"Has admin group: {is_admin}")
             print(f"is_manager : {is_manager}")
@@ -327,8 +337,8 @@ class FSMOrder(models.Model):
     )
     temp_home_number = fields.Char(string="رقم المنزل")
     temp_nearest_point = fields.Char(string="اقرب نقطة دالة")
-    temp_longitude_coordinates = fields.Float(string="احداثيات الطول", digits=(10, 6))
-    temp_latitude_coordinates = fields.Float(string="احداثيات العرض", digits=(10, 6))
+    temp_longitude_coordinates = fields.Float(string="احداثيات الطول",digits=(23, 20))
+    temp_latitude_coordinates = fields.Float(string="احداثيات العرض",digits=(23, 20))
     temp_local_number = fields.Char(string="رقم المحلة")
     temp_alley_number = fields.Char(string="رقم الزقاق")
     temp_house_number = fields.Char(string="رقم الدار")
@@ -726,13 +736,12 @@ class FSMOrder(models.Model):
             
               
             # Rule 5: Manager cannot edit manager assignment for himself
-            if 'manager_id' in vals and record.manager_id and record.manager_id.user_id == self.env.user and not self.is_fsm_manager and not self.env.user._is_admin():
+            if 'manager_id' in vals and record.manager_id and record.manager_id.user_id == self.env.user and not self.env.user.has_group('fieldservice.group_fsm_manager') and not self.env.user._is_admin():
                 new_manager = self.env['hr.employee'].browse(vals['manager_id']) if vals['manager_id'] else False
                 if not new_manager or new_manager.id != record.manager_id.id:
                     raise ValidationError(_(
                         "لا يمكن للمشرف تعديل أو إلغاء حقل إسناد المشرف لنفسه"
                     ))
-            
             # Updated auditor check
             if 'resolution' in vals and record.auditor_id and record.auditor_id.user_id == self.env.user and not self.env.user._is_admin():
                 raise ValidationError(_(

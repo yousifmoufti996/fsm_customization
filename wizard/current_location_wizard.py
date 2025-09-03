@@ -6,8 +6,8 @@ class CurrentLocationWizard(models.TransientModel):
     _description = 'Get Current Location'
     
     partner_id = fields.Many2one('res.partner', required=True)
-    latitude = fields.Float('Latitude', digits=(10, 6))
-    longitude = fields.Float('Longitude', digits=(10, 6))
+    latitude = fields.Float('Latitude',digits=(23, 20))
+    longitude = fields.Float('Longitude',digits=(23, 20))
     accuracy_m = fields.Float('Accuracy (m)', digits=(10, 2))
     
     def action_save_location(self):

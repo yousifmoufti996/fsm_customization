@@ -54,7 +54,7 @@ class ResPartner(models.Model):
         related="partner_longitude",
         readonly=False,
         store=True,
-        digits=(10, 6)
+       digits=(23, 20)
     )
 
     latitude_coordinates = fields.Float(
@@ -62,7 +62,7 @@ class ResPartner(models.Model):
         related="partner_latitude",
         readonly=False,
         store=True,
-        digits=(10, 6)
+       digits=(23, 20)
     )
 
     google_maps_url = fields.Char(

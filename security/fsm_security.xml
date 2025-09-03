@@ -4,23 +4,30 @@
         
         <!-- Call Center User Group -->
         <record id="group_callcenter_user" model="res.groups">
-            <field name="name">Call Center User</field>
+            <field name="name">FSM Order Call Center User</field>
             <field name="comment">Basic call center user access</field>
             <field name="category_id" ref="base.module_category_services"/>
         </record>
 
         <!-- Marketing Group -->
         <record id="group_marketing_user" model="res.groups">
-            <field name="name">Marketing User</field>
+            <field name="name">FSM Order Marketing User</field>
             <field name="comment">Marketing user with specific access to FSM operations</field>
             <field name="category_id" ref="base.module_category_services"/>
         </record>
 
         <!-- Auditor Group -->
         <record id="group_fsm_auditor" model="res.groups">
-            <field name="name">Auditor User</field>
+            <field name="name">FSM Order Auditor User</field>
             <field name="category_id" ref="base.module_category_services"/>
             <field name="comment">Can audit FSM orders</field>
         </record>
+
+        <!-- Supervisor Group -->
+        <record id="group_fsm_supervisor" model="res.groups">
+            <field name="name">FSM Order Supervisor User</field>
+            <field name="category_id" ref="base.module_category_services"/>
+        </record>
+
     </data>
 </odoo>

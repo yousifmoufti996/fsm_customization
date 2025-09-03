@@ -10,8 +10,8 @@ class CustomerLocationWizard(models.TransientModel):
     
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     fsm_order_id = fields.Many2one('fsm.order', string='FSM Order')
-    latitude = fields.Float('خط العرض', digits=(10, 6))
-    longitude = fields.Float('خط الطول', digits=(10, 6))
+    latitude = fields.Float('خط العرض',digits=(23, 20))
+    longitude = fields.Float('خط الطول',digits=(23, 20))
     accuracy_m = fields.Float('الدقة (م)', digits=(10, 2))
     
     # Display current coordinates if they exist

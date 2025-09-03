@@ -110,11 +110,11 @@
         <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <field name="user_is_callcenter" invisible="1"/>
+                <!-- <field name="user_is_callcenter" invisible="1"/>
                 <field name="user_is_admin" invisible="1"/>
                 <field name="user_is_auditor" invisible="1"/>
                 <field name="resolution" invisible="1"/>
-                <field name="user_is_manager" invisible="1"/>
+                <field name="user_is_manager" invisible="1"/> -->
                 
                 <!-- <field name="is_new_record" invisible="1"/> -->
             </xpath>

@@ -55,3 +55,12 @@ access_location_creation_wizard_line_admin,location.creation.wizard.line.admin,f
 
 
 access_fsm_order_callcenter_user,FSM Order Call Center User,fieldservice.model_fsm_order,group_callcenter_user,1,1,1,0
+
+
+
+
+access_res_partner_fsm_user,res.partner.fsm.user,base.model_res_partner,fieldservice.group_fsm_user,1,1,1,0
+access_res_partner_fsm_manager,res.partner.fsm.manager,base.model_res_partner,fieldservice.group_fsm_manager,1,1,1,1
+access_res_partner_fsm_dispatcher,res.partner.fsm.dispatcher,base.model_res_partner,fieldservice.group_fsm_dispatcher,1,1,1,0
+access_res_partner_base_user,res.partner.base.user,base.model_res_partner,base.group_user,1,1,1,0
+access_res_partner_system,res.partner.system,base.model_res_partner,base.group_system,1,1,1,1

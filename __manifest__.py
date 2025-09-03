@@ -65,6 +65,7 @@ Technical Features:
         # Security
         'security/fsm_security.xml',
         'security/ir.model.access.csv',
+        'security/partner_security.xml', 
         
         # Data
         'data/problem_data.xml',

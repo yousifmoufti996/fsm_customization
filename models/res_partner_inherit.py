@@ -32,12 +32,53 @@ class ResPartner(models.Model):
         help="If checked, this partner is blacklisted"
     )
 
+    # @api.model
+    # def _search(self, args, offset=0, limit=None, order=None, access_rights_uid=None):
+    #     """Override search to add domain filters for categories"""
+    #     # You can add custom search logic here if needed
+    #     # For example, to exclude blacklisted partners by default in certain contexts
+    #     return super()._search(args, offset=offset, limit=limit, order=order, access_rights_uid=access_rights_uid)
     @api.model
-    def _search(self, args, offset=0, limit=None, order=None, access_rights_uid=None):
-        """Override search to add domain filters for categories"""
-        # You can add custom search logic here if needed
-        # For example, to exclude blacklisted partners by default in certain contexts
-        return super()._search(args, offset=offset, limit=limit, order=order, access_rights_uid=access_rights_uid)
+    def _search(
+        self,
+        args,
+        offset=0,
+        limit=None,
+        order=None,
+        access_rights_uid=None,
+    ):
+        args = args or []
+        context = dict(self._context) or {}
+        
+        # FIXED: Add safety checks to prevent access issues
+        try:
+            if (
+                context.get("location_id")
+                and self.env.user.company_id.fsm_filter_location_by_contact
+                and not self.env.user.has_group('base.group_system')  # Admin bypass
+                and not self.env.user.has_group('fieldservice.group_fsm_manager')  # Manager bypass
+            ):
+                location = self.env["fsm.location"].browse(context.get("location_id"))
+                if location.exists():  # Check if location exists
+                    args.extend(
+                        [
+                            ("service_location_id", "=", location.id),
+                        ]
+                    )
+        except Exception as e:
+            # Log the error but don't break partner access
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.warning(f"Partner search filter error: {e}")
+            # Continue without filtering to maintain access
+            
+        return super()._search(
+            args,
+            offset=offset,
+            limit=limit,
+            order=order,
+            access_rights_uid=access_rights_uid,
+        )
 
     def is_partner_blacklisted(self):
         """Helper method to check if partner is blacklisted"""

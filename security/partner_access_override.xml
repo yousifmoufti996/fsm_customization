@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- CRITICAL: Override default Odoo partner access rules -->
+        
+        <!-- System Administrator - Unrestricted access to ALL partners -->
+        <record id="res_partner_rule_admin" model="ir.rule">
+            <field name="name">res.partner: Admin Unrestricted Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- FSM Maintenance Supervisor - Unrestricted access -->
+        <record id="res_partner_rule_fsm_supervisor" model="ir.rule">
+            <field name="name">res.partner: FSM Supervisor Unrestricted Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('fsm_customization.group_fsm_maintenance_supervisor'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- FSM Manager - Unrestricted access -->
+        <record id="res_partner_rule_fsm_manager" model="ir.rule">
+            <field name="name">res.partner: FSM Manager Unrestricted Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('fieldservice.group_fsm_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- FSM Dispatcher - Full read/write access -->
+        <record id="res_partner_rule_fsm_dispatcher" model="ir.rule">
+            <field name="name">res.partner: FSM Dispatcher Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('fieldservice.group_fsm_dispatcher'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- FSM User - Standard access -->
+        <record id="res_partner_rule_fsm_user" model="ir.rule">
+            <field name="name">res.partner: FSM User Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('fieldservice.group_fsm_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Base User - Basic access -->
+        <record id="res_partner_rule_base_user" model="ir.rule">
+            <field name="name">res.partner: Base User Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+        
+    </data>
+</odoo>

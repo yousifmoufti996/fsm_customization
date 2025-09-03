@@ -3,7 +3,7 @@
     <data noupdate="1">
         
         <!-- Security Groups -->
-        <record id="group_fsm_maintenance_supervisor" model="res.groups">
+        <record id="group_fsm_supervisor" model="res.groups">
             <field name="name">FSM Maintenance Supervisor</field>
             <field name="category_id" ref="fieldservice.module_category_field_service"/>
             <field name="implied_ids" eval="[(4, ref('fieldservice.group_fsm_manager'))]"/>
@@ -52,7 +52,7 @@
         <record id="fsm_order_supervisor_rule" model="ir.rule">
             <field name="name">FSM Order Maintenance Supervisor Access</field>
             <field name="model_id" ref="fieldservice.model_fsm_order"/>
-            <field name="groups" eval="[(4, ref('group_fsm_maintenance_supervisor'))]"/>
+            <field name="groups" eval="[(4, ref('group_fsm_supervisor'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>

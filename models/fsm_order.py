@@ -663,13 +663,20 @@ class FSMOrder(models.Model):
             order.manager_user_is_current = (
                 order.manager_id and order.manager_id.user_id and order.manager_id.user_id.id == uid
             )
-    @api.depends("person_id.activity_user_id")
+    @api.depends("person_id.user_id")  # or just "person_id" if it directly references res.users
     def _compute_team_leader_user_is_current(self):
         uid = self.env.uid
         for order in self:
-            order.team_leader_user_is_current = (
-                order.person_id and order.person_id.activity_user_id and order.person_id.activity_user_id.id == uid
-            )
+            if hasattr(order.person_id, 'user_id'):
+                # If fsm.person has a user_id field
+                order.team_leader_user_is_current = (
+                    order.person_id and order.person_id.user_id and order.person_id.user_id.id == uid
+                )
+            else:
+                # If person_id directly references a user (res.users)
+                order.team_leader_user_is_current = (
+                    order.person_id and order.person_id.id == uid
+                )
             
     auditor_user_is_current = fields.Boolean(
         compute="_compute_auditor_user_is_current",

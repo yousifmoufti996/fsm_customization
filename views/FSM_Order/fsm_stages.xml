@@ -146,16 +146,17 @@
                 <xpath expr="//header" position="inside">
                     <field name="fields_locked" invisible="1"/> 
                     <field name="is_on_the_way" invisible="1"/> 
-                        
-                        <!-- Complete Button (hidden as per original) -->
+                    
+
+                      <!-- Complete Button (hidden as per original) -->
                         <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="1"/>
                     
                         <!-- On The Way Button - Show in: New, Postponed Request, Cancel Request, Waiting -->
-                        <button name="action_set_on_the_way" string="في الطريق" type="object" class="btn-primary" invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                        <button name="action_set_on_the_way" string="في الطريق" type="object" class="btn-primary" invisible="not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin and not team_leader_user_is_current)"/>
                             
                              
                         <!-- Work in Progress Button - Show in: On The Way, Emergency Stop, Postponed Request, Cancel Request, Waiting -->
-                        <button name="action_set_work_in_progress" string="جاري العمل" type="object" class="btn-warning" invisible="not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting or is_completion_request) or not id or (person_id and person_id != uid)"/>
+                        <button name="action_set_work_in_progress" string="جاري العمل" type="object" class="btn-warning" invisible="not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting or is_completion_request) or not id or (not team_leader_user_is_current)"/>
 
 
                         <!-- Postponed Button - Show in: New, Marketing Followup, Sales Followup, Emergency Stop, Postponed Request, Cancel Request -->
@@ -174,7 +175,7 @@
                         <button name="action_set_cancelled" string="الغاء الطلب" type="object" class="btn-danger" invisible="not (is_new_stage or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_cancel_request or is_waiting)" confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
                             
                         <!-- Completion Request Button - Show in: Work in Progress -->
-                        <button name="action_set_completion_request" string="طلب اتمام العمل" type="object" class="btn-primary" invisible="not is_work_in_progress or not id or (person_id and person_id != uid)" confirm="هل تم إنجاز العمل بالفعل؟"/>
+                        <button name="action_set_completion_request" string="طلب اتمام العمل" type="object" class="btn-primary" invisible="not is_work_in_progress or not id or (not team_leader_user_is_current)" confirm="هل تم إنجاز العمل بالفعل؟"/>
                            
                         <!-- Work Completed Button - Show in: Completion Request -->
                         <button name="action_set_work_completed" string="تم العمل" type="object" class="btn-success" invisible="not is_completion_request or not id or (auditor_id and not auditor_user_is_current and not user_is_admin)" confirm="هل تم إنجاز العمل بالفعل؟"/>
@@ -186,11 +187,14 @@
                         <button name="action_set_emergency_stop" string="توقف طارئ" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (manager_id and not manager_user_is_current and not user_is_admin)" confirm="هل تريد إيقاف هذا الطلب بشكل طارئ؟"/>
                            
                         <!-- Postponed Request Button - Show in: On The Way, Work in Progress -->
-                        <button name="action_set_postponed_request" string="طلب تأجيل" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)" confirm="هل تريد طلب تأجيل هذا الطلب؟"/>
+                        <button name="action_set_postponed_request" string="طلب تأجيل" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (not team_leader_user_is_current)" confirm="هل تريد طلب تأجيل هذا الطلب؟"/>
 
                         <!-- Cancel Request Button - Show in: On The Way, Work in Progress -->
-                        <button name="action_set_cancel_request" string="طلب الغاء" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (person_id and person_id != uid)" confirm="هل تريد طلب إلغاء هذا الطلب؟"/>
-                  </xpath>
+                        <button name="action_set_cancel_request" string="طلب الغاء" type="object" class="btn-danger" invisible="not (is_on_the_way or is_work_in_progress) or not id or (not team_leader_user_is_current)" confirm="هل تريد طلب إلغاء هذا الطلب؟"/>
+                 
+                        
+                
+                </xpath>
             </field>
         </record>
 

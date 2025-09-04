@@ -651,10 +651,6 @@ class FSMOrder(models.Model):
         compute="_compute_manager_user_is_current",
         store=False
     )
-    team_leader_user_is_current = fields.Boolean(
-        compute="_compute_team_leader_user_is_current",
-        store=False
-    )
 
     @api.depends("manager_id.user_id")
     def _compute_manager_user_is_current(self):
@@ -663,21 +659,24 @@ class FSMOrder(models.Model):
             order.manager_user_is_current = (
                 order.manager_id and order.manager_id.user_id and order.manager_id.user_id.id == uid
             )
-    @api.depends("person_id.user_id")  # or just "person_id" if it directly references res.users
+    team_leader_user_is_current = fields.Boolean(
+        compute="_compute_team_leader_user_is_current",
+        store=False
+    )
+    @api.depends("person_id")
     def _compute_team_leader_user_is_current(self):
         uid = self.env.uid
         for order in self:
-            if hasattr(order.person_id, 'user_id'):
-                # If fsm.person has a user_id field
-                order.team_leader_user_is_current = (
-                    order.person_id and order.person_id.user_id and order.person_id.user_id.id == uid
-                )
+            # Get the user related to this person's partner
+            if order.person_id and order.person_id.partner_id:
+                # Find user with this partner_id
+                user = self.env['res.users'].search([
+                    ('partner_id', '=', order.person_id.partner_id.id)
+                ], limit=1)
+                order.team_leader_user_is_current = user and user.id == uid
             else:
-                # If person_id directly references a user (res.users)
-                order.team_leader_user_is_current = (
-                    order.person_id and order.person_id.id == uid
-                )
-            
+                order.team_leader_user_is_current = False
+                
     auditor_user_is_current = fields.Boolean(
         compute="_compute_auditor_user_is_current",
         store=False

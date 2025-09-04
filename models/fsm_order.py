@@ -651,6 +651,10 @@ class FSMOrder(models.Model):
         compute="_compute_manager_user_is_current",
         store=False
     )
+    team_leader_user_is_current = fields.Boolean(
+        compute="_compute_team_leader_user_is_current",
+        store=False
+    )
 
     @api.depends("manager_id.user_id")
     def _compute_manager_user_is_current(self):
@@ -658,6 +662,13 @@ class FSMOrder(models.Model):
         for order in self:
             order.manager_user_is_current = (
                 order.manager_id and order.manager_id.user_id and order.manager_id.user_id.id == uid
+            )
+    @api.depends("team_leader_id.activity_user_id")
+    def _compute_team_leader_user_is_current(self):
+        uid = self.env.uid
+        for order in self:
+            order.team_leader_user_is_current = (
+                order.team_leader_id and order.team_leader_id.activity_user_id and order.team_leader_id.activity_user_id.id == uid
             )
             
     auditor_user_is_current = fields.Boolean(

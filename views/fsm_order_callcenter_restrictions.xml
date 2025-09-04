@@ -234,6 +234,7 @@
                 <field name="user_is_manager" />
                 <field name="user_is_auditor" />
                 <field name="test_user_group" />
+                <field name="team_leader_user_is_current" />
             </xpath>
            
         </field>

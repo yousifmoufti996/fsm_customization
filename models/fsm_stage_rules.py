@@ -227,8 +227,8 @@ class FSMOrder(models.Model):
         for rec in self:
             if  not rec.type or not rec.operation_type_id:
                 raise ValidationError("يرجى إدخال العملية ونوع العملية قبل إتمام العمل.")
-            if  not rec.problem_type_id or not rec.problem_solution_id:
-                raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
+            # if  not rec.problem_type_id or not rec.problem_solution_id:
+            #     raise ValidationError("يرجى إدخال المشكلة والحل قبل إتمام العمل.")
         stage = self.env.ref('fsm_customization.fsm_stage_completion_request')
         return self.write({'stage_id': stage.id})
 

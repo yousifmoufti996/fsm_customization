@@ -303,8 +303,8 @@ class FSMOrder(models.Model):
             raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب الغاء'"))
         
         for rec in self:
-            if not rec.stage_reason:
-                raise ValidationError("الرجاء تعبئة حقل السبب قبل طلب الإلغاء.")
+            # if not rec.stage_reason:
+            #     raise ValidationError("الرجاء تعبئة حقل السبب قبل طلب الإلغاء.")
             
             cancel_request_stage = self.env.ref('fsm_customization.fsm_stage_cancel_request')
             rec.stage_id = cancel_request_stage

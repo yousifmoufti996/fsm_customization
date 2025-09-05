@@ -66,17 +66,15 @@ class FSMOrder(models.Model):
                             ))
                     # Rule for Cancel Request - Only team leader can set it
                     if new_stage.name == 'طلب الغاء':
-                        # if record.person_id != current_user:
-                        if not record.team_leader_user_is_current:
+                        if record.person_id != current_user:
+                        # if record.team_leader_user_is_current != current_user:
                             raise ValidationError(_(
                                 "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب الغاء'"
                             ))
 
                     # Rule for Emergency Stop Request - Only team leader can set it  
                     if new_stage.name == 'طلب توقف طارئ':
-                        # if record.person_id != current_user:
-                        if not record.team_leader_user_is_current:
-                            
+                        if record.person_id != current_user:
                             raise ValidationError(_(
                                 "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب توقف طارئ'"
                             ))
@@ -202,7 +200,9 @@ class FSMOrder(models.Model):
         for rec in self:
             # if not rec.stage_reason:
             #     raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
-            if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+            # if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+            if self.team_leader_user_is_current != self.env.user and self.env.user.has_group('base.group_system')== False:
+                # if record.team_leader_user_is_current != current_user
                 raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب تأجيل'"))
             postponed_request = self.env.ref('fsm_customization.fsm_stage_postponed_request')
             rec.stage_id = postponed_request

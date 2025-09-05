@@ -201,7 +201,7 @@ class FSMOrder(models.Model):
             # if not rec.stage_reason:
             #     raise ValidationError("الرجاء تعبئة حقل السبب قبل الإلغاء.")
             # if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
-            if self.team_leader_user_is_current != self.env.user and self.env.user.has_group('base.group_system')== False:
+            if not self.team_leader_user_is_current  and self.env.user.has_group('base.group_system')== False:
                 # if record.team_leader_user_is_current != current_user
                 raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب تأجيل'"))
             postponed_request = self.env.ref('fsm_customization.fsm_stage_postponed_request')

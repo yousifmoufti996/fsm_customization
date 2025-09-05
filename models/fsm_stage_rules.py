@@ -297,7 +297,9 @@ class FSMOrder(models.Model):
     
     def action_set_cancel_request(self):
         """Set order stage to 'Cancel Request' - Only Team Leader"""
-        if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+        # if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+        if not self.team_leader_user_is_current  and self.env.user.has_group('base.group_system')== False:
+        
             raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب الغاء'"))
         
         for rec in self:
@@ -310,7 +312,9 @@ class FSMOrder(models.Model):
 
     def action_set_emergency_stop_request(self):
         """Set order stage to 'Emergency Stop Request' - Only Team Leader"""
-        if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+        # if self.person_id != self.env.user and self.env.user.has_group('base.group_system')== False:
+        if not self.team_leader_user_is_current  and self.env.user.has_group('base.group_system')== False:
+        
             raise AccessError(_("فقط التيم ليدر يمكنه تحديد مرحلة 'طلب توقف طارئ'"))
         
         for rec in self:

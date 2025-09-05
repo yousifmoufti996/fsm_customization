@@ -66,14 +66,17 @@ class FSMOrder(models.Model):
                             ))
                     # Rule for Cancel Request - Only team leader can set it
                     if new_stage.name == 'طلب الغاء':
-                        if record.person_id != current_user:
+                        # if record.person_id != current_user:
+                        if not record.team_leader_user_is_current:
                             raise ValidationError(_(
                                 "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب الغاء'"
                             ))
 
                     # Rule for Emergency Stop Request - Only team leader can set it  
                     if new_stage.name == 'طلب توقف طارئ':
-                        if record.person_id != current_user:
+                        # if record.person_id != current_user:
+                        if not record.team_leader_user_is_current:
+                            
                             raise ValidationError(_(
                                 "فقط التيم ليدر يمكنه اختيار مرحلة 'طلب توقف طارئ'"
                             ))

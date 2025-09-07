@@ -186,10 +186,9 @@
                             invisible="not team_leader_user_is_current or not is_work_in_progress or not id"
                             confirm="هل تم إنجاز العمل بالفعل؟"/>
 
-                        <!-- Work Completed Button -->
-                        <button name="action_set_work_completed" string="تم العمل" type="object" class="btn-success"
-                            invisible="team_leader_user_is_current or not is_completion_request or not id or (auditor_id and not auditor_user_is_current and not user_is_admin)"
-                            confirm="هل تم إنجاز العمل بالفعل؟"/>
+                         <!-- Work Completed Button -->
+                        <button name="action_set_work_completed" string="تم العمل" type="object" class="btn-success" invisible="team_leader_user_is_current or not is_completion_request or not id or (auditor_id and not auditor_user_is_current and not user_is_admin and not user_is_manager)" confirm="هل تم إنجاز العمل بالفعل؟"/>
+
 
                         <!-- Audited Button -->
                         <button name="action_set_audited" string="تم التدقيق" type="object" class="btn-success"

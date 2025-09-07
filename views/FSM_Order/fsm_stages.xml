@@ -155,9 +155,10 @@
                         <button name="action_set_on_the_way" string="في الطريق" type="object" class="btn-primary"
                             invisible="team_leader_user_is_current or not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
+                       
                         <!-- Work in Progress Button (Visible to Team Leader only) -->
-                        <button name="action_set_work_in_progress" string="جاري العمل" type="object" class="btn-warning"
-                            invisible="not team_leader_user_is_current or not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting or is_completion_request) or not id"/>
+                        <button name="action_set_work_in_progress" string="جاري العمل"
+                         type="object" class="btn-warning" invisible="not (team_leader_user_is_current or manager_user_is_current) or not (is_on_the_way or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting or is_completion_request) or not id"/>
 
                         <!-- Postponed Button -->
                         <button name="action_set_postponed" string="مؤجل" type="object" class="btn-secondary"

@@ -140,6 +140,7 @@
                     <field name="is_new_stage" invisible="1"/>
                     <field name="manager_user_is_current" invisible="1"/>
                     <field name="auditor_user_is_current" invisible="1"/>
+                    <field name="team_leader_user_is_current" invisible="1"/>
                     
                 </xpath>
 

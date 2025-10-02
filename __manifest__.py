@@ -50,6 +50,7 @@ Technical Features:
         'product_expiration',
         'fieldservice_geoengine',
         'base_geoengine',
+        'fieldservice_skill'
         # Field Service Management base module
     ],
     

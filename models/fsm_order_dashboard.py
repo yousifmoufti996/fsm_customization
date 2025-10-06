@@ -2,7 +2,8 @@
 from odoo import api, fields, models, _
 from datetime import datetime, timedelta
 from collections import defaultdict
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class FSMOrderDashboard(models.TransientModel):
     _name = "fsm.order.dashboard"
@@ -183,8 +184,21 @@ class FSMOrderDashboard(models.TransientModel):
             # completed_orders = all_orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower())
             # completed_orders = all_orders.filtered(lambda o:'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
             # completed_orders = all_orders.filtered(lambda o: 'work completed' in o.stage_id.name or 'تم العمل' in o.stage_id.name)
-            completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower()))
-
+            # completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower()))
+            completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name))
+            _logger.warning("completed_orders=================")
+            _logger.warning(completed_orders)
+            
+            _logger.warning("len(completed_orders)=================")
+            _logger.warning(len(completed_orders))
+            for order in completed_orders:
+                _logger.warning("action_view_completed_orders=================")
+                _logger.warning("completed_orders_count=================")
+                _logger.warning("order=================")
+                _logger.warning(order)
+                _logger.warning("order.stage_id.name=================")
+                _logger.warning(order.stage_id.name)
+            
             record.completed_orders_count = len(completed_orders)
             
             # العمليات الملغية - البحث عن stage ملغية
@@ -383,7 +397,19 @@ class FSMOrderDashboard(models.TransientModel):
         """عرض العمليات المكتملة"""
         domain = self._get_base_domain()
         orders = self.env['fsm.order'].search(domain)
-        cancelled_orders = orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
+        cancelled_orders = orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
+        # cancelled_orders = orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
+        _logger.warning("cancelled_orders=================")
+        _logger.warning(cancelled_orders)
+        _logger.warning("len(cancelled_orders)=================")
+        _logger.warning(len(cancelled_orders))
+        for order in cancelled_orders:
+            _logger.warning("action_view_completed_orders=================")
+            _logger.warning("order=================")
+            _logger.warning(order)
+            _logger.warning("order.stage_id.name=================")
+            _logger.warning(order.stage_id.name)
+        
         
         return self._open_orders_view([('id', 'in', cancelled_orders.ids)], 'العمليات المكتملة')
 

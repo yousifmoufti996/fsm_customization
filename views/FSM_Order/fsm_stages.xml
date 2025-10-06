@@ -167,11 +167,11 @@
 
                         <!-- Marketing Follow-up Button -->
                         <button name="action_set_marketing_followup" string="متابعة التسويق" type="object" class="btn-info"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                         <!-- Sales Follow-up Button -->
                         <button name="action_set_sales_followup" string="متابعة المبيعات" type="object" class="btn-info"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                         <!-- Waiting Button -->
                         <button name="action_set_waiting" string="في الانتظار" type="object" class="btn-light"

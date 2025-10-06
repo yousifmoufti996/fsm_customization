@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError 
+import logging
+_logger = logging.getLogger(__name__)
 
 print("=== FSM ORDER MODEL FILE IS LOADING ===")
 class FSMOrder(models.Model):
@@ -665,16 +667,31 @@ class FSMOrder(models.Model):
     )
     @api.depends("person_id")
     def _compute_team_leader_user_is_current(self):
+        _logger.warning("_compute_team_leader_user_is_current=================")
+        _logger.warning(self.env.uid)
         uid = self.env.uid
+        _logger.warning("uid=================")
+        _logger.warning(uid)
         for order in self:
+            _logger.warning("order.person_id=================")
+            _logger.warning(order.person_id)
+            _logger.warning("order.person_id.partner_id=================")
+            _logger.warning(order.person_id.partner_id)
+            _logger.warning("order.person_id.partner_id.id=================")
+            _logger.warning(order.person_id.partner_id.id)
             # Get the user related to this person's partner
             if order.person_id and order.person_id.partner_id:
                 # Find user with this partner_id
                 user = self.env['res.users'].search([
                     ('partner_id', '=', order.person_id.partner_id.id)
                 ], limit=1)
+                _logger.warning("user=================")
+                _logger.warning(user)
+                _logger.warning("user=================")
+                _logger.warning(user.id)
                 order.team_leader_user_is_current = user and user.id == uid
             else:
+                _logger.warning("else=================")
                 order.team_leader_user_is_current = False
                 
     auditor_user_is_current = fields.Boolean(

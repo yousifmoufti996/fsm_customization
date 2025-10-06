@@ -8,7 +8,7 @@ class CustomerLocationWizard(models.TransientModel):
     _name = 'customer.location.wizard'
     _description = 'Get Customer Current Location'
     
-    # customer_id = fields.Many2one('res.partner', string='Customer', required=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     fsm_order_id = fields.Many2one('fsm.order', string='FSM Order')
     latitude = fields.Float('خط العرض',digits=(23, 20))
     longitude = fields.Float('خط الطول',digits=(23, 20))

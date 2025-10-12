@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError, AccessError
@@ -6,7 +5,18 @@ from odoo.exceptions import ValidationError, UserError, AccessError
 
 class FSMOrder(models.Model):
     _inherit = 'fsm.order'
-# Lock fields when work is completed
+    
+    # Override the stage_id field to set default to waiting stage
+    stage_id = fields.Many2one(
+        'fsm.stage',
+        string='Stage',
+        default=lambda self: self._get_default_stage(),
+        copy=False,
+        group_expand='_read_group_stage_ids',
+        tracking=True
+    )
+    
+    # Lock fields when work is completed
     fields_locked = fields.Boolean("الحقول مقفلة", default=False, readonly=True)
     is_on_the_way = fields.Boolean(compute='_compute_stage_flags', store=False)
     is_work_in_progress = fields.Boolean(compute='_compute_stage_flags', store=False)
@@ -19,7 +29,7 @@ class FSMOrder(models.Model):
     is_work_completed = fields.Boolean(compute='_compute_stage_flags', store=False)
     is_audited = fields.Boolean(compute='_compute_stage_flags', store=False)
     is_emergency_stop = fields.Boolean(compute='_compute_stage_flags', store=False)
-    is_new_stage = fields.Boolean(compute='_compute_stage_flags', store=False)
+    # Removed is_new_stage field
     
 
     @api.constrains('stage_id')
@@ -51,6 +61,13 @@ class FSMOrder(models.Model):
                                 "من مرحلة 'جاري العمل' يمكن الانتقال فقط إلى 'طلب اتمام العمل' أو 'توقف طارئ'"
                             ))
                     
+                    # Rule: From "في الانتظار" allow transitions to specific stages
+                    if old_stage.name == 'في الانتظار':
+                        allowed_stages = ['في الطريق', 'مؤجل', 'متابعة التسويق', 'متابعة المبيعات', 'ملغي']
+                        if new_stage.name not in allowed_stages and not is_super_admin:
+                            raise ValidationError(_(
+                                "من مرحلة 'في الانتظار' يمكن الانتقال فقط إلى المراحل المسموحة"
+                            ))
                     # Rule 3: When selecting "مؤجل", customer availability time is required
                     if new_stage.name == 'مؤجل' and not record.customer_availability_time:
                         raise ValidationError(_(
@@ -117,7 +134,7 @@ class FSMOrder(models.Model):
             'is_emergency_stop': 'fsm_customization.fsm_stage_emergency_stop',
             'is_postponed_request': 'fsm_customization.fsm_stage_postponed_request',
             'is_cancel_request': 'fsm_customization.fsm_stage_cancel_request',  
-            'is_new_stage': 'fieldservice.fsm_stage_new',
+            # Removed is_new_stage reference
             'is_emergency_stop_request': 'fsm_customization.fsm_stage_emergency_stop_request',
         }
         # Cache stage_ids only once for performance
@@ -344,3 +361,12 @@ class FSMOrder(models.Model):
             is_marketing = current_user.has_group('fsm_customization.group_marketing_user')
             
             rec.user_is_sales_or_marketing = is_sales or is_marketing
+
+    def _get_default_stage(self):
+        """Get the default stage (Waiting) for new FSM orders"""
+        try:
+            waiting_stage = self.env.ref('fsm_customization.fsm_stage_waiting')
+            return waiting_stage.id if waiting_stage else False
+        except ValueError:
+            # If the waiting stage doesn't exist, return False
+            return False

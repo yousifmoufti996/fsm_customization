@@ -49,6 +49,10 @@ class FSMOrderDashboard(models.TransientModel):
         string="العمليات مؤجلة",
         compute="_compute_order_statistics"
     )
+    waiting_orders_count = fields.Integer(
+        string="العمليات قيد الانتظار",
+        compute="_compute_order_statistics"
+    )
     
     # إحصائيات التكرار
     duplicate_customer_orders_count = fields.Integer(
@@ -180,52 +184,43 @@ class FSMOrderDashboard(models.TransientModel):
             # إجمالي العمليات
             record.total_orders_count = len(all_orders)
             
-            # العمليات المكتملة - البحث عن stage مكتملة
-            # completed_orders = all_orders.filtered(lambda o: 'Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower())
-            # completed_orders = all_orders.filtered(lambda o:'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name)
-            # completed_orders = all_orders.filtered(lambda o: 'work completed' in o.stage_id.name or 'تم العمل' in o.stage_id.name)
-            # completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'Completed' in o.stage_id.name.lower() or 'completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower()))
+            # العمليات المكتملة
             completed_orders = all_orders.filtered(lambda o: o.stage_id.name and ('Work Completed' in o.stage_id.name.lower() or 'work completed' in o.stage_id.name.lower() or 'تم العمل' in o.stage_id.name))
-            _logger.warning("completed_orders=================")
-            _logger.warning(completed_orders)
-            
-            _logger.warning("len(completed_orders)=================")
-            _logger.warning(len(completed_orders))
-            for order in completed_orders:
-                _logger.warning("action_view_completed_orders=================")
-                _logger.warning("completed_orders_count=================")
-                _logger.warning("order=================")
-                _logger.warning(order)
-                _logger.warning("order.stage_id.name=================")
-                _logger.warning(order.stage_id.name)
-            
             record.completed_orders_count = len(completed_orders)
             
-            # العمليات الملغية - البحث عن stage ملغية
+            # العمليات الملغية
             cancelled_orders = all_orders.filtered(lambda o:o.stage_id.name and ('cancel' in o.stage_id.name.lower() or 'ملغي' in o.stage_id.name or 'Cancelled' in o.stage_id.name))
             record.cancelled_orders_count = len(cancelled_orders)
             
-            
-            
-            # جاري العمل -
+            # جاري العمل
             Progress_orders = all_orders.filtered(lambda o:o.stage_id.name and ( 'Work in Progress' in o.stage_id.name.lower() or 'work in progress' in o.stage_id.name.lower() or  'جاري العمل' in o.stage_id.name))
             record.in_progress_orders_count = len(Progress_orders)
-            
             
             # العمليات المؤجلة
             Postponed_orders = all_orders.filtered(lambda o:o.stage_id.name and ( 'Postponed' in o.stage_id.name.lower() or 'postponed' in o.stage_id.name.lower() or 'المؤجلة' in o.stage_id.name or 'مؤجل' in o.stage_id.name))
             record.postponed_orders_count = len(Postponed_orders)
-        
             
+            # العمليات قيد الانتظار - ADD THIS
+            _logger.warning("=== DEBUGGING WAITING ORDERS IN COMPUTE ===")
+            _logger.warning(f"Total orders found: {len(all_orders)}")
+
+            waiting_orders = all_orders.filtered(lambda o: o.stage_id.name and ('waiting' in o.stage_id.name.lower() or 'في الانتظار' in o.stage_id.name))
+            _logger.warning(f"Waiting orders count: {len(waiting_orders)}")
+
+            # Debug each order's stage
             for order in all_orders:
-                print("Order:", order.name)
-                print("Duration:", order.creation_to_work_done_duration)
-                print("Estimated:", order.estimated_problem_duration)
-                print('sla_violated_orders')
+                _logger.warning(f"Order ID: {order.id}, Stage: '{order.stage_id.name}', Contains 'waiting': {'waiting' in order.stage_id.name.lower() if order.stage_id.name else False}, Contains 'في الانتظار': {'في الانتظار' in order.stage_id.name if order.stage_id.name else False}")
+
+            # Debug specifically waiting orders
+            for waiting_order in waiting_orders:
+                _logger.warning(f"WAITING Order ID: {waiting_order.id}, Stage: '{waiting_order.stage_id.name}'")
+
+            record.waiting_orders_count = len(waiting_orders)
+            _logger.warning(f"Final waiting_orders_count set to: {record.waiting_orders_count}")
+            _logger.warning("=== END DEBUGGING WAITING ORDERS IN COMPUTE ===")
             
-            print('record.work_progress_to_done_duration slaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-           
             
+            # SLA violated orders
             record.sla_violated_orders_count = self.env['fsm.order'].search_count(domain + [
                 ('work_progress_to_done_duration', '>', 0),
                 ('estimated_problem_duration', '>', 0),
@@ -539,3 +534,33 @@ class FSMOrderDashboard(models.TransientModel):
             'target': 'current',  # or 'new' if you prefer a dialog
             'view_id': self.env.ref('fsm_customization.fsm_order_dashboard_form_view').id,
         }
+
+    def action_view_waiting_orders(self):
+        """عرض العمليات قيد الانتظار"""
+        _logger.warning("=== DEBUGGING WAITING ORDERS ACTION ===")
+        
+        domain = self._get_base_domain()
+        _logger.warning(f"Base domain: {domain}")
+        
+        orders = self.env['fsm.order'].search(domain)
+        _logger.warning(f"Total orders found with domain: {len(orders)}")
+        
+        # Debug each order's stage
+        for order in orders:
+            stage_name = order.stage_id.name if order.stage_id.name else "NO_STAGE"
+            waiting_check = 'waiting' in order.stage_id.name.lower() if order.stage_id.name else False
+            arabic_check = 'في الانتظار' in order.stage_id.name if order.stage_id.name else False
+            _logger.warning(f"Order ID: {order.id}, Stage: '{stage_name}', waiting check: {waiting_check}, arabic check: {arabic_check}")
+        
+        waiting_orders = orders.filtered(lambda o: o.stage_id.name and ('waiting' in o.stage_id.name.lower() or 'في الانتظار' in o.stage_id.name))
+        _logger.warning(f"Filtered waiting orders count: {len(waiting_orders)}")
+        
+        # Debug the filtered waiting orders
+        for waiting_order in waiting_orders:
+            _logger.warning(f"FILTERED WAITING Order ID: {waiting_order.id}, Stage: '{waiting_order.stage_id.name}'")
+        
+        waiting_order_ids = waiting_orders.ids
+        _logger.warning(f"Waiting order IDs: {waiting_order_ids}")
+        _logger.warning("=== END DEBUGGING WAITING ORDERS ACTION ===")
+        
+        return self._open_orders_view([('id', 'in', waiting_order_ids)], 'العمليات قيد الانتظار')

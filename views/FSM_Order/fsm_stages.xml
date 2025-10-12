@@ -137,7 +137,7 @@
                     <field name="is_cancel_request" invisible="1"/>
                     <field name="is_emergency_stop_request" invisible="1"/>
                     <field name="user_is_sales_or_marketing" invisible="1"/>
-                    <field name="is_new_stage" invisible="1"/>
+                    <!-- Removed is_new_stage field -->
                     <field name="manager_user_is_current" invisible="1"/>
                     <field name="auditor_user_is_current" invisible="1"/>
                     <field name="team_leader_user_is_current" invisible="1"/>
@@ -154,7 +154,7 @@
 
                         <!-- On The Way Button -->
                         <button name="action_set_on_the_way" string="في الطريق" type="object" class="btn-primary"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_waiting or is_postponed_request or is_cancel_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                        
                         <!-- Work in Progress Button (Visible to Team Leader only) -->
@@ -163,15 +163,15 @@
 
                         <!-- Postponed Button -->
                         <button name="action_set_postponed" string="مؤجل" type="object" class="btn-secondary"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request or is_waiting) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_waiting or is_marketing_followup or is_sales_followup or is_emergency_stop or is_postponed_request or is_cancel_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                         <!-- Marketing Follow-up Button -->
                         <button name="action_set_marketing_followup" string="متابعة التسويق" type="object" class="btn-info"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                         <!-- Sales Follow-up Button -->
                         <button name="action_set_sales_followup" string="متابعة المبيعات" type="object" class="btn-info"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
+                            invisible="team_leader_user_is_current or not (is_waiting or is_postponed_request) or (manager_id and not manager_user_is_current and not user_is_admin)"/>
 
                         <!-- Waiting Button -->
                         <button name="action_set_waiting" string="في الانتظار" type="object" class="btn-light"
@@ -180,7 +180,7 @@
 
                         <!-- Cancelled Button -->
                         <button name="action_set_cancelled" string="الغاء الطلب" type="object" class="btn-danger"
-                            invisible="team_leader_user_is_current or not (is_new_stage or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_cancel_request or is_waiting)"
+                            invisible="team_leader_user_is_current or not (is_waiting or is_postponed or is_marketing_followup or is_sales_followup or is_emergency_stop or is_cancel_request)"
                             confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
 
                         <!-- Completion Request Button (Visible to Team Leader only) -->

@@ -98,6 +98,25 @@
                             </div>
                         </div>
                         
+                        <!-- العمليات قيد الانتظار - NEW CARD -->
+                        <div class="col-md-3">
+                            <div class="alert alert-light text-center" style="border: 2px solid #6c757d;">
+                                <h2 style="font-size: 3rem; margin-bottom: 10px; color: #6c757d;">
+                                    <field name="waiting_orders_count" readonly="1"/>
+                                </h2>
+                                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: #6c757d;">
+                                    العمليات قيد الانتظار
+                                </p>
+                                <button name="action_view_waiting_orders" 
+                                        type="object" 
+                                        class="btn btn-sm btn-secondary"
+                                        style="font-weight: bold;">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Move the cancelled orders to the next row -->
+                    <div class="row">
                         <!-- العمليات الملغية -->
                         <div class="col-md-3">
                             <div class="alert alert-danger text-center">
@@ -113,6 +132,7 @@
                                         style="font-weight: bold;">عرض التفاصيل</button>
                             </div>
                         </div>
+                        <!-- You can add more cards here or leave empty -->
                     </div>
                     
                     <!-- إحصائيات التكرار والمشاكل -->

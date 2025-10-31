@@ -127,7 +127,7 @@ Technical Features:
     'assets': {
         'web.assets_backend': [
             'fsm_customization/static/src/js/simple_navigateto.js',
-            'fsm_customization/static/src/js/get_current_location_action_second.js',
+            'fsm_customization/static/src/js/get_current_location_action.js',
             'fsm_customization/static/src/js/navigateto.js',
             'fsm_customization/static/src/js/customer_location.js',
         ],

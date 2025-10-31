@@ -10,10 +10,14 @@ registry.category("actions").add("get_current_location", async (env, { params })
         notification.add(_t("لم يتم العثور على المعالج."), { type: "danger" });
         return;
     }
+    
     if (!("geolocation" in navigator)) {
         notification.add(_t("المتصفح لا يدعم تحديد الموقع الجغرافي."), { type: "warning" });
         return;
     }
+
+    // Show loading notification
+    notification.add(_t("جاري الحصول على الموقع الحالي..."), { type: "info" });
 
     // Promisify geolocation
     const getPosition = () =>
@@ -21,7 +25,7 @@ registry.category("actions").add("get_current_location", async (env, { params })
             navigator.geolocation.getCurrentPosition(
                 resolve,
                 reject,
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             )
         );
 
@@ -29,10 +33,15 @@ registry.category("actions").add("get_current_location", async (env, { params })
         const pos = await getPosition();
         const lat = Number(pos.coords.latitude.toFixed(6));
         const lng = Number(pos.coords.longitude.toFixed(6));
+        const accuracy = Number(pos.coords.accuracy.toFixed(2));
 
-        await orm.write("current.location.wizard", [wizardId], { latitude: lat, longitude: lng });
+        await orm.write("current.location.wizard", [wizardId], { 
+            latitude: lat, 
+            longitude: lng,
+            accuracy_m: accuracy
+        });
 
-        notification.add(_t(`تم جلب الموقع: ${lat}, ${lng}`), { type: "success" });
+        notification.add(_t(`تم جلب الموقع: ${lat}, ${lng} (دقة: ${accuracy}م)`), { type: "success" });
 
         // Refresh the wizard so fields show immediately
         await action.doAction({
@@ -44,9 +53,16 @@ registry.category("actions").add("get_current_location", async (env, { params })
         });
     } catch (err) {
         let msg = _t("فشل الحصول على الموقع.");
-        if (err?.message) msg += " " + err.message;
+        if (err?.code === 1) {
+            msg = _t("تم رفض الإذن للوصول إلى الموقع. يرجى السماح بالوصول للموقع.");
+        } else if (err?.code === 2) {
+            msg = _t("الموقع غير متاح.");
+        } else if (err?.code === 3) {
+            msg = _t("انتهت مهلة الحصول على الموقع.");
+        } else if (err?.message) {
+            msg += " " + err.message;
+        }
         notification.add(msg, { type: "danger" });
-        // console.error(err); // optional
         console.error("Geolocation error:", err);
     }
 });

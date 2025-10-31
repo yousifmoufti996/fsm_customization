@@ -209,12 +209,14 @@ class ResPartner(models.Model):
         
     def action_open_current_location_wizard(self):
         self.ensure_one()
+        # Make sure we're opening the correct wizard
         return {
             "type": "ir.actions.act_window",
             "res_model": "current.location.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_partner_id": self.id},
+            "name": "الحصول على الموقع الحالي",  # Force the correct title
         }
     
    

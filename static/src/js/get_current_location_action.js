@@ -47,6 +47,7 @@ registry.category("actions").add("get_current_location", async (env, { params })
         if (err?.message) msg += " " + err.message;
         notification.add(msg, { type: "danger" });
         // console.error(err); // optional
+        console.error("Geolocation error:", err);
     }
 });
 

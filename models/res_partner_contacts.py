@@ -219,6 +219,33 @@ class ResPartner(models.Model):
             "name": "الحصول على الموقع الحالي",  # Force the correct title
         }
     
+    def action_navigate_to(self):
+        """Open navigation to the partner location with routing"""
+        self.ensure_one()
+        if self.partner_latitude and self.partner_longitude:
+            # Return a client action that will handle geolocation and routing
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'fsm_navigate_with_route',
+                'params': {
+                    'latitude': self.partner_latitude,
+                    'longitude': self.partner_longitude,
+                    'location_name': self.name,
+                    'partner_name': self.name,
+                }
+            }
+        else:
+            # Fallback notification if no coordinates
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'خطأ في التنقل',
+                    'message': 'لم يتم العثور على إحداثيات لهذا الشريك. يرجى تحديث إحداثيات الموقع.',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
    
     @api.onchange('ref')
     def _onchange_ref_port(self):

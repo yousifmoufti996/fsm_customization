@@ -209,6 +209,18 @@
                         <span class="o_stat_text">جلب موقعي الحالي</span>
                     </div>
                 </button>
+
+                <!-- Navigate to partner location -->
+                <button type="object"
+                        name="action_navigate_to"
+                        class="oe_stat_button"
+                        icon="fa-location-arrow"
+                        invisible="(not partner_latitude) or (not partner_longitude)">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">الذهاب إلى</span>
+                        <span class="o_stat_text">الموقع</span>
+                    </div>
+                </button>
             </xpath>
             
             <!-- Hide city, state, country -->
